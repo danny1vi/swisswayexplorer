@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Privacy | SwissWayExplorer" description="Privacy policy for SwissWayExplorer.">
+  <section class="section">
+    <div class="container">
+      <article class="card page-card">
+        <h1>Privacy Policy</h1>
+        <p>
+          We collect limited operational and analytics data to maintain site reliability, understand content
+          performance, and improve the reader experience.
+        </p>
+        <p>
+          We do not sell personal data. We do not process direct payments on this site at this stage.
+        </p>
+        <p>
+          If you contact us by email, your message details are used only for communication and support.
+        </p>
+        <p>
+          You can request deletion of your direct contact records by emailing
+          <a href="mailto:hello@swisswayexplorer.com">hello@swisswayexplorer.com</a>.
+        </p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-card {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0 0 0.7rem;
+  }
+
+  p {
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+    max-width: 72ch;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>

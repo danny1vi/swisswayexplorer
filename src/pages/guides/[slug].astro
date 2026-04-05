@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sanityFetch } from "../../lib/sanity/client";
+import { GUIDE_BY_SLUG_QUERY, GUIDES_QUERY } from "../../lib/sanity/queries";
+import type { Guide } from "../../lib/sanity/types";
+import PortableText from "../../components/shared/PortableText.astro";
+
+export async function getStaticPaths() {
+  const seedGuides: Guide[] = [
+    {
+      title: "How to Structure a 7-Day Switzerland Trip",
+      slug: "7-day-switzerland-route-basics",
+      summary:
+        "Build a two-hub itinerary with clear transfer boundaries, realistic daily scope, and time buffers for weather-sensitive mountain plans.",
+      category: "itinerary",
+    },
+    {
+      title: "Swiss Transport Pass Decision Guide",
+      slug: "swiss-transport-pass-quick-decision-guide",
+      summary:
+        "Choose the right pass setup by mapping your route intensity first, then calculating pass value against actual movement days.",
+      category: "transport",
+    },
+    {
+      title: "Spring vs Summer: When to Go",
+      slug: "seasonal-planning-spring-vs-summer",
+      summary:
+        "Compare shoulder-season flexibility against peak-season certainty with practical trade-offs on crowds, costs, and mountain access.",
+      category: "seasonal",
+    },
+  ];
+  const fromSanity = await sanityFetch<Guide[]>(GUIDES_QUERY, {}, []);
+  const merged = [...seedGuides, ...fromSanity].filter((item) => item.slug);
+  const unique = Array.from(new Map(merged.map((item) => [item.slug, item])).values());
+
+  return unique.map((item) => ({
+    params: { slug: item.slug },
+    props: { seedItem: item },
+  }));
+}
+
+const { slug = "" } = Astro.params;
+const { seedItem } = Astro.props as { seedItem?: Guide };
+const sanityItem = await sanityFetch<Guide | null>(GUIDE_BY_SLUG_QUERY, { slug }, null);
+const guide = sanityItem ?? seedItem ?? null;
+
+if (!guide) {
+  Astro.response.status = 404;
+}
+---
+
+<BaseLayout title={`${guide?.title || "Guide not found"} | SwissWayExplorer`} description={guide?.summary || "Guide brief is not available yet."} image={guide?.image?.url}>
+  <section class="section">
+    <div class="container">
+      {
+        guide ? (
+          <article class="card detail">
+            {guide.image && (
+              <div class="hero-image">
+                <img src={guide.image.url} alt={guide.image.alt || guide.title} />
+              </div>
+            )}
+            <div class="detail-body">
+              {guide.category && <span class="badge" data-category={guide.category}>{guide.category.replace("-", " ")}</span>}
+              <h1>{guide.title}</h1>
+              <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
+              {guide.body && <PortableText blocks={guide.body} />}
+              <a href="/guides" class="back-link">← Back to all guides</a>
+            </div>
+          </article>
+        ) : (
+          <article class="card detail">
+            <h1>Guide not found</h1>
+            <p>The guide you requested is not available yet.</p>
+            <a href="/guides" class="back-link">← Back to all guides</a>
+          </article>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .detail {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .hero-image {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail-body {
+    padding: 1.5rem;
+    max-width: 780px;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    color: #fff;
+    display: inline-block;
+  }
+
+  .badge[data-category="transport"] { background: var(--accent-blue); }
+  .badge[data-category="budget"] { background: var(--accent-green); }
+  .badge[data-category="itinerary"] { background: var(--accent-amber); }
+  .badge[data-category="seasonal"] { background: var(--accent-purple); }
+
+  h1 {
+    margin: 0.65rem 0 0;
+  }
+
+  .summary {
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .back-link:hover {
+    color: var(--primary-strong);
+  }
+
+  @media (max-width: 760px) {
+    .hero-image {
+      max-height: 260px;
+    }
+  }
+</style>

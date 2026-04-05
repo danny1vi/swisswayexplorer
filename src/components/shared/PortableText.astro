@@ -1,0 +1,57 @@
+---
+import type { BodyBlock } from "../../lib/sanity/types";
+
+type Props = {
+  blocks?: BodyBlock[];
+};
+
+const { blocks } = Astro.props;
+
+if (!blocks || blocks.length === 0) {
+  return null;
+}
+---
+
+<div class="portable-text">
+  {blocks.map((block) => {
+    if (block._type !== "block") return null;
+    const text = (block.children || []).map((c) => c.text).join("");
+    if (block.style === "h2") {
+      return <h2>{text}</h2>;
+    }
+    if (block.style === "h3") {
+      return <h3>{text}</h3>;
+    }
+    return <p>{text}</p>;
+  })}
+</div>
+
+<style>
+  .portable-text {
+    margin-top: 1.5rem;
+  }
+
+  .portable-text h2 {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.2rem;
+    color: var(--text);
+  }
+
+  .portable-text h3 {
+    margin: 1.2rem 0 0.4rem;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .portable-text p {
+    margin: 0.7rem 0 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .portable-text p:first-child,
+  .portable-text h2:first-child,
+  .portable-text h3:first-child {
+    margin-top: 0;
+  }
+</style>

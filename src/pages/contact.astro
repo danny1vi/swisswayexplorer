@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Contact | SwissWayExplorer" description="Contact SwissWayExplorer.">
+  <section class="section">
+    <div class="container">
+      <article class="card page-card">
+        <h1>Contact</h1>
+        <p>
+          For editorial feedback, route questions, or partnership inquiries, email:
+          <a href="mailto:hello@swisswayexplorer.com">hello@swisswayexplorer.com</a>
+        </p>
+        <p>
+          Please include your travel month, planned duration, and priority regions if your message is
+          itinerary-related.
+        </p>
+        <p>Typical response window: within 1-2 business days.</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-card {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0 0 0.7rem;
+  }
+
+  p {
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+type Props = {
+  heading: string;
+  description: string;
+  action: { label: string; href: string };
+};
+
+const { heading, description, action } = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="card cta">
+      <div>
+        <h2>{heading}</h2>
+        <p>{description}</p>
+      </div>
+      <a class="btn btn-primary" href={action.href}>{action.label}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .cta h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .cta p {
+    margin: 0.45rem 0 0;
+    color: var(--muted);
+    max-width: 64ch;
+  }
+
+  @media (max-width: 760px) {
+    .cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,0 +1,132 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sanityFetch } from "../../lib/sanity/client";
+import { GUIDES_QUERY } from "../../lib/sanity/queries";
+import type { Guide } from "../../lib/sanity/types";
+
+const seedGuides: Guide[] = [
+  {
+    title: "How to Structure a 7-Day Switzerland Trip",
+    slug: "7-day-switzerland-route-basics",
+    summary:
+      "A practical framework for splitting nights between two hubs without overloading transfer days or mountain windows.",
+    category: "itinerary",
+  },
+  {
+    title: "Swiss Transport Pass Decision Guide",
+    slug: "swiss-transport-pass-quick-decision-guide",
+    summary:
+      "A clean decision tree to compare Saver Day Passes, Half Fare Card, and point-to-point tickets based on your route pattern.",
+    category: "transport",
+  },
+  {
+    title: "Spring vs Summer: When to Go",
+    slug: "seasonal-planning-spring-vs-summer",
+    summary:
+      "A realistic comparison of weather stability, crowd density, pricing pressure, and day-trip reliability between seasons.",
+    category: "seasonal",
+  },
+];
+
+const sanityGuides = await sanityFetch<Guide[]>(GUIDES_QUERY, {}, []);
+const guides = sanityGuides.length > 0 ? sanityGuides : seedGuides;
+---
+
+<BaseLayout title="Guides | SwissWayExplorer" description="Practical planning guides for Swiss routes, transport, and timing.">
+  <section class="section">
+    <div class="container">
+      <h1>Guides</h1>
+      <p class="intro">
+        These guides are written for decision-making, not inspiration scrolling. Use them to lock your route logic,
+        ticket strategy, and seasonal expectations before booking.
+      </p>
+      {
+        guides.length === 0 ? (
+          <article class="card empty">
+            <p>Guides are being prepared. Please check back shortly.</p>
+          </article>
+        ) : (
+          <div class="grid">
+            {guides.map((item) => (
+              <article class="card item">
+                <h2>{item.title}</h2>
+                {item.category && <p class="meta" data-category={item.category}>{item.category.replace("-", " ")}</p>}
+                <p>{item.summary || "Editorial guide summary is coming soon."}</p>
+                <a href={`/guides/${item.slug}`}>Read guide</a>
+              </article>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin: 0;
+  }
+
+  .intro {
+    margin: 0.65rem 0 1rem;
+    color: var(--muted);
+    max-width: 72ch;
+  }
+
+  .empty,
+  .item {
+    padding: 1.2rem;
+  }
+
+  .empty p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .item h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .meta {
+    margin: 0.4rem 0 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+    color: #fff;
+  }
+
+  .meta[data-category="transport"] { background: var(--accent-blue); }
+  .meta[data-category="budget"] { background: var(--accent-green); }
+  .meta[data-category="itinerary"] { background: var(--accent-amber); }
+  .meta[data-category="seasonal"] { background: var(--accent-purple); }
+
+  .item p {
+    color: var(--muted);
+    margin: 0.55rem 0 0;
+  }
+
+  .item a {
+    display: inline-block;
+    margin-top: 0.8rem;
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

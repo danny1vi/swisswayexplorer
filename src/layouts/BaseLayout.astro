@@ -1,0 +1,133 @@
+---
+import Header from "../components/shared/Header.astro";
+import Footer from "../components/shared/Footer.astro";
+import { siteConfig } from "../config/site";
+
+type Props = {
+  title?: string;
+  description?: string;
+  image?: string;
+};
+
+const { title = siteConfig.seo.title, description = siteConfig.seo.description, image } = Astro.props;
+const canonicalUrl = `https://${siteConfig.domain}${Astro.url.pathname}`;
+const ogImage = image || `/og-default.jpg`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #f4f8fb;
+    --surface: #ffffff;
+    --text: #1a2633;
+    --muted: #4b5e70;
+    --primary: #0f6b9a;
+    --primary-strong: #0c5377;
+    --border: #d7e3ee;
+    --radius: 14px;
+    --max: 1100px;
+    --accent-blue: #1a8fcd;
+    --accent-green: #2d8a4e;
+    --accent-amber: #c9940a;
+    --accent-purple: #7c3fad;
+    --font-heading: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 500px at 90% -10%, #d7ecff 0%, transparent 60%),
+      radial-gradient(900px 420px at -10% 0%, #e8f6ff 0%, transparent 55%),
+      var(--bg);
+    line-height: 1.5;
+  }
+
+  main {
+    display: block;
+  }
+
+  .container {
+    width: min(var(--max), calc(100% - 2rem));
+    margin: 0 auto;
+  }
+
+  .section {
+    padding: 3rem 0;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(12, 39, 58, 0.04);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 0.65rem 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.18s ease;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-strong);
+  }
+
+  .btn-secondary {
+    border-color: var(--border);
+    color: var(--text);
+    background: #fff;
+  }
+
+  .btn-secondary:hover {
+    border-color: #b8ccdc;
+    background: #f7fbff;
+  }
+</style>

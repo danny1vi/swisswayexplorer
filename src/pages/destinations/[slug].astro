@@ -1,0 +1,180 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sanityFetch } from "../../lib/sanity/client";
+import { DESTINATIONS_QUERY, DESTINATION_BY_SLUG_QUERY } from "../../lib/sanity/queries";
+import type { Destination } from "../../lib/sanity/types";
+import PortableText from "../../components/shared/PortableText.astro";
+
+export async function getStaticPaths() {
+  const seedDestinations: Destination[] = [
+    {
+      title: "Lucerne Region",
+      slug: "lucerne",
+      summary:
+        "Lucerne works as a balanced first base: walkable center, reliable rail links, and efficient access to nearby mountain viewpoints.",
+      region: "Central Switzerland",
+      bestSeason: "May to October",
+    },
+    {
+      title: "Interlaken & Jungfrau",
+      slug: "interlaken-jungfrau",
+      summary:
+        "Interlaken and the Jungfrau corridor are ideal for alpine-focused itineraries where weather windows and early starts improve results.",
+      region: "Bernese Oberland",
+      bestSeason: "June to September",
+    },
+    {
+      title: "Zermatt & Matterhorn",
+      slug: "zermatt",
+      summary:
+        "Zermatt is a premium, car-free mountain base best approached with a lighter schedule and flexible visibility expectations.",
+      region: "Valais",
+      bestSeason: "June to October and December to March",
+    },
+  ];
+  const fromSanity = await sanityFetch<Destination[]>(DESTINATIONS_QUERY, {}, []);
+  const merged = [...seedDestinations, ...fromSanity].filter((item) => item.slug);
+  const unique = Array.from(new Map(merged.map((item) => [item.slug, item])).values());
+
+  return unique.map((item) => ({
+    params: { slug: item.slug },
+    props: { seedItem: item },
+  }));
+}
+
+const { slug = "" } = Astro.params;
+const { seedItem } = Astro.props as { seedItem?: Destination };
+const sanityItem = await sanityFetch<Destination | null>(DESTINATION_BY_SLUG_QUERY, { slug }, null);
+const destination = sanityItem ?? seedItem ?? null;
+
+if (!destination) {
+  Astro.response.status = 404;
+}
+---
+
+<BaseLayout
+  title={`${destination?.title || "Destination not found"} | SwissWayExplorer`}
+  description={destination?.summary || "Destination brief is not available yet."}
+  image={destination?.image?.url}
+>
+  <section class="section">
+    <div class="container">
+      {
+        destination ? (
+          <article class="card detail">
+            {destination.image && (
+              <div class="hero-image">
+                <img src={destination.image.url} alt={destination.image.alt || destination.title} />
+              </div>
+            )}
+            <div class="detail-body">
+              <p class="eyebrow">Destination Brief</p>
+              <h1>{destination.title}</h1>
+              <p class="summary">{destination.summary || "Editorial destination summary will be added soon."}</p>
+              <div class="meta-row">
+                {destination.region && (
+                  <span class="meta-badge"><strong>Region:</strong> {destination.region}</span>
+                )}
+                {destination.bestSeason && (
+                  <span class="meta-badge"><strong>Best season:</strong> {destination.bestSeason}</span>
+                )}
+              </div>
+              {destination.body && <PortableText blocks={destination.body} />}
+              <a href="/destinations" class="back-link">← Back to all destinations</a>
+            </div>
+          </article>
+        ) : (
+          <article class="card detail">
+            <h1>Destination not found</h1>
+            <p>The destination brief you requested is not available yet.</p>
+            <a href="/destinations" class="back-link">← Back to all destinations</a>
+          </article>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .detail {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .hero-image {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail-body {
+    padding: 1.5rem;
+    max-width: 780px;
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 0.45rem 0 0;
+  }
+
+  .summary {
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .meta-badge {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .meta-badge strong {
+    color: var(--text);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .back-link:hover {
+    color: var(--primary-strong);
+  }
+
+  @media (max-width: 760px) {
+    .hero-image {
+      max-height: 260px;
+    }
+  }
+</style>

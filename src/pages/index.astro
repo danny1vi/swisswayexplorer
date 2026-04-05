@@ -1,17 +1,38 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import FeaturedGrid from "../components/sections/FeaturedGrid.astro";
+import CTA from "../components/sections/CTA.astro";
+import { siteConfig } from "../config/site";
+import { sanityFetch } from "../lib/sanity/client";
+import { HOME_PAGE_QUERY } from "../lib/sanity/queries";
+import type { PageHomeData, Destination } from "../lib/sanity/types";
+import { DESTINATIONS_QUERY } from "../lib/sanity/queries";
 
+const sanityHome = await sanityFetch<PageHomeData | null>(HOME_PAGE_QUERY, {}, null);
+const hero = sanityHome
+  ? {
+      eyebrow: "Switzerland Travel Editorial",
+      heading: sanityHome.heading,
+      description: sanityHome.description,
+      primaryCta: sanityHome.primaryCta,
+      secondaryCta: sanityHome.secondaryCta,
+    }
+  : siteConfig.hero;
+
+const sanityDestinations = await sanityFetch<Destination[]>(DESTINATIONS_QUERY, {}, []);
+const featuredItems = sanityDestinations.length > 0
+  ? sanityDestinations.slice(0, 3).map((d) => ({
+      title: d.title,
+      summary: d.summary || "",
+      href: `/destinations/${d.slug}`,
+      imageUrl: d.image?.url,
+    }))
+  : siteConfig.featured;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <Hero {...hero} />
+  <FeaturedGrid items={featuredItems} />
+  <CTA {...siteConfig.cta} />
+</BaseLayout>
