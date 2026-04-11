@@ -20,7 +20,7 @@ Do not guess tool choice when this file exists.
 - Path: `/opt/fabrika/tools/get-shit-done`
 - Role: execution protocol for discuss -> plan -> execute -> verify
 - Use for: implementation planning, bounded delivery flow, and execution discipline
-- Runtime note: codex-facing install should be treated as global workflow infrastructure, not as a project dependency
+- Runtime note: Codex-facing install should be treated as global workflow infrastructure, not as a project dependency
 
 ### `ui-ux-pro-max-skill`
 
@@ -38,6 +38,14 @@ Do not guess tool choice when this file exists.
 - Use for: splitting redesign, CMS, QA, and rollout work into explicit passes
 - Runtime note: Codex skill discovery is the preferred integration
 
+### `agent-browser`
+
+- Status: `active-now`
+- Path: `/opt/fabrika/tools/agent-browser`
+- Role: browser QA and validation
+- Use for: browser smoke passes, redirect checks, live rendering validation, and post-deploy QA
+- Activation note: QA-only. Do not use it as the primary tool for design or deploy work.
+
 ### `kalfa`
 
 - Status: `reference-only`
@@ -46,19 +54,20 @@ Do not guess tool choice when this file exists.
 - Use for: shaping `docs/`, `memory/`, runbooks, and decision records
 - Do not treat as the primary execution protocol for this pilot
 
+### `kalfa-core`
+
+- Status: `reference-only`
+- Path: `/opt/fabrika/tools/kalfa-core`
+- Role: lower-level operational and memory discipline reference
+- Use for: structural inspiration when hardening memory, ops, and recovery flows
+- Do not activate as the primary execution layer unless the project explicitly promotes it
+
 ### `gsd-2`
 
 - Status: `reference-only`
 - Path: `/opt/fabrika/tools/gsd-2`
 - Role: longer-horizon planning reference for the multi-site factory
 - Use for: future factory planning once the pilot template is stable
-
-### `agent-browser`
-
-- Status: `later`
-- Role: browser QA and validation
-- Intended path: `/opt/fabrika/tools/agent-browser`
-- Activation rule: install only after design and content passes stabilize
 
 ### `autoskills`
 
@@ -86,13 +95,20 @@ Do not guess tool choice when this file exists.
 
 - `get-shit-done`
 - Sanity workflows
-- `kalfa` as structural reference
+- `kalfa` and `kalfa-core` as structural references only
+
+### Deploy pass
+
+- repo state and build verification
+- runbook checks
+- `get-shit-done`
+- deployment command or webhook
 
 ### QA pass
 
 - runbook and smoke checks first
 - `superpowers`
-- `agent-browser` after design/content stabilize
+- `agent-browser`
 
 ### New site creation
 
@@ -101,13 +117,12 @@ Do not guess tool choice when this file exists.
 - use `ui-ux-pro-max-skill` for design system direction
 - extract generic parts only after the pilot is stable
 
-## Current Constraint
+## VPS Operational Wrappers
 
-The pilot is functional but not yet a clean template baseline.
+Preferred commands on the VPS:
 
-Current required cleanup priorities:
+- `/usr/local/bin/site-factory-design`
+- `/usr/local/bin/site-factory-deploy`
+- `/usr/local/bin/site-factory-qa`
 
-1. Keep `TOOLS_REGISTRY.md` at the project root
-2. Keep docs and memory files aligned with the live repo state
-3. Remove stale duplicate top-level Astro files that are outside `src/`
-4. Keep live application logic inside `src/`, `public/`, `sanity/`, and `scripts/`
+These wrappers enforce phase-appropriate tool checks and make the current execution stack explicit.
