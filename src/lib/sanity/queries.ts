@@ -17,12 +17,45 @@ export const HOME_PAGE_QUERY = `
 *[_type == "pageHome"][0]{
   heading,
   description,
+  "image": image{
+    "url": asset->url,
+    alt
+  },
+  seoTitle,
+  seoDescription,
   primaryCta{
     label,
     href
   },
   secondaryCta{
     label,
+    href
+  },
+  categoryHighlights[]{
+    eyebrow,
+    title,
+    description,
+    href
+  },
+  editorialSplit{
+    eyebrow,
+    title,
+    description,
+    body,
+    "image": image{
+      "url": asset->url,
+      alt
+    },
+    imageSide,
+    cta{
+      label,
+      href
+    }
+  },
+  itineraryTeasers[]{
+    duration,
+    title,
+    description,
     href
   }
 }

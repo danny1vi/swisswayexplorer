@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Zermatt destination fallback</title>
+  <desc id="desc">Stylized high alpine valley with an iconic sharp mountain peak.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d6e5f7" />
+      <stop offset="100%" stop-color="#eef5fb" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd7a1" />
+      <stop offset="100%" stop-color="#ffe7ca" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <circle cx="1186" cy="172" r="96" fill="url(#glow)" />
+  <path d="M0 600L170 506L320 568L454 440L600 540L736 402L916 566L1034 350L1128 470L1244 206L1312 318L1382 274L1464 394L1600 288V900H0Z" fill="#cad8e4" />
+  <path d="M0 662L182 562L330 640L464 504L620 620L748 456L930 642L1042 420L1142 560L1262 238L1338 380L1420 332L1508 470L1600 408V900H0Z" fill="#8ca2b6" />
+  <path d="M1192 214L1262 86L1334 214Z" fill="#ffffff" />
+  <path d="M0 742C170 710 274 620 420 630C606 644 724 782 930 778C1100 774 1192 670 1364 648C1462 636 1538 648 1600 676V900H0Z" fill="#3f6d5d" />
+  <path d="M0 786C156 758 280 710 404 714C596 720 724 830 910 832C1098 834 1252 730 1418 714C1498 706 1560 708 1600 716V900H0Z" fill="#274d41" />
+  <rect x="112" y="118" width="420" height="110" rx="24" fill="#ffffff" fill-opacity="0.84" />
+  <text x="156" y="172" fill="#0f6b9a" font-family="'Segoe UI', Arial, sans-serif" font-size="44" font-weight="800">Zermatt &amp; Matterhorn</text>
+  <text x="156" y="214" fill="#4b5e70" font-family="'Segoe UI', Arial, sans-serif" font-size="24">Car-free mountain base with premium alpine pacing</text>
+</svg>

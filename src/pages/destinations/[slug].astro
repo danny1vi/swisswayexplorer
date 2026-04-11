@@ -1,42 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { sanityFetch } from "../../lib/sanity/client";
-import { DESTINATIONS_QUERY, DESTINATION_BY_SLUG_QUERY } from "../../lib/sanity/queries";
+import { getDestinationBySlug, getDestinationPaths } from "../../lib/sanity/content";
 import type { Destination } from "../../lib/sanity/types";
 import PortableText from "../../components/shared/PortableText.astro";
+import { resolveDestinationImage } from "../../lib/contentImages";
 
 export async function getStaticPaths() {
-  const seedDestinations: Destination[] = [
-    {
-      title: "Lucerne Region",
-      slug: "lucerne",
-      summary:
-        "Lucerne works as a balanced first base: walkable center, reliable rail links, and efficient access to nearby mountain viewpoints.",
-      region: "Central Switzerland",
-      bestSeason: "May to October",
-    },
-    {
-      title: "Interlaken & Jungfrau",
-      slug: "interlaken-jungfrau",
-      summary:
-        "Interlaken and the Jungfrau corridor are ideal for alpine-focused itineraries where weather windows and early starts improve results.",
-      region: "Bernese Oberland",
-      bestSeason: "June to September",
-    },
-    {
-      title: "Zermatt & Matterhorn",
-      slug: "zermatt",
-      summary:
-        "Zermatt is a premium, car-free mountain base best approached with a lighter schedule and flexible visibility expectations.",
-      region: "Valais",
-      bestSeason: "June to October and December to March",
-    },
-  ];
-  const fromSanity = await sanityFetch<Destination[]>(DESTINATIONS_QUERY, {}, []);
-  const merged = [...seedDestinations, ...fromSanity].filter((item) => item.slug);
-  const unique = Array.from(new Map(merged.map((item) => [item.slug, item])).values());
-
-  return unique.map((item) => ({
+  const destinations = await getDestinationPaths();
+  return destinations.map((item) => ({
     params: { slug: item.slug },
     props: { seedItem: item },
   }));
@@ -44,8 +15,8 @@ export async function getStaticPaths() {
 
 const { slug = "" } = Astro.params;
 const { seedItem } = Astro.props as { seedItem?: Destination };
-const sanityItem = await sanityFetch<Destination | null>(DESTINATION_BY_SLUG_QUERY, { slug }, null);
-const destination = sanityItem ?? seedItem ?? null;
+const destination = await getDestinationBySlug(slug, seedItem);
+const destinationImage = resolveDestinationImage(destination);
 
 if (!destination) {
   Astro.response.status = 404;
@@ -55,16 +26,21 @@ if (!destination) {
 <BaseLayout
   title={`${destination?.title || "Destination not found"} | SwissWayExplorer`}
   description={destination?.summary || "Destination brief is not available yet."}
-  image={destination?.image?.url}
+  image={destinationImage?.url}
+  imageAlt={destinationImage?.alt}
 >
   <section class="section">
     <div class="container">
       {
         destination ? (
           <article class="card detail">
-            {destination.image && (
+            {destinationImage ? (
               <div class="hero-image">
-                <img src={destination.image.url} alt={destination.image.alt || destination.title} />
+                <img src={destinationImage.url} alt={destinationImage.alt || destination.title} />
+              </div>
+            ) : (
+              <div class="hero-image hero-image-placeholder" aria-hidden="true">
+                <span>{destination.title}</span>
               </div>
             )}
             <div class="detail-body">
@@ -80,14 +56,14 @@ if (!destination) {
                 )}
               </div>
               {destination.body && <PortableText blocks={destination.body} />}
-              <a href="/destinations" class="back-link">← Back to all destinations</a>
+              <a href="/destinations/" class="back-link">&larr; Back to all destinations</a>
             </div>
           </article>
         ) : (
           <article class="card detail">
             <h1>Destination not found</h1>
             <p>The destination brief you requested is not available yet.</p>
-            <a href="/destinations" class="back-link">← Back to all destinations</a>
+            <a href="/destinations/" class="back-link">&larr; Back to all destinations</a>
           </article>
         )
       }
@@ -112,6 +88,23 @@ if (!destination) {
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  .hero-image-placeholder {
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at top right, rgba(15, 107, 154, 0.24), transparent 40%),
+      linear-gradient(135deg, #dfeaf4 0%, #edf4fa 100%);
+  }
+
+  .hero-image-placeholder span {
+    color: var(--primary-strong);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 16ch;
   }
 
   .detail-body {

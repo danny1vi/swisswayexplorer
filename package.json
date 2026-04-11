@@ -9,6 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "sanity:check": "node --env-file=.env scripts/check-sanity.mjs",
+    "deploy:webhook:check": "node --env-file=.env scripts/trigger-coolify-webhook.mjs",
+    "deploy:webhook:trigger": "node --env-file=.env scripts/trigger-coolify-webhook.mjs --execute",
     "astro": "astro"
   },
   "dependencies": {

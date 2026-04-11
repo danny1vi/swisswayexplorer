@@ -4,11 +4,14 @@ import { siteConfig } from "../../config/site";
 
 <header class="site-header">
   <div class="container header-wrap">
-    <a class="brand" href="/">{siteConfig.name}</a>
-    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <a class="brand" href="/">
+      <span class="brand-mark">SwissWayExplorer</span>
+      <span class="brand-tag">Editorial route intelligence for Switzerland</span>
+    </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-controls="primary-nav" aria-expanded="false">
       <span class="hamburger"></span>
     </button>
-    <nav aria-label="Primary">
+    <nav id="primary-nav" aria-label="Primary">
       <ul class="nav-list">
         {siteConfig.nav.map((item) => (
           <li><a href={item.href}>{item.label}</a></li>
@@ -19,14 +22,39 @@ import { siteConfig } from "../../config/site";
 </header>
 
 <script>
+  const header = document.querySelector('.site-header');
   const toggle = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('.site-header nav');
-  if (toggle && nav) {
+  const navList = document.querySelector('.site-header .nav-list');
+
+  if (toggle instanceof HTMLButtonElement && navList instanceof HTMLElement) {
+    const setMenuState = (open) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      navList.classList.toggle('open', open);
+    };
+
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('open');
+      setMenuState(!expanded);
     });
+
+    navList.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setMenuState(false));
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 760) {
+        setMenuState(false);
+      }
+    });
+  }
+
+  if (header instanceof HTMLElement) {
+    const syncHeader = () => {
+      header.classList.toggle('is-scrolled', window.scrollY > 12);
+    };
+
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive: true });
   }
 </script>
 
@@ -35,24 +63,43 @@ import { siteConfig } from "../../config/site";
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(244, 248, 251, 0.92);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(8px);
+    background: rgba(246, 241, 232, 0.74);
+    border-bottom: 1px solid transparent;
+    backdrop-filter: blur(12px);
+  }
+
+  .site-header.is-scrolled {
+    border-bottom-color: var(--border);
+    background: rgba(250, 247, 239, 0.9);
   }
 
   .header-wrap {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 68px;
+    min-height: 78px;
+    gap: 1rem;
   }
 
   .brand {
-    color: var(--text);
+    display: grid;
+    gap: 0.15rem;
     text-decoration: none;
-    font-weight: 800;
-    letter-spacing: 0.2px;
-    font-size: 1.1rem;
+  }
+
+  .brand-mark {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .brand-tag {
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
   }
 
   .menu-toggle {
@@ -74,7 +121,7 @@ import { siteConfig } from "../../config/site";
 
   .hamburger::before,
   .hamburger::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 24px;
     height: 2px;
@@ -104,22 +151,28 @@ import { siteConfig } from "../../config/site";
     padding: 0;
     list-style: none;
     display: flex;
-    gap: 1rem;
+    gap: 1.15rem;
   }
 
   .nav-list a {
     color: var(--muted);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: color 0.15s ease;
+    font-weight: 700;
+    font-size: 0.84rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  .nav-list a:hover {
+  .nav-list a:hover,
+  .nav-list a:focus-visible {
     color: var(--text);
   }
 
   @media (max-width: 760px) {
+    .brand-tag {
+      display: none;
+    }
+
     .menu-toggle {
       display: block;
     }
@@ -128,14 +181,14 @@ import { siteConfig } from "../../config/site";
       display: none;
       flex-direction: column;
       position: absolute;
-      top: 68px;
+      top: 78px;
       left: 0;
       right: 0;
-      background: rgba(244, 248, 251, 0.98);
+      background: rgba(250, 247, 239, 0.97);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.5rem 1.2rem;
       gap: 0.8rem;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
 
     .nav-list.open {
@@ -143,7 +196,7 @@ import { siteConfig } from "../../config/site";
     }
 
     .nav-list a {
-      font-size: 1rem;
+      font-size: 0.92rem;
       padding: 0.3rem 0;
     }
   }

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Interlaken and Jungfrau destination fallback</title>
+  <desc id="desc">Stylized alpine valley with lakes and snowy peaks.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d8efff" />
+      <stop offset="100%" stop-color="#eff8fd" />
+    </linearGradient>
+    <linearGradient id="lakeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2f9fd6" />
+      <stop offset="100%" stop-color="#0f6b9a" />
+    </linearGradient>
+    <linearGradient id="lakeRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4eb3e2" />
+      <stop offset="100%" stop-color="#1685ba" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <circle cx="1260" cy="152" r="82" fill="#fff4bf" />
+  <path d="M0 492L166 404L310 476L492 254L602 402L730 208L850 390L1026 176L1156 334L1320 204L1470 324L1600 250V900H0Z" fill="#dce8f1" />
+  <path d="M0 560L198 436L340 550L494 332L622 468L754 254L890 478L1048 252L1202 438L1354 300L1500 412L1600 364V900H0Z" fill="#a6bccb" />
+  <path d="M414 254L492 154L572 254Z" fill="#ffffff" />
+  <path d="M662 208L730 112L798 208Z" fill="#ffffff" />
+  <path d="M966 176L1038 82L1110 176Z" fill="#ffffff" />
+  <path d="M0 708C146 640 280 606 418 606C560 606 690 650 818 638C954 626 1066 536 1196 530C1326 524 1438 578 1600 654V900H0Z" fill="#5ea76d" />
+  <path d="M0 746C148 690 292 666 444 676C604 686 732 752 898 734C1048 718 1188 632 1316 630C1430 628 1518 660 1600 706V900H0Z" fill="#3f8250" />
+  <path d="M0 650C114 692 212 736 286 784C344 822 418 832 492 806C576 776 644 708 718 688C830 660 940 684 1034 738C1102 776 1186 780 1260 756C1368 720 1468 658 1600 640V900H0Z" fill="url(#lakeLeft)" />
+  <path d="M1010 666C1096 628 1182 604 1262 608C1380 614 1486 670 1600 778V900H960C950 814 958 730 1010 666Z" fill="url(#lakeRight)" />
+  <rect x="114" y="118" width="480" height="110" rx="24" fill="#ffffff" fill-opacity="0.82" />
+  <text x="158" y="172" fill="#0f6b9a" font-family="'Segoe UI', Arial, sans-serif" font-size="42" font-weight="800">Interlaken &amp; Jungfrau</text>
+  <text x="158" y="214" fill="#4b5e70" font-family="'Segoe UI', Arial, sans-serif" font-size="24">Alpine base with weather-sensitive mountain timing</text>
+</svg>

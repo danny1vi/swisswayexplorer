@@ -1,0 +1,151 @@
+---
+type CategoryItem = {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+type Props = {
+  items: CategoryItem[];
+};
+
+const { items } = Astro.props;
+---
+
+<section class="section category-section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">Start Here</p>
+      <h2 class="section-title">Choose the planning layer that reduces the most uncertainty first.</h2>
+      <p class="section-copy">
+        The goal is not to consume more travel content. The goal is to make the next route decision cleaner.
+      </p>
+    </div>
+    <div class="category-grid">
+      {items.map((item, index) => (
+        <a class="category-card card" href={item.href} data-tone={index % 3}>
+          {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <span class="card-link">Open section</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .category-section {
+    padding-top: 1rem;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    max-width: 62rem;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .category-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    min-height: 260px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.14), transparent 38%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 72%);
+    pointer-events: none;
+  }
+
+  .category-card[data-tone="1"]::before {
+    background:
+      radial-gradient(circle at top right, rgba(26, 60, 52, 0.1), transparent 38%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 72%);
+  }
+
+  .category-card[data-tone="2"]::before {
+    background:
+      radial-gradient(circle at top right, rgba(104, 121, 112, 0.12), transparent 38%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 72%);
+  }
+
+  .category-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .category-card:hover,
+  .category-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 64px rgba(22, 37, 31, 0.12);
+  }
+
+  .card-eyebrow {
+    margin: 0;
+    color: var(--primary);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .category-card h3 {
+    margin: 0;
+    max-width: 12ch;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1;
+  }
+
+  .category-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .card-link {
+    align-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .card-link::after {
+    content: "->";
+    color: var(--accent-amber);
+    transition: transform 0.2s ease;
+  }
+
+  .category-card:hover .card-link::after,
+  .category-card:focus-visible .card-link::after {
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 980px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .category-card {
+      min-height: unset;
+    }
+  }
+</style>

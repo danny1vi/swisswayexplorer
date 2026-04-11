@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">SwissWayExplorer default social image</title>
+  <desc id="desc">Editorial Switzerland trip planning guides and destination briefs.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6fb" />
+      <stop offset="100%" stop-color="#d8ebf8" />
+    </linearGradient>
+    <radialGradient id="glow" cx="85%" cy="8%" r="45%">
+      <stop offset="0%" stop-color="#7ec2e7" stop-opacity="0.42" />
+      <stop offset="100%" stop-color="#7ec2e7" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+  <g fill="none" stroke="#9ec7de" stroke-opacity="0.55">
+    <path d="M0 470C140 420 255 430 365 382C468 338 576 284 695 280C823 275 931 334 1048 318C1117 309 1163 285 1200 256" />
+    <path d="M0 518C155 470 285 487 392 442C500 396 606 335 729 331C851 327 935 383 1044 372C1114 365 1165 342 1200 318" />
+  </g>
+  <rect x="72" y="74" width="1056" height="482" rx="28" fill="#ffffff" fill-opacity="0.74" stroke="#d7e3ee" />
+  <text x="120" y="170" fill="#0f6b9a" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4">SWITZERLAND TRAVEL EDITORIAL</text>
+  <text x="120" y="255" fill="#1a2633" font-family="'Segoe UI', Arial, sans-serif" font-size="64" font-weight="800">
+    <tspan x="120" dy="0">SwissWayExplorer</tspan>
+    <tspan x="120" dy="78">Plan Better Switzerland Trips</tspan>
+  </text>
+  <text x="120" y="420" fill="#4b5e70" font-family="'Segoe UI', Arial, sans-serif" font-size="30">
+    <tspan x="120" dy="0">Destination briefs, route-first guides, and practical planning decisions</tspan>
+    <tspan x="120" dy="42">for travelers who want clarity, pace, and fewer research loops.</tspan>
+  </text>
+  <rect x="120" y="468" width="282" height="56" rx="28" fill="#0f6b9a" />
+  <text x="160" y="504" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-size="26" font-weight="700">swisswayexplorer.com</text>
+</svg>

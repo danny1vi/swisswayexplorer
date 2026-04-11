@@ -1,15 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
+import CategoryGrid from "../components/sections/CategoryGrid.astro";
+import EditorialSplit from "../components/sections/EditorialSplit.astro";
 import FeaturedGrid from "../components/sections/FeaturedGrid.astro";
+import ItineraryTeasers from "../components/sections/ItineraryTeasers.astro";
 import CTA from "../components/sections/CTA.astro";
 import { siteConfig } from "../config/site";
-import { sanityFetch } from "../lib/sanity/client";
-import { HOME_PAGE_QUERY } from "../lib/sanity/queries";
-import type { PageHomeData, Destination } from "../lib/sanity/types";
-import { DESTINATIONS_QUERY } from "../lib/sanity/queries";
+import { getDestinations, getGuides, getHomePage } from "../lib/sanity/content";
+import { resolveDestinationImage } from "../lib/contentImages";
 
-const sanityHome = await sanityFetch<PageHomeData | null>(HOME_PAGE_QUERY, {}, null);
+const sanityHome = await getHomePage();
 const hero = sanityHome
   ? {
       eyebrow: "Switzerland Travel Editorial",
@@ -17,22 +18,66 @@ const hero = sanityHome
       description: sanityHome.description,
       primaryCta: sanityHome.primaryCta,
       secondaryCta: sanityHome.secondaryCta,
+      image: sanityHome.image,
     }
   : siteConfig.hero;
 
-const sanityDestinations = await sanityFetch<Destination[]>(DESTINATIONS_QUERY, {}, []);
+const homeTitle = sanityHome?.seoTitle;
+const homeDescription = sanityHome?.seoDescription;
+
+const categoryHighlights =
+  sanityHome?.categoryHighlights && sanityHome.categoryHighlights.length > 0
+    ? sanityHome.categoryHighlights
+    : siteConfig.homepage.categoryHighlights;
+
+const editorialSplit = {
+  ...siteConfig.homepage.editorialSplit,
+  ...sanityHome?.editorialSplit,
+  cta:
+    sanityHome?.editorialSplit?.cta?.label && sanityHome?.editorialSplit?.cta?.href
+      ? sanityHome.editorialSplit.cta
+      : siteConfig.homepage.editorialSplit.cta,
+  image: sanityHome?.editorialSplit?.image?.url
+    ? sanityHome.editorialSplit.image
+    : siteConfig.homepage.editorialSplit.image,
+};
+
+const itineraryTeasers =
+  sanityHome?.itineraryTeasers && sanityHome.itineraryTeasers.length > 0
+    ? sanityHome.itineraryTeasers
+    : siteConfig.homepage.itineraryTeasers;
+
+const sanityDestinations = await getDestinations();
+const fallbackFeaturedItems = siteConfig.featured.map((item) => {
+  const slug = item.href.split("/").filter(Boolean).pop() || "";
+  return {
+    ...item,
+    imageUrl: item.imageUrl || resolveDestinationImage({ slug, title: item.title })?.url,
+  };
+});
 const featuredItems = sanityDestinations.length > 0
-  ? sanityDestinations.slice(0, 3).map((d) => ({
-      title: d.title,
-      summary: d.summary || "",
-      href: `/destinations/${d.slug}`,
-      imageUrl: d.image?.url,
+  ? sanityDestinations.slice(0, 4).map((destination) => ({
+      eyebrow: destination.region || destination.bestSeason || "Destination brief",
+      title: destination.title,
+      summary: destination.summary || "",
+      href: `/destinations/${destination.slug}/`,
+      imageUrl: resolveDestinationImage(destination)?.url,
     }))
-  : siteConfig.featured;
+  : fallbackFeaturedItems;
+
+const guideCount = (await getGuides()).length;
+const featuredIntro = `Start with the destination brief, then shape nights, passes, and mountain days around the base that gives you the cleanest route logic.${guideCount > 0 ? ` ${guideCount} planning guides are already paired with this editorial layer.` : ""}`;
 ---
 
-<BaseLayout>
+<BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt}>
   <Hero {...hero} />
-  <FeaturedGrid items={featuredItems} />
+  <CategoryGrid items={categoryHighlights} />
+  <EditorialSplit {...editorialSplit} />
+  <FeaturedGrid
+    title="Compare the bases that most strongly shape the rest of your trip."
+    intro={featuredIntro}
+    items={featuredItems}
+  />
+  <ItineraryTeasers items={itineraryTeasers} />
   <CTA {...siteConfig.cta} />
 </BaseLayout>

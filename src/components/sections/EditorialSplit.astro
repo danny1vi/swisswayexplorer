@@ -1,0 +1,129 @@
+---
+type Props = {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  body?: string;
+  cta?: {
+    label: string;
+    href: string;
+  };
+  image?: {
+    url: string;
+    alt?: string;
+  };
+  imageSide?: "left" | "right";
+};
+
+const { eyebrow, title, description, body, cta, image, imageSide = "left" } = Astro.props;
+const paragraphs = (body || "")
+  .split(/\n+/)
+  .map((item) => item.trim())
+  .filter(Boolean);
+---
+
+<section class="section">
+  <div class="container">
+    <article class:list={["editorial-split", imageSide === "right" && "is-reversed"]}>
+      <div class="editorial-media">
+        {image?.url ? (
+          <img src={image.url} alt={image.alt || title} loading="lazy" />
+        ) : (
+          <div class="editorial-placeholder" aria-hidden="true"></div>
+        )}
+      </div>
+      <div class="editorial-copy">
+        {eyebrow && <p class="section-label">{eyebrow}</p>}
+        <h2 class="section-title">{title}</h2>
+        <p class="lead">{description}</p>
+        {paragraphs.map((paragraph) => (
+          <p class="detail">{paragraph}</p>
+        ))}
+        {cta?.href && cta?.label && (
+          <a class="btn btn-primary" href={cta.href}>
+            {cta.label}
+          </a>
+        )}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .editorial-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 3rem);
+    align-items: stretch;
+  }
+
+  .editorial-split.is-reversed .editorial-media {
+    order: 2;
+  }
+
+  .editorial-split.is-reversed .editorial-copy {
+    order: 1;
+  }
+
+  .editorial-media {
+    min-height: 460px;
+    overflow: hidden;
+    border-radius: calc(var(--radius) + 2px);
+    border: 1px solid rgba(26, 60, 52, 0.12);
+    box-shadow: var(--shadow-soft);
+    background: linear-gradient(135deg, #f0ece2 0%, #ded5c6 100%);
+  }
+
+  .editorial-media img,
+  .editorial-placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .editorial-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(1rem, 3vw, 2rem) 0;
+  }
+
+  .lead,
+  .detail {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+    color: var(--text);
+    max-width: 30rem;
+  }
+
+  .detail {
+    max-width: 34rem;
+  }
+
+  .editorial-copy .btn {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+  }
+
+  @media (max-width: 900px) {
+    .editorial-split {
+      grid-template-columns: 1fr;
+    }
+
+    .editorial-split.is-reversed .editorial-media,
+    .editorial-split.is-reversed .editorial-copy {
+      order: initial;
+    }
+
+    .editorial-media {
+      min-height: 300px;
+    }
+  }
+</style>

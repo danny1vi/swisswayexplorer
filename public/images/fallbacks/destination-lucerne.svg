@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Lucerne destination fallback</title>
+  <desc id="desc">Stylized illustration of Lake Lucerne with mountains and a covered bridge.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d9eefb" />
+      <stop offset="100%" stop-color="#f7fbfe" />
+    </linearGradient>
+    <linearGradient id="lake" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#77bfe1" />
+      <stop offset="100%" stop-color="#0f6b9a" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <circle cx="1320" cy="160" r="84" fill="#fff4bf" />
+  <path d="M0 510L160 410L286 470L452 318L612 438L760 256L968 394L1126 244L1286 336L1448 256L1600 340V900H0Z" fill="#cfdeea" />
+  <path d="M0 592L176 472L308 562L492 376L650 530L822 322L1038 512L1188 382L1348 466L1600 356V900H0Z" fill="#9cb6c8" />
+  <path d="M0 612C176 632 310 560 460 590C622 622 754 706 934 686C1128 664 1288 562 1600 606V900H0Z" fill="url(#lake)" />
+  <path d="M0 710C160 688 316 654 448 676C622 706 730 778 888 766C1080 752 1260 650 1600 706V900H0Z" fill="#0b5678" fill-opacity="0.24" />
+  <path d="M230 594H970L900 646H158L230 594Z" fill="#7b5b3f" />
+  <path d="M292 472L432 594H346L210 472H292Z" fill="#8b6848" />
+  <path d="M592 502L718 594H626L504 502H592Z" fill="#8b6848" />
+  <path d="M810 534L914 594H836L728 534H810Z" fill="#8b6848" />
+  <rect x="112" y="118" width="374" height="110" rx="24" fill="#ffffff" fill-opacity="0.82" />
+  <text x="156" y="172" fill="#0f6b9a" font-family="'Segoe UI', Arial, sans-serif" font-size="44" font-weight="800">Lucerne Region</text>
+  <text x="156" y="214" fill="#4b5e70" font-family="'Segoe UI', Arial, sans-serif" font-size="24">Lakefront base with clean mountain day trips</text>
+</svg>

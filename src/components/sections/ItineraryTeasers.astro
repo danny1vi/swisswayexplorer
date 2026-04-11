@@ -1,0 +1,106 @@
+---
+type Teaser = {
+  duration?: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+type Props = {
+  items: Teaser[];
+};
+
+const { items } = Astro.props;
+---
+
+<section class="section itinerary-section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">Quick Formats</p>
+      <h2 class="section-title">Use tighter editorial formats when you only need the next decision, not a full route rewrite.</h2>
+      <p class="section-copy">
+        These cards are designed for short planning windows: arrival days, transfer days, and pass decisions.
+      </p>
+    </div>
+    <div class="teaser-grid">
+      {items.map((item) => (
+        <article class="teaser-card card">
+          {item.duration && <p class="duration">{item.duration}</p>}
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <a href={item.href}>Read guide</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .itinerary-section {
+    padding-top: 1rem;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    max-width: 62rem;
+  }
+
+  .teaser-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .teaser-card {
+    padding: 1.4rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .teaser-card:hover,
+  .teaser-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 64px rgba(22, 37, 31, 0.12);
+  }
+
+  .duration {
+    margin: 0;
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(201, 168, 76, 0.14);
+    color: var(--primary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  .teaser-card h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.15;
+  }
+
+  .teaser-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .teaser-card a {
+    margin-top: 0.35rem;
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (max-width: 980px) {
+    .teaser-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

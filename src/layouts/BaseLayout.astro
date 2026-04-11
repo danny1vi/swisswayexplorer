@@ -2,16 +2,25 @@
 import Header from "../components/shared/Header.astro";
 import Footer from "../components/shared/Footer.astro";
 import { siteConfig } from "../config/site";
+import { getSiteSettings } from "../lib/sanity/content";
 
 type Props = {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
 };
 
-const { title = siteConfig.seo.title, description = siteConfig.seo.description, image } = Astro.props;
-const canonicalUrl = `https://${siteConfig.domain}${Astro.url.pathname}`;
-const ogImage = image || `/og-default.jpg`;
+const { title, description, image, imageAlt } = Astro.props;
+const siteSettings = await getSiteSettings();
+const resolvedTitle = title || siteSettings?.defaultSeo?.title || siteConfig.seo.title;
+const resolvedDescription = description || siteSettings?.defaultSeo?.description || siteConfig.seo.description;
+const siteName = siteSettings?.siteName || siteConfig.name;
+const canonicalUrl = new URL(Astro.url.pathname, `https://${siteConfig.domain}`).toString();
+const resolveAbsoluteAssetUrl = (value?: string) =>
+  value ? new URL(value, `https://${siteConfig.domain}`).toString() : undefined;
+const ogImage = resolveAbsoluteAssetUrl(image) || siteSettings?.ogImage?.url || `https://${siteConfig.domain}/og-default.svg`;
+const ogImageAlt = imageAlt || siteSettings?.ogImage?.alt || `${siteName} social preview`;
 ---
 
 <!doctype html>
@@ -19,21 +28,24 @@ const ogImage = image || `/og-default.jpg`;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
+    <meta name="description" content={resolvedDescription} />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <title>{title}</title>
+    <title>{resolvedTitle}</title>
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={resolvedTitle} />
+    <meta property="og:description" content={resolvedDescription} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:url" content={canonicalUrl} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={resolvedTitle} />
+    <meta name="twitter:description" content={resolvedDescription} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
   </head>
   <body>
     <Header />
@@ -45,41 +57,90 @@ const ogImage = image || `/og-default.jpg`;
 </html>
 
 <style is:global>
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap");
+
   :root {
-    --bg: #f4f8fb;
-    --surface: #ffffff;
-    --text: #1a2633;
-    --muted: #4b5e70;
-    --primary: #0f6b9a;
-    --primary-strong: #0c5377;
-    --border: #d7e3ee;
-    --radius: 14px;
-    --max: 1100px;
-    --accent-blue: #1a8fcd;
-    --accent-green: #2d8a4e;
-    --accent-amber: #c9940a;
-    --accent-purple: #7c3fad;
-    --font-heading: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --bg: #f6f1e8;
+    --surface: rgba(255, 252, 245, 0.9);
+    --surface-strong: #fffdf8;
+    --text: #16251f;
+    --muted: #5f6c62;
+    --primary: #1a3c34;
+    --primary-strong: #102c26;
+    --border: rgba(26, 60, 52, 0.14);
+    --radius: 22px;
+    --max: 1180px;
+    --accent-blue: #4c8191;
+    --accent-green: #52755b;
+    --accent-amber: #c9a84c;
+    --accent-purple: #75608b;
+    --shadow-soft: 0 24px 60px rgba(22, 37, 31, 0.09);
+    --font-heading: "Playfair Display", Georgia, serif;
+    --font-body: "Inter", "Segoe UI", sans-serif;
   }
 
   * {
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     margin: 0;
-    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     color: var(--text);
     background:
-      radial-gradient(1200px 500px at 90% -10%, #d7ecff 0%, transparent 60%),
-      radial-gradient(900px 420px at -10% 0%, #e8f6ff 0%, transparent 55%),
-      var(--bg);
+      radial-gradient(1200px 500px at 92% -8%, rgba(201, 168, 76, 0.16) 0%, transparent 58%),
+      radial-gradient(900px 420px at -12% 0%, rgba(26, 60, 52, 0.08) 0%, transparent 52%),
+      linear-gradient(180deg, #fbf8f1 0%, var(--bg) 28%, #f4ede1 100%);
     line-height: 1.5;
+    min-height: 100vh;
   }
 
   main {
     display: block;
+    overflow: clip;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  p {
+    font-family: var(--font-body);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  a,
+  button {
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(201, 168, 76, 0.9);
+    outline-offset: 3px;
   }
 
   .container {
@@ -88,14 +149,38 @@ const ogImage = image || `/og-default.jpg`;
   }
 
   .section {
-    padding: 3rem 0;
+    padding: clamp(2.5rem, 7vw, 5.75rem) 0;
+  }
+
+  .section-label {
+    margin: 0;
+    color: var(--primary);
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 0.98;
+    max-width: 12ch;
+  }
+
+  .section-copy {
+    margin: 0;
+    color: var(--muted);
+    max-width: 60ch;
+    line-height: 1.8;
   }
 
   .card {
-    background: var(--surface);
+    background: linear-gradient(180deg, rgba(255, 252, 245, 0.92), rgba(255, 252, 245, 0.82));
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(12, 39, 58, 0.04);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(10px);
   }
 
   .btn {
@@ -105,29 +190,53 @@ const ogImage = image || `/og-default.jpg`;
     gap: 0.5rem;
     border-radius: 999px;
     border: 1px solid transparent;
-    padding: 0.65rem 1rem;
+    padding: 0.8rem 1.2rem;
     text-decoration: none;
-    font-weight: 600;
-    transition: 0.18s ease;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
   }
 
   .btn-primary {
     background: var(--primary);
-    color: #fff;
+    color: #fffaf1;
+    box-shadow: 0 12px 24px rgba(26, 60, 52, 0.16);
   }
 
-  .btn-primary:hover {
+  .btn-primary:hover,
+  .btn-primary:focus-visible {
     background: var(--primary-strong);
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    border-color: var(--border);
+    border-color: rgba(26, 60, 52, 0.2);
     color: var(--text);
-    background: #fff;
+    background: rgba(255, 252, 245, 0.72);
   }
 
-  .btn-secondary:hover {
-    border-color: #b8ccdc;
-    background: #f7fbff;
+  .btn-secondary:hover,
+  .btn-secondary:focus-visible {
+    border-color: rgba(26, 60, 52, 0.38);
+    background: rgba(255, 252, 245, 0.96);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .card:hover,
+    .btn:hover {
+      transform: none;
+    }
   }
 </style>

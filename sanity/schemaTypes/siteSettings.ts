@@ -23,6 +23,15 @@ const siteSettings = {
         { name: "description", type: "text", title: "SEO description", rows: 3 },
       ],
     },
+    {
+      name: "ogImage",
+      type: "image",
+      title: "Default social image",
+      options: { hotspot: true },
+      fields: [
+        { name: "alt", type: "string", title: "Alt text" },
+      ],
+    },
   ],
 };
 

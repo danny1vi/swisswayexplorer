@@ -1,39 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { sanityFetch } from "../../lib/sanity/client";
-import { GUIDE_BY_SLUG_QUERY, GUIDES_QUERY } from "../../lib/sanity/queries";
+import { getGuideBySlug, getGuidePaths } from "../../lib/sanity/content";
 import type { Guide } from "../../lib/sanity/types";
 import PortableText from "../../components/shared/PortableText.astro";
+import { resolveGuideImage } from "../../lib/contentImages";
 
 export async function getStaticPaths() {
-  const seedGuides: Guide[] = [
-    {
-      title: "How to Structure a 7-Day Switzerland Trip",
-      slug: "7-day-switzerland-route-basics",
-      summary:
-        "Build a two-hub itinerary with clear transfer boundaries, realistic daily scope, and time buffers for weather-sensitive mountain plans.",
-      category: "itinerary",
-    },
-    {
-      title: "Swiss Transport Pass Decision Guide",
-      slug: "swiss-transport-pass-quick-decision-guide",
-      summary:
-        "Choose the right pass setup by mapping your route intensity first, then calculating pass value against actual movement days.",
-      category: "transport",
-    },
-    {
-      title: "Spring vs Summer: When to Go",
-      slug: "seasonal-planning-spring-vs-summer",
-      summary:
-        "Compare shoulder-season flexibility against peak-season certainty with practical trade-offs on crowds, costs, and mountain access.",
-      category: "seasonal",
-    },
-  ];
-  const fromSanity = await sanityFetch<Guide[]>(GUIDES_QUERY, {}, []);
-  const merged = [...seedGuides, ...fromSanity].filter((item) => item.slug);
-  const unique = Array.from(new Map(merged.map((item) => [item.slug, item])).values());
-
-  return unique.map((item) => ({
+  const guides = await getGuidePaths();
+  return guides.map((item) => ({
     params: { slug: item.slug },
     props: { seedItem: item },
   }));
@@ -41,23 +15,32 @@ export async function getStaticPaths() {
 
 const { slug = "" } = Astro.params;
 const { seedItem } = Astro.props as { seedItem?: Guide };
-const sanityItem = await sanityFetch<Guide | null>(GUIDE_BY_SLUG_QUERY, { slug }, null);
-const guide = sanityItem ?? seedItem ?? null;
+const guide = await getGuideBySlug(slug, seedItem);
+const guideImage = resolveGuideImage(guide);
 
 if (!guide) {
   Astro.response.status = 404;
 }
 ---
 
-<BaseLayout title={`${guide?.title || "Guide not found"} | SwissWayExplorer`} description={guide?.summary || "Guide brief is not available yet."} image={guide?.image?.url}>
+<BaseLayout
+  title={`${guide?.title || "Guide not found"} | SwissWayExplorer`}
+  description={guide?.summary || "Guide brief is not available yet."}
+  image={guideImage?.url}
+  imageAlt={guideImage?.alt}
+>
   <section class="section">
     <div class="container">
       {
         guide ? (
           <article class="card detail">
-            {guide.image && (
+            {guideImage ? (
               <div class="hero-image">
-                <img src={guide.image.url} alt={guide.image.alt || guide.title} />
+                <img src={guideImage.url} alt={guideImage.alt || guide.title} />
+              </div>
+            ) : (
+              <div class="hero-image hero-image-placeholder" aria-hidden="true">
+                <span>{guide.title}</span>
               </div>
             )}
             <div class="detail-body">
@@ -65,14 +48,14 @@ if (!guide) {
               <h1>{guide.title}</h1>
               <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
               {guide.body && <PortableText blocks={guide.body} />}
-              <a href="/guides" class="back-link">← Back to all guides</a>
+              <a href="/guides/" class="back-link">&larr; Back to all guides</a>
             </div>
           </article>
         ) : (
           <article class="card detail">
             <h1>Guide not found</h1>
             <p>The guide you requested is not available yet.</p>
-            <a href="/guides" class="back-link">← Back to all guides</a>
+            <a href="/guides/" class="back-link">&larr; Back to all guides</a>
           </article>
         )
       }
@@ -97,6 +80,23 @@ if (!guide) {
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  .hero-image-placeholder {
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at top right, rgba(26, 143, 205, 0.24), transparent 40%),
+      linear-gradient(135deg, #e3eef8 0%, #f0f6fb 100%);
+  }
+
+  .hero-image-placeholder span {
+    color: var(--primary-strong);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 18ch;
   }
 
   .detail-body {

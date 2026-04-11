@@ -1,19 +1,12 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
-import { sanityFetch } from "../../lib/sanity/client";
-import { DESTINATIONS_QUERY } from "../../lib/sanity/queries";
-import type { Destination } from "../../lib/sanity/types";
+import { getDestinations } from "../../lib/sanity/content";
+import { resolveDestinationImage } from "../../lib/contentImages";
 
-const seedDestinations: Destination[] = siteConfig.featured.map((item) => ({
-  title: item.title,
-  slug: item.href.split("/").filter(Boolean).pop() || "",
-  summary: item.summary,
-  image: item.imageUrl ? { url: item.imageUrl, alt: item.title } : undefined,
+const destinations = (await getDestinations()).map((item) => ({
+  ...item,
+  image: resolveDestinationImage(item),
 }));
-
-const sanityDestinations = await sanityFetch<Destination[]>(DESTINATIONS_QUERY, {}, []);
-const destinations = sanityDestinations.length > 0 ? sanityDestinations : seedDestinations;
 ---
 
 <BaseLayout title="Destinations | SwissWayExplorer" description="Switzerland destination overviews and route-first planning notes.">
@@ -38,12 +31,12 @@ const destinations = sanityDestinations.length > 0 ? sanityDestinations : seedDe
                     <img src={item.image.url} alt={item.image.alt || item.title} loading="lazy" />
                   </div>
                 ) : (
-                  <div class="card-image card-image-placeholder"></div>
+                  <div class="card-image card-image-placeholder" aria-hidden="true"></div>
                 )}
                 <div class="item-body">
                   <h2>{item.title}</h2>
                   <p>{item.summary || "Editorial destination overview is coming soon."}</p>
-                  <a href={`/destinations/${item.slug}`}>Read destination brief</a>
+                  <a href={`/destinations/${item.slug}/`}>Read destination brief</a>
                 </div>
               </article>
             ))}

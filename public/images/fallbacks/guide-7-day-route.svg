@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">7 day Switzerland route guide fallback</title>
+  <desc id="desc">Stylized map card with a seven day route line across Switzerland.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#edf5fb" />
+      <stop offset="100%" stop-color="#d7ebf8" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect x="110" y="112" width="1380" height="676" rx="34" fill="#ffffff" fill-opacity="0.84" stroke="#d7e3ee" stroke-width="3" />
+  <path d="M420 260L572 214L760 244L936 194L1136 244L1210 362L1174 520L1014 630L848 666L656 616L500 662L354 598L306 452L348 320Z" fill="#eaf4fb" stroke="#c8d8e6" stroke-width="6" />
+  <path d="M498 570C568 530 624 458 710 440C782 424 858 442 936 404C1014 366 1082 292 1144 270" fill="none" stroke="#0f6b9a" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 0" />
+  <circle cx="494" cy="572" r="22" fill="#0f6b9a" />
+  <circle cx="708" cy="438" r="22" fill="#0f6b9a" />
+  <circle cx="940" cy="404" r="22" fill="#0f6b9a" />
+  <circle cx="1146" cy="270" r="22" fill="#0f6b9a" />
+  <rect x="246" y="250" width="112" height="74" rx="18" fill="#0f6b9a" />
+  <text x="282" y="298" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-size="34" font-weight="800">Day 1</text>
+  <rect x="1168" y="572" width="116" height="74" rx="18" fill="#c9940a" />
+  <text x="1204" y="620" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-size="34" font-weight="800">Day 7</text>
+  <text x="188" y="190" fill="#0f6b9a" font-family="'Segoe UI', Arial, sans-serif" font-size="42" font-weight="800">7-Day Switzerland Route Basics</text>
+  <text x="188" y="238" fill="#4b5e70" font-family="'Segoe UI', Arial, sans-serif" font-size="24">Two-base pacing, cleaner transfers, smarter mountain windows</text>
+</svg>

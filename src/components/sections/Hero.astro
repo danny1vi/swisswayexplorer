@@ -4,23 +4,36 @@ type Props = {
   heading: string;
   description: string;
   primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string };
+  secondaryCta?: { label?: string; href?: string };
+  image?: { url: string; alt?: string };
 };
 
-const { eyebrow, heading, description, primaryCta, secondaryCta } = Astro.props;
+const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro.props;
 ---
 
 <section class="hero-section">
   <div class="hero-bg"></div>
   <div class="container">
-    <div class="hero card">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{heading}</h1>
-      <p class="summary">{description}</p>
-      <div class="actions">
-        <a class="btn btn-primary" href={primaryCta.href}>{primaryCta.label}</a>
-        <a class="btn btn-secondary" href={secondaryCta.href}>{secondaryCta.label}</a>
+    <div class:list={["hero", image && "hero-with-media"]}>
+      <div class="hero-copy">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{heading}</h1>
+        <p class="summary">{description}</p>
+        <div class="actions">
+          <a class="btn btn-primary" href={primaryCta.href}>{primaryCta.label}</a>
+          {secondaryCta?.href && secondaryCta?.label && (
+            <a class="btn btn-secondary" href={secondaryCta.href}>{secondaryCta.label}</a>
+          )}
+        </div>
       </div>
+      {image?.url && (
+        <div class="hero-media">
+          <img src={image.url} alt={image.alt || heading} loading="eager" />
+          <div class="hero-note">
+            <span>Editorial route notes for modern Switzerland planning</span>
+          </div>
+        </div>
+      )}
     </div>
   </div>
 </section>
@@ -28,7 +41,7 @@ const { eyebrow, heading, description, primaryCta, secondaryCta } = Astro.props;
 <style>
   .hero-section {
     position: relative;
-    padding: 2rem 0 3rem;
+    padding: 1.5rem 0 2.5rem;
     overflow: hidden;
   }
 
@@ -36,8 +49,9 @@ const { eyebrow, heading, description, primaryCta, secondaryCta } = Astro.props;
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(15, 107, 154, 0.08) 0%, transparent 60%),
-      linear-gradient(180deg, rgba(205, 225, 245, 0.3) 0%, var(--bg) 100%);
+      radial-gradient(ellipse 72% 58% at 78% 8%, rgba(201, 168, 76, 0.14) 0%, transparent 56%),
+      radial-gradient(ellipse 48% 42% at 12% 0%, rgba(26, 60, 52, 0.08) 0%, transparent 52%),
+      linear-gradient(180deg, rgba(255, 252, 245, 0.4) 0%, rgba(246, 241, 232, 0) 100%);
     z-index: 0;
     pointer-events: none;
   }
@@ -48,47 +62,127 @@ const { eyebrow, heading, description, primaryCta, secondaryCta } = Astro.props;
   }
 
   .hero {
-    padding: clamp(2rem, 5vw, 3.5rem);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border);
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border-radius: calc(var(--radius) + 10px);
+  }
+
+  .hero-with-media {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .hero-copy {
+    min-width: 0;
+    padding: clamp(1.2rem, 4vw, 3.25rem) 0;
   }
 
   .eyebrow {
     margin: 0;
     color: var(--primary);
     font-size: 0.82rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     font-weight: 700;
   }
 
   h1 {
     margin: 0.5rem 0 0;
-    font-size: clamp(2rem, 4.5vw, 3.2rem);
-    line-height: 1.15;
-    max-width: 18ch;
+    font-size: clamp(2.8rem, 5.6vw, 5.3rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    max-width: 11ch;
     color: var(--text);
   }
 
   .summary {
-    margin: 1rem 0 0;
-    max-width: 65ch;
+    margin: 1.2rem 0 0;
+    max-width: 58ch;
     color: var(--muted);
-    font-size: 1.05rem;
-    line-height: 1.6;
+    font-size: 1.08rem;
+    line-height: 1.8;
   }
 
   .actions {
-    margin-top: 1.6rem;
+    margin-top: 1.8rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;
   }
 
+  .hero-media {
+    position: relative;
+    min-height: 540px;
+    border-radius: calc(var(--radius) + 10px);
+    overflow: hidden;
+    border: 1px solid rgba(26, 60, 52, 0.12);
+    background: linear-gradient(145deg, rgba(237, 232, 223, 0.96) 0%, rgba(220, 211, 198, 0.92) 100%);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hero-media::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 36%;
+    background: linear-gradient(180deg, rgba(16, 44, 38, 0) 0%, rgba(16, 44, 38, 0.36) 100%);
+    pointer-events: none;
+  }
+
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-note {
+    position: absolute;
+    left: 1.2rem;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .hero-note span {
+    display: inline-flex;
+    width: min(18rem, 100%);
+    padding: 0.85rem 1rem;
+    border-radius: 1.15rem;
+    background: rgba(16, 44, 38, 0.64);
+    color: rgba(255, 250, 241, 0.96);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    backdrop-filter: blur(8px);
+  }
+
   @media (max-width: 640px) {
     .hero {
-      padding: 1.5rem;
+      padding: 0.5rem 0;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 13vw, 4rem);
+      max-width: 10ch;
+    }
+
+    .summary {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero-with-media {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-media {
+      min-height: 320px;
     }
   }
 </style>

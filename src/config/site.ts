@@ -4,10 +4,41 @@ export type NavItem = {
 };
 
 export type FeaturedCard = {
+  eyebrow?: string;
   title: string;
   summary: string;
   href: string;
   imageUrl?: string;
+};
+
+export type CategoryHighlight = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+export type EditorialSplit = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  body: string;
+  cta: {
+    label: string;
+    href: string;
+  };
+  image: {
+    url: string;
+    alt: string;
+  };
+  imageSide?: "left" | "right";
+};
+
+export type ItineraryTeaser = {
+  duration: string;
+  title: string;
+  description: string;
+  href: string;
 };
 
 export const siteConfig = {
@@ -20,43 +51,108 @@ export const siteConfig = {
       "Trusted destination briefs and practical travel guides for Switzerland, designed for faster and better trip decisions.",
   },
   nav: [
-    { label: "Destinations", href: "/destinations" },
-    { label: "Guides", href: "/guides" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: "Destinations", href: "/destinations/" },
+    { label: "Guides", href: "/guides/" },
+    { label: "About", href: "/about/" },
+    { label: "Contact", href: "/contact/" },
   ] as NavItem[],
   hero: {
     eyebrow: "Switzerland Travel Editorial",
     heading: "Build a better Switzerland itinerary in half the research time.",
     description:
       "SwissWayExplorer distills scattered travel advice into route-first decisions: where to base yourself, how long to stay, and how to move efficiently between regions.",
-    primaryCta: { label: "Browse Destinations", href: "/destinations" },
-    secondaryCta: { label: "Read Planning Guides", href: "/guides" },
+    primaryCta: { label: "Browse Destinations", href: "/destinations/" },
+    secondaryCta: { label: "Read Planning Guides", href: "/guides/" },
+  },
+  homepage: {
+    categoryHighlights: [
+      {
+        eyebrow: "Base Logic",
+        title: "Destinations",
+        description:
+          "Start with the region profile that gives you the best hotel base, rail reach, and day-trip rhythm.",
+        href: "/destinations/",
+      },
+      {
+        eyebrow: "Decision Guides",
+        title: "Guides",
+        description:
+          "Use focused planning notes to choose passes, compare seasons, and avoid expensive route mistakes.",
+        href: "/guides/",
+      },
+      {
+        eyebrow: "Quick Formats",
+        title: "12-Hour Planning",
+        description:
+          "Short, high-signal editorial pieces for arrival days, city windows, and route transitions.",
+        href: "/guides/",
+      },
+    ] as CategoryHighlight[],
+    editorialSplit: {
+      eyebrow: "Editor's Pick",
+      title: "Lucerne remains the cleanest first base for many Switzerland itineraries.",
+      description:
+        "It balances lake-city softness, strong rail connectivity, and realistic mountain access without forcing a full alpine logistics commitment on day one.",
+      body:
+        "Choose Lucerne when you want one calm anchor before committing to the Bernese Oberland or Valais. It is especially strong for mixed-weather itineraries, shoulder-season pacing, and travelers who want scenic impact without transfer-heavy planning.",
+      cta: { label: "Read the Lucerne brief", href: "/destinations/lucerne/" },
+      image: {
+        url: "/images/fallbacks/destination-lucerne.svg",
+        alt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
+      },
+      imageSide: "left",
+    } as EditorialSplit,
+    itineraryTeasers: [
+      {
+        duration: "12 hours",
+        title: "Arrival-day logic without wasting your first evening",
+        description:
+          "A compact framework for deciding whether to stay local, take a scenic loop, or protect energy for the next rail day.",
+        href: "/guides/7-day-switzerland-route-basics/",
+      },
+      {
+        duration: "2 days",
+        title: "Transport decisions that reduce total trip friction",
+        description:
+          "Use passes, saver tickets, and route grouping deliberately instead of buying rail products too early.",
+        href: "/guides/swiss-transport-pass-quick-decision-guide/",
+      },
+      {
+        duration: "Shoulder season",
+        title: "Spring vs summer planning with weather reality included",
+        description:
+          "A faster way to weigh scenery, crowd pressure, and mountain reliability before you lock dates.",
+        href: "/guides/seasonal-planning-spring-vs-summer/",
+      },
+    ] as ItineraryTeaser[],
   },
   featured: [
     {
+      eyebrow: "Central Switzerland",
       title: "Lucerne Region",
       summary:
         "A reliable first base for many itineraries, combining lakefront city pace with straightforward mountain day trips.",
-      href: "/destinations/lucerne",
+      href: "/destinations/lucerne/",
     },
     {
+      eyebrow: "Bernese Oberland",
       title: "Interlaken & Jungfrau",
       summary:
         "High-impact alpine planning zone where timing, weather windows, and rail strategy strongly shape your trip quality.",
-      href: "/destinations/interlaken-jungfrau",
+      href: "/destinations/interlaken-jungfrau/",
     },
     {
+      eyebrow: "Valais",
       title: "Zermatt & Matterhorn",
       summary:
         "A premium car-free mountain destination where route sequencing and altitude-aware pacing matter more than volume.",
-      href: "/destinations/zermatt",
+      href: "/destinations/zermatt/",
     },
   ] as FeaturedCard[],
   cta: {
     heading: "Start with one clean route decision.",
     description:
       "Pick your base region, then align transport, season, and day-trip logic. Use the guides to avoid common planning mistakes.",
-    action: { label: "Open Guides", href: "/guides" },
+    action: { label: "Open Guides", href: "/guides/" },
   },
 };
