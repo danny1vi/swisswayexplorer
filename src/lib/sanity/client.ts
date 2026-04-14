@@ -4,7 +4,6 @@ const projectId = import.meta.env.SANITY_PROJECT_ID || "";
 const dataset = import.meta.env.SANITY_DATASET || "production";
 const apiVersion = import.meta.env.SANITY_API_VERSION || "2025-01-01";
 const token = import.meta.env.SANITY_READ_TOKEN || import.meta.env.SANITY_WRITE_TOKEN;
-const useCdn = !token;
 
 export const hasSanityConfig = Boolean(projectId);
 
@@ -12,7 +11,8 @@ const client = createClient({
   projectId: projectId || "placeholder",
   dataset,
   apiVersion,
-  useCdn,
+  // Request-time rendering should always read the current published state.
+  useCdn: false,
   token,
   perspective: "published",
 });

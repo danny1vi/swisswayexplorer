@@ -20,3 +20,9 @@
 - Decided to integrate `seo-research-mcp` as a research-only editorial input, not as a production runtime dependency.
 - Added a local SEO brief pipeline scaffold under `docs/`, `memory/`, and `scripts/seo/`.
 - Kept the first integration phase schema-compatible with the current `destination` and `guide` Sanity documents.
+
+## 2026-04-14
+- Switched SwissWayExplorer content-bearing routes from static generation to Astro Node SSR with `prerender = false` on Sanity-backed pages.
+- Kept informational utility pages prerendered.
+- Made request-time Sanity reads bypass the CDN to reduce propagation lag after publish.
+- Docker runtime now serves the Astro Node server instead of nginx static files.

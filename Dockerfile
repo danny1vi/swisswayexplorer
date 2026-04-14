@@ -19,11 +19,15 @@ RUN SANITY_PROJECT_ID=$SANITY_PROJECT_ID \
     SANITY_WRITE_TOKEN=$SANITY_WRITE_TOKEN \
     npm run build
 
-FROM nginx:alpine
+FROM node:22-alpine
 
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENV HOST=0.0.0.0
+ENV PORT=80
+
+CMD ["node", "./dist/server/entry.mjs"]

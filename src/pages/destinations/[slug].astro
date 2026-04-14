@@ -1,21 +1,13 @@
 ---
+export const prerender = false;
+
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getDestinationBySlug, getDestinationPaths } from "../../lib/sanity/content";
-import type { Destination } from "../../lib/sanity/types";
+import { getDestinationBySlug } from "../../lib/sanity/content";
 import PortableText from "../../components/shared/PortableText.astro";
 import { resolveDestinationImage } from "../../lib/contentImages";
 
-export async function getStaticPaths() {
-  const destinations = await getDestinationPaths();
-  return destinations.map((item) => ({
-    params: { slug: item.slug },
-    props: { seedItem: item },
-  }));
-}
-
 const { slug = "" } = Astro.params;
-const { seedItem } = Astro.props as { seedItem?: Destination };
-const destination = await getDestinationBySlug(slug, seedItem);
+const destination = await getDestinationBySlug(slug);
 const destinationImage = resolveDestinationImage(destination);
 
 if (!destination) {

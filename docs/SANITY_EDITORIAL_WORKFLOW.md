@@ -14,7 +14,7 @@ Target flow:
 4. Open Studio locally
 5. Add image and copy the alt suggestion
 6. Publish
-7. Let the Sanity webhook rebuild the static Astro site
+7. The live site reads the new published content on the next request
 
 ## Current Setup
 
@@ -36,10 +36,10 @@ SANITY_DATASET=production
 SANITY_API_VERSION=2025-01-01
 SANITY_READ_TOKEN=
 SANITY_WRITE_TOKEN=
-COOLIFY_DEPLOY_HOOK_URL=
 ```
 
 `SANITY_WRITE_TOKEN` must have write access to `production`.
+`SANITY_READ_TOKEN` should be present in the live app environment so the Astro server can read published content at request time.
 
 ## Draft JSON Shape
 
@@ -102,12 +102,12 @@ npm run sanity:import-draft -- --file memory/drafts/guide-swiss-pass.json --stat
 
 ## Publish Behavior
 
-SwissWayExplorer is still a static Astro site.
+SwissWayExplorer now uses Astro's Node adapter for request-time rendering on Sanity-backed routes.
 
-Publishing in Sanity does not update the live site by itself.
-The Sanity webhook must trigger a new Coolify build.
+Publishing in Sanity updates the live homepage, guides, and destinations on the next request.
 
-Runbook:
+The rebuild webhook is no longer required for normal content edits.
+Keep it only if you later decide to trigger full app redeploys from content operations or other infrastructure events.
 
 - `docs/SANITY_WEBHOOK_SETUP.md`
 

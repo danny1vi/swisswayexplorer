@@ -1,8 +1,10 @@
 # Sanity -> Coolify Rebuild Webhook
 
-SwissWayExplorer is still deployed as a static Astro build. Published Sanity content does not appear live until a new build runs.
+Deprecated for normal content edits as of 2026-04-14.
 
-This runbook wires Sanity publish events to the Coolify deploy webhook so the static site rebuilds automatically.
+SwissWayExplorer now uses Astro's Node adapter for request-time rendering on Sanity-backed routes. Published Sanity content should appear on the next request without a rebuild.
+
+This runbook is only needed if you explicitly want Sanity changes to trigger a full Coolify redeploy anyway.
 
 ## 1. Coolify
 
@@ -69,6 +71,6 @@ After saving the webhook:
 
 ## 4. Scope Notes
 
-- Keep the site static for now. The current content model and traffic profile do not justify SSR complexity yet.
-- If rebuild latency becomes a real operational problem, then re-evaluate Astro SSR.
+- The primary site content path is now SSR for Sanity-backed routes.
+- Use this webhook only for infrastructure-level redeploy automation, not for routine title, body, or image edits.
 - `siteSettings` should be created in Sanity so global SEO stops relying on fallback config.

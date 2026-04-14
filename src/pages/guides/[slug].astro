@@ -1,21 +1,13 @@
 ---
+export const prerender = false;
+
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getGuideBySlug, getGuidePaths } from "../../lib/sanity/content";
-import type { Guide } from "../../lib/sanity/types";
+import { getGuideBySlug } from "../../lib/sanity/content";
 import PortableText from "../../components/shared/PortableText.astro";
 import { resolveGuideImage } from "../../lib/contentImages";
 
-export async function getStaticPaths() {
-  const guides = await getGuidePaths();
-  return guides.map((item) => ({
-    params: { slug: item.slug },
-    props: { seedItem: item },
-  }));
-}
-
 const { slug = "" } = Astro.params;
-const { seedItem } = Astro.props as { seedItem?: Guide };
-const guide = await getGuideBySlug(slug, seedItem);
+const guide = await getGuideBySlug(slug);
 const guideImage = resolveGuideImage(guide);
 
 if (!guide) {
