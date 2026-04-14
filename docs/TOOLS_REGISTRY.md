@@ -56,6 +56,14 @@ This file is the canonical tool-selection reference for SwissWayExplorer work. T
 - Local availability: skill footprint exists under Codex plugin temp files
 - Activation rule: only after design and content passes stabilize
 
+### `seo-research-mcp`
+
+- Status: `reference-only`, `missing-local`
+- Role: keyword, traffic, difficulty, and competitor research input for editorial briefs
+- Use for: topic screening, brief preparation, cannibalization checks, and pre-draft SEO research
+- Notes: keep this in the content workstation or agent environment only; do not make it a production site runtime dependency
+- Constraint: depends on third-party services and needs ToS/compliance review before installation
+
 ### `autoskills`
 
 - Status: `later`, `missing-local`
@@ -80,6 +88,7 @@ This file is the canonical tool-selection reference for SwissWayExplorer work. T
 
 - `get-shit-done`
 - `kalfa` as structural reference
+- `seo-research-mcp` as research input once installed
 - Sanity workflows
 
 ### QA pass

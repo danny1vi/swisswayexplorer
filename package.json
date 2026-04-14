@@ -10,16 +10,23 @@
     "build": "astro build",
     "preview": "astro preview",
     "sanity:check": "node --env-file=.env scripts/check-sanity.mjs",
+    "sanity:import-draft": "node --env-file=.env scripts/sanity/import-draft.mjs",
+    "seo:brief": "node scripts/seo/generate-brief.mjs",
+    "seo:queue": "node scripts/seo/queue-topic.mjs",
+    "seo:validate": "node scripts/seo/validate-brief.mjs",
     "deploy:webhook:check": "node --env-file=.env scripts/trigger-coolify-webhook.mjs",
     "deploy:webhook:trigger": "node --env-file=.env scripts/trigger-coolify-webhook.mjs --execute",
     "astro": "astro"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",
-    "astro": "^6.1.3"
+    "astro": "^6.1.3",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@sanity/image-url": "^2.1.1",
-    "sanity": "^5.19.0"
+    "sanity": "^5.19.0",
+    "styled-components": "^6.3.12"
   }
 }

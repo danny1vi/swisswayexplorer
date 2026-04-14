@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-13T00:00:00.000Z",
+  "allowedStatuses": [
+    "idea",
+    "researched",
+    "briefed",
+    "drafted",
+    "reviewed",
+    "published",
+    "refreshed"
+  ],
+  "items": []
+}

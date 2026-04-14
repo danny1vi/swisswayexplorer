@@ -7,14 +7,14 @@ const pageHome = {
       name: "heading",
       type: "string",
       title: "Heading",
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: "description",
       type: "text",
       title: "Description",
       rows: 4,
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: "image",
@@ -22,9 +22,7 @@ const pageHome = {
       title: "Hero image",
       description: "Primary homepage visual shown in the hero section and used as the homepage social preview when present.",
       options: { hotspot: true },
-      fields: [
-        { name: "alt", type: "string", title: "Alt text" },
-      ],
+      fields: [{ name: "alt", type: "string", title: "Alt text" }],
     },
     {
       name: "seoTitle",
@@ -44,8 +42,8 @@ const pageHome = {
       type: "object",
       title: "Primary CTA",
       fields: [
-        { name: "label", type: "string", title: "Label", validation: (Rule: any) => Rule.required() },
-        { name: "href", type: "string", title: "Href", validation: (Rule: any) => Rule.required() },
+        { name: "label", type: "string", title: "Label", validation: (Rule) => Rule.required() },
+        { name: "href", type: "string", title: "Href", validation: (Rule) => Rule.required() },
       ],
     },
     {
@@ -71,20 +69,20 @@ const pageHome = {
               name: "title",
               type: "string",
               title: "Title",
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
             {
               name: "description",
               type: "text",
               title: "Description",
               rows: 3,
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
             {
               name: "href",
               type: "string",
               title: "Link",
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
           ],
           preview: {
@@ -95,7 +93,7 @@ const pageHome = {
           },
         },
       ],
-      validation: (Rule: any) => Rule.max(3),
+      validation: (Rule) => Rule.max(3),
     },
     {
       name: "editorialSplit",
@@ -108,14 +106,14 @@ const pageHome = {
           name: "title",
           type: "string",
           title: "Title",
-          validation: (Rule: any) => Rule.required(),
+          validation: (Rule) => Rule.required(),
         },
         {
           name: "description",
           type: "text",
           title: "Summary",
           rows: 3,
-          validation: (Rule: any) => Rule.required(),
+          validation: (Rule) => Rule.required(),
         },
         {
           name: "body",
@@ -168,20 +166,20 @@ const pageHome = {
               name: "title",
               type: "string",
               title: "Title",
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
             {
               name: "description",
               type: "text",
               title: "Description",
               rows: 3,
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
             {
               name: "href",
               type: "string",
               title: "Link",
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
           ],
           preview: {
@@ -192,7 +190,7 @@ const pageHome = {
           },
         },
       ],
-      validation: (Rule: any) => Rule.max(4),
+      validation: (Rule) => Rule.max(4),
     },
   ],
 };

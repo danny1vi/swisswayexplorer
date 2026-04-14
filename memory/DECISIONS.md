@@ -1,17 +1,22 @@
 # Decisions Log
 
 ## 2026-04-05
-- Adopted reusable Astro scaffold as pilot baseline.
-- Deferred Sanity integration to next phase.
-- Kept dependencies unchanged for low-risk rollout.
-- `swisswayexplorer.com` pilot proje olarak kullanıldı.
-- Hedef stack `Astro + Sanity + Coolify` olarak standardize edildi.
-- Cloudflare cutover uygulandı.
-- Apex `A` kaydı `46.224.174.32` olarak ayarlandı.
-- `www` kaydı `CNAME` ile apex domaine bağlandı.
-- `AAAA` kaydı kaldırıldı.
-- SSL/TLS modu `Full (strict)` olarak doğrulandı.
-- `Always Use HTTPS` açık bırakıldı.
-- Coolify/Traefik tarafında `www` için ayrı route tanımı eklendi.
-- WordPress/Hostinger web origin olarak devreden çıkarıldı.
-- Mail kayıtları Hostinger tarafında `DNS only` olarak bırakıldı.
+- Adopted reusable Astro scaffold as the pilot baseline.
+- Deferred Sanity integration to the next phase.
+- Kept dependencies unchanged for a low-risk rollout.
+- Kept `swisswayexplorer.com` as the pilot domain.
+- Standardized the target stack as `Astro + Sanity + Coolify`.
+- Applied the Cloudflare cutover.
+- Set the apex `A` record to `46.224.174.32`.
+- Pointed `www` to the apex domain with `CNAME`.
+- Removed the `AAAA` record.
+- Verified SSL/TLS mode as `Full (strict)`.
+- Kept `Always Use HTTPS` enabled.
+- Added a dedicated `www` route on the Coolify and Traefik side.
+- Removed WordPress and Hostinger from the web origin path.
+- Kept mail records on the Hostinger side as `DNS only`.
+
+## 2026-04-13
+- Decided to integrate `seo-research-mcp` as a research-only editorial input, not as a production runtime dependency.
+- Added a local SEO brief pipeline scaffold under `docs/`, `memory/`, and `scripts/seo/`.
+- Kept the first integration phase schema-compatible with the current `destination` and `guide` Sanity documents.

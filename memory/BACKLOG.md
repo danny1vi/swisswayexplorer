@@ -5,6 +5,9 @@
 - Extend Sanity homepage schema with category grid, editorial split, and itinerary teaser sections
 - Redesign the homepage to the Swiss Editorial structure
 - Create the missing `siteSettings` document in Sanity
+- Install and review `seo-research-mcp` in the content workstation environment
+- Extend `destination` and `guide` schemas with page-level SEO fields
+- Add a brief-to-Sanity draft import step after the research-only pipeline is proven
 - Add destination metadata sidebar and related destinations section
 - Add guide TOC, anchored sections, and waypoint cards
 - Wire Sanity publish to an automatic rebuild webhook

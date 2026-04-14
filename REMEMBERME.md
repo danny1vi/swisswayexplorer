@@ -1,6 +1,6 @@
 # REMEMBERME
 
-Updated: 2026-04-11
+Updated: 2026-04-13
 
 If a future session starts with "baglan" or "connect", read this file first after `TOOLS_REGISTRY.md`.
 
@@ -9,6 +9,7 @@ If a future session starts with "baglan" or "connect", read this file first afte
 - Pilot project: `SwissWayExplorer`
 - VPS repo: `/opt/fabrika/swisswayexplorer`
 - Local working repo: `C:\Users\Hp\swisswayexplorer_live`
+- Local planning repo: `C:\Users\Hp\swisswayexplorer_main_sync`
 - Domain: `https://swisswayexplorer.com/`
 
 ## Confirmed Production State
@@ -25,7 +26,7 @@ If a future session starts with "baglan" or "connect", read this file first afte
 - GitHub remote: `https://github.com/danny1vi/swisswayexplorer.git`
 - VPS + GitHub synced commit after tool activation: `b7017df`
 - Live container image currently runs the stabilized editorial app image lineage from commit `af45a72`
-- The later `b7017df` change is tooling/registry related, not a user-visible frontend change
+- The later `b7017df` change is tooling and registry related, not a user-visible frontend change
 
 ## Active VPS Tool Stack
 
@@ -60,7 +61,13 @@ site-factory-qa /opt/fabrika/swisswayexplorer https://swisswayexplorer.com/ --br
 - Published content is used during static build
 - `siteSettings` document is still missing in Sanity
 - Result: global SEO fallback is still active
-- Webhook script/docs exist, but the Sanity publish -> rebuild flow should still be treated as pending unless explicitly re-verified
+- Webhook script and docs exist, but the Sanity publish -> rebuild flow should still be treated as pending unless explicitly re-verified
+- Local repo `C:\Users\Hp\swisswayexplorer_main_sync` now contains an SEO research integration scaffold:
+  - `docs/SEO_PIPELINE.md`
+  - `docs/CONTENT_BRIEF_TEMPLATE.md`
+  - `memory/content-backlog.json`
+  - `scripts/seo/*`
+- This scaffold is research-only and is not part of the production runtime or VPS deploy path yet
 
 ## Current UX / Design Status
 
@@ -94,8 +101,14 @@ If the user wants the new UX live:
 
 1. Sync the local redesign from `C:\Users\Hp\swisswayexplorer_live` to `/opt/fabrika/swisswayexplorer`
 2. Build on VPS
-3. Rebuild / redeploy the Coolify app image
+3. Rebuild or redeploy the Coolify app image
 4. Run `site-factory-qa ... --browser-smoke`
+
+If the user wants editorial content operations next:
+
+1. Install and review `seo-research-mcp` in the content workstation environment
+2. Use `npm run seo:brief`, `seo:validate`, and `seo:queue` from `swisswayexplorer_main_sync`
+3. Extend Sanity schemas with page-level SEO fields once the research-only workflow is proven
 
 ## Important VPS Paths
 
@@ -106,7 +119,7 @@ If the user wants the new UX live:
 
 ## Notes
 
-- When resuming, do not assume the local redesign is already on VPS/live.
+- When resuming, do not assume the local redesign is already on VPS or live.
 - Check this file, then compare local repo status vs VPS repo status before deploying.
 
 ## Maintenance Rule
@@ -115,7 +128,7 @@ Update this file whenever one of these changes happens:
 
 - live deployment or rollback
 - VPS tool stack or wrapper command change
-- Cloudflare / DNS / routing change
+- Cloudflare, DNS, or routing change
 - Sanity schema, content flow, or webhook state change
 - repo baseline or canonical commit change
 - the "recommended next step" is no longer accurate

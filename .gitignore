@@ -16,6 +16,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.sanity/
+.npm-cache/
 
 # macOS-specific files
 .DS_Store
