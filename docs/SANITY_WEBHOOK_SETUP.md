@@ -12,7 +12,12 @@ Store it in local automation or VPS env as:
 
 ```bash
 COOLIFY_DEPLOY_HOOK_URL=https://your-coolify-domain.example/api/v1/deploy?uuid=...
+COOLIFY_API_TOKEN=your-coolify-api-token
 ```
+
+The Coolify API endpoint requires bearer authentication. Create the token in `Keys & Tokens -> API tokens` in Coolify and use it as `COOLIFY_API_TOKEN`.
+
+I infer the token should have write-capable permissions because deployment is not a read-only operation. If you want the least ambiguity, create a token with broad app-management access.
 
 Optional local verification:
 
@@ -21,7 +26,7 @@ npm run deploy:webhook:check
 npm run deploy:webhook:trigger
 ```
 
-`deploy:webhook:check` only validates env and prints a redacted target. `deploy:webhook:trigger` sends the POST request.
+`deploy:webhook:check` validates env and prints a redacted target plus whether bearer auth is configured. `deploy:webhook:trigger` sends the POST request with `Authorization: Bearer ...` when `COOLIFY_API_TOKEN` is set.
 
 ## 2. Sanity Webhook
 
@@ -30,6 +35,7 @@ In Sanity Manage -> API -> Webhooks:
 - Name: `SwissWayExplorer Coolify Rebuild`
 - URL: paste the Coolify deploy webhook URL
 - HTTP method: `POST`
+- Header: `Authorization: Bearer <COOLIFY_API_TOKEN>`
 - Dataset: `production`
 - Trigger on:
   - Create

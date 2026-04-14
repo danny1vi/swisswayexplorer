@@ -1,5 +1,6 @@
 const execute = process.argv.includes("--execute");
 const webhookUrl = process.env.COOLIFY_DEPLOY_HOOK_URL;
+const apiToken = process.env.COOLIFY_API_TOKEN;
 
 if (!webhookUrl) {
   console.error("Missing COOLIFY_DEPLOY_HOOK_URL.");
@@ -37,6 +38,7 @@ if (!execute) {
         ok: true,
         mode: "dry-run",
         webhookUrl: redactUrl(webhookUrl),
+        auth: apiToken ? "bearer" : "none",
         payload,
       },
       null,
@@ -50,6 +52,7 @@ const response = await fetch(webhookUrl, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+    ...(apiToken ? { Authorization: `Bearer ${apiToken}` } : {}),
   },
   body: JSON.stringify(payload),
 });
