@@ -1,0 +1,335 @@
+---
+import { siteConfig } from "../../config/site";
+
+type Props = {
+  guideCount: number;
+  categories: Array<{ name: string; count: number }>;
+};
+
+const { guideCount, categories } = Astro.props;
+
+const destinations = siteConfig.featured;
+
+const categoryColors: Record<string, string> = {
+  itinerary: "var(--accent-amber)",
+  transport: "var(--accent-blue)",
+  seasonal: "var(--accent-purple)",
+  budget: "var(--accent-green)",
+};
+
+const totalGuides = guideCount;
+const lastUpdated = "April 2026";
+---
+
+<aside class="sidebar">
+  <!-- Quick Stats -->
+  <div class="sidebar-widget stats-widget">
+    <p class="widget-label">Guides Index</p>
+    <div class="stats-row">
+      <span class="stat-number">{totalGuides}</span>
+      <span class="stat-label">guides</span>
+    </div>
+    <p class="stats-updated">Updated {lastUpdated}</p>
+  </div>
+
+  <!-- Browse by Category -->
+  <div class="sidebar-widget">
+    <p class="widget-label">Browse by Topic</p>
+    <ul class="category-list">
+      {categories.map((cat) => (
+        <li>
+          <a
+            href={`/guides/`}
+            class="category-link"
+            style={`--cat-color: ${categoryColors[cat.name.toLowerCase()] || "var(--primary)"}`}
+          >
+            <span class="category-dot" style={`background: ${categoryColors[cat.name.toLowerCase()] || "var(--primary)"}`}></span>
+            <span class="category-name">{cat.name}</span>
+            <span class="category-count">{cat.count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- Related Destinations -->
+  <div class="sidebar-widget">
+    <p class="widget-label">Related Destinations</p>
+    <ul class="destination-list">
+      {destinations.map((dest) => (
+        <li>
+          <a href={dest.href} class="destination-card">
+            <div class="destination-thumb">
+              {dest.imageUrl ? (
+                <img src={dest.imageUrl} alt={dest.title} loading="lazy" />
+              ) : (
+                <div class="thumb-placeholder" aria-hidden="true"></div>
+              )}
+            </div>
+            <div class="destination-info">
+              <p class="destination-eyebrow">{dest.eyebrow}</p>
+              <p class="destination-title">{dest.title}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href="/destinations/" class="view-all-link">View all destinations →</a>
+  </div>
+
+  <!-- Popular Guide -->
+  <div class="sidebar-widget cta-widget">
+    <p class="widget-label">Start Planning</p>
+    <p class="cta-text">Not sure where to begin? Start with the 7-day route guide — it covers the base logic most travelers need first.</p>
+    <a href="/guides/7-day-switzerland-route-basics/" class="btn btn-primary">Read the 7-day guide</a>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 2rem;
+    align-self: flex-start;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  .sidebar-widget {
+    background: linear-gradient(135deg, rgba(255, 252, 245, 0.92), rgba(255, 252, 245, 0.82));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .widget-label {
+    margin: 0 0 0.85rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 800;
+    color: var(--primary);
+    font-family: var(--font-body);
+  }
+
+  /* Stats Widget */
+  .stats-widget {
+    text-align: center;
+  }
+
+  .stats-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .stat-number {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .stats-updated {
+    margin: 0.4rem 0 0;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* Category List */
+  .category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .category-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .category-link:hover {
+    background: rgba(26, 60, 52, 0.05);
+    transform: translateX(2px);
+  }
+
+  .category-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .category-name {
+    flex: 1;
+    text-transform: capitalize;
+  }
+
+  .category-count {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Destination List */
+  .destination-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .destination-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .destination-card:hover {
+    background: rgba(26, 60, 52, 0.05);
+    transform: translateX(2px);
+  }
+
+  .destination-thumb {
+    width: 52px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--border);
+  }
+
+  .destination-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.1));
+  }
+
+  .destination-info {
+    min-width: 0;
+  }
+
+  .destination-eyebrow {
+    margin: 0;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .destination-title {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .view-all-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .view-all-link:hover {
+    color: var(--accent-amber);
+  }
+
+  /* CTA Widget */
+  .cta-widget .widget-label {
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-text {
+    margin: 0 0 0.9rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .cta-widget .btn {
+    display: block;
+    text-align: center;
+    font-size: 0.82rem;
+    padding: 0.65rem 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .sidebar {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .sidebar-widget {
+      flex: 1 1 240px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .sidebar {
+      flex-direction: column;
+    }
+
+    .sidebar-widget {
+      flex: none;
+    }
+  }
+</style>

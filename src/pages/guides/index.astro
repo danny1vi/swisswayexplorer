@@ -4,46 +4,67 @@ export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getGuides } from "../../lib/sanity/content";
 import { resolveGuideImage } from "../../lib/contentImages";
+import GuidesSidebar from "../../components/sections/GuidesSidebar.astro";
 
 const guides = (await getGuides()).map((item) => ({
   ...item,
   image: resolveGuideImage(item),
 }));
+
+// Build category summary for sidebar
+const categoryMap: Record<string, number> = {};
+for (const g of guides) {
+  const cat = (g.category || "other").toLowerCase();
+  categoryMap[cat] = (categoryMap[cat] || 0) + 1;
+}
+const categories = Object.entries(categoryMap).map(([name, count]) => ({ name, count }));
 ---
 
 <BaseLayout title="Guides | SwissWayExplorer" description="Practical planning guides for Swiss routes, transport, and timing.">
   <section class="section">
     <div class="container">
-      <h1>Guides</h1>
-      <p class="intro">
-        These guides are written for decision-making, not inspiration scrolling. Use them to lock your route logic,
-        ticket strategy, and seasonal expectations before booking.
-      </p>
-      {
-        guides.length === 0 ? (
-          <article class="card empty">
-            <p>Guides are being prepared. Please check back shortly.</p>
-          </article>
-        ) : (
-          <div class="grid">
-            {guides.map((item) => (
-              <article class="card item">
-                {item.image && (
-                  <div class="card-image">
-                    <img src={item.image.url} alt={item.image.alt || item.title} loading="lazy" />
-                  </div>
-                )}
-                <div class="item-body">
-                <h2>{item.title}</h2>
-                {item.category && <p class="meta" data-category={item.category}>{item.category.replace("-", " ")}</p>}
-                <p>{item.summary || "Editorial guide summary is coming soon."}</p>
-                <a href={`/guides/${item.slug}/`}>Read guide</a>
-                </div>
+      <div class="page-layout">
+        <!-- Main content: guide grid -->
+        <div class="main-content">
+          <h1>Guides</h1>
+          <p class="intro">
+            These guides are written for decision-making, not inspiration scrolling. Use them to lock your route logic,
+            ticket strategy, and seasonal expectations before booking.
+          </p>
+          {
+            guides.length === 0 ? (
+              <article class="card empty">
+                <p>Guides are being prepared. Please check back shortly.</p>
               </article>
-            ))}
-          </div>
-        )
-      }
+            ) : (
+              <div class="grid">
+                {guides.map((item) => (
+                  <article class="card item">
+                    {item.image && (
+                      <div class="card-image">
+                        <img src={item.image.url} alt={item.image.alt || item.title} loading="lazy" />
+                      </div>
+                    )}
+                    <div class="item-body">
+                      <h2>{item.title}</h2>
+                      {item.category && (
+                        <p class="meta" data-category={item.category}>
+                          {item.category.replace("-", " ")}
+                        </p>
+                      )}
+                      <p>{item.summary || "Editorial guide summary is coming soon."}</p>
+                      <a href={`/guides/${item.slug}/`}>Read guide</a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Sidebar -->
+        <GuidesSidebar guideCount={guides.length} categories={categories} />
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -54,9 +75,16 @@ const guides = (await getGuides()).map((item) => ({
   }
 
   .intro {
-    margin: 0.65rem 0 1rem;
+    margin: 0.65rem 0 1.5rem;
     color: var(--muted);
     max-width: 72ch;
+  }
+
+  .page-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2.5rem;
+    align-items: flex-start;
   }
 
   .empty,
@@ -120,10 +148,18 @@ const guides = (await getGuides()).map((item) => ({
     color: #fff;
   }
 
-  .meta[data-category="transport"] { background: var(--accent-blue); }
-  .meta[data-category="budget"] { background: var(--accent-green); }
-  .meta[data-category="itinerary"] { background: var(--accent-amber); }
-  .meta[data-category="seasonal"] { background: var(--accent-purple); }
+  .meta[data-category="transport"] {
+    background: var(--accent-blue);
+  }
+  .meta[data-category="budget"] {
+    background: var(--accent-green);
+  }
+  .meta[data-category="itinerary"] {
+    background: var(--accent-amber);
+  }
+  .meta[data-category="seasonal"] {
+    background: var(--accent-purple);
+  }
 
   .item p {
     color: var(--muted);
@@ -138,7 +174,18 @@ const guides = (await getGuides()).map((item) => ({
     text-decoration: none;
   }
 
-  @media (max-width: 760px) {
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .page-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
     .grid {
       grid-template-columns: 1fr;
     }
