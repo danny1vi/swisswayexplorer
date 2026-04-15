@@ -4,6 +4,7 @@ export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getDestinationBySlug } from "../../lib/sanity/content";
 import PortableText from "../../components/shared/PortableText.astro";
+import ImageGallery from "../../components/shared/ImageGallery.astro";
 import { resolveDestinationImage } from "../../lib/contentImages";
 
 const { slug = "" } = Astro.params;
@@ -47,6 +48,7 @@ if (!destination) {
                   <span class="meta-badge"><strong>Best season:</strong> {destination.bestSeason}</span>
                 )}
               </div>
+              {destination.gallery && <ImageGallery images={destination.gallery} title={`${destination.title} gallery`} />}
               {destination.body && <PortableText blocks={destination.body} />}
               <a href="/destinations/" class="back-link">&larr; Back to all destinations</a>
             </div>

@@ -54,6 +54,42 @@ Direct publish:
 npm run sanity:publish -- --file memory/drafts/example.json --generated-by hermes-minimax
 ```
 
+Attach generated images from URLs:
+
+```bash
+npm run sanity:attach-images -- --file memory/drafts/example-images.json
+```
+
+Example image payload:
+
+```json
+{
+  "documentType": "guide",
+  "slug": "lucerne-vs-interlaken-for-first-time-visitors",
+  "heroImage": {
+    "url": "https://example.com/hero.jpg",
+    "alt": "Lucerne and Interlaken comparison hero image"
+  },
+  "gallery": [
+    {
+      "url": "https://example.com/gallery-1.jpg",
+      "alt": "Lucerne waterfront"
+    },
+    {
+      "url": "https://example.com/gallery-2.jpg",
+      "alt": "Interlaken valley and mountains"
+    }
+  ],
+  "bodyImages": [
+    {
+      "url": "https://example.com/body-1.jpg",
+      "alt": "Train journey through the Bernese Oberland",
+      "caption": "A sample inline article image"
+    }
+  ]
+}
+```
+
 ## Important Rule
 
 Hermes should not return free-form markdown first and leave the operator to manually restructure it.

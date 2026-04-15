@@ -11,6 +11,8 @@ export type GenericCta = {
 export type ImageAsset = {
   url: string;
   alt?: string;
+  caption?: string;
+  _key?: string;
 };
 
 export type SiteSettings = {
@@ -57,14 +59,25 @@ export type PageHomeData = {
   itineraryTeasers?: ItineraryTeaser[];
 };
 
-export type BodyBlock = {
+export type TextSpan = {
   _type: string;
+  text: string;
+  marks?: string[];
+};
+
+export type BodyTextBlock = {
+  _type: "block";
   _key?: string;
-  children?: Array<{ _type: string; text: string }>;
+  children?: TextSpan[];
   style?: string;
   markDefs?: Array<{ _type: string; href?: string }>;
-  asset?: { _ref: string };
 };
+
+export type BodyImageBlock = ImageAsset & {
+  _type: "image";
+};
+
+export type BodyBlock = BodyTextBlock | BodyImageBlock;
 
 export type Destination = {
   _id?: string;
@@ -75,6 +88,7 @@ export type Destination = {
   region?: string;
   bestSeason?: string;
   image?: ImageAsset;
+  gallery?: ImageAsset[];
 };
 
 export type Guide = {
@@ -85,4 +99,5 @@ export type Guide = {
   body?: BodyBlock[];
   category?: "transport" | "budget" | "itinerary" | "seasonal";
   image?: ImageAsset;
+  gallery?: ImageAsset[];
 };

@@ -70,6 +70,7 @@ site-factory-qa /opt/fabrika/swisswayexplorer https://swisswayexplorer.com/ --br
 - Local repo now also contains a shared Sanity write flow:
   - `npm run sanity:import-draft`
   - `npm run sanity:publish`
+  - `npm run sanity:attach-images`
 - SwissWayExplorer content routes now read published Sanity content live at request time
 - Result: content edits and direct publish operations do not need a rebuild
 

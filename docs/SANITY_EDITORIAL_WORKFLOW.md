@@ -20,8 +20,9 @@ Target flow:
 
 - Hermes on the VPS already has a configured `sanity` MCP server in `~/.hermes/config.yaml`
 - Local repo now supports draft import through:
-  - `npm run sanity:import-draft`
-  - `npm run sanity:publish`
+- `npm run sanity:import-draft`
+- `npm run sanity:publish`
+- `npm run sanity:attach-images`
 - Studio now has editorial queue lists:
   - `Image Pending`
   - `Review Ready`
@@ -107,6 +108,59 @@ npm run sanity:publish -- --file memory/drafts/guide-swiss-pass.json --generated
 ```
 
 Direct publish writes the canonical document id, sets `workflowStatus` to `published`, and removes any matching draft copy for the same slug.
+
+## Image Automation
+
+The content schema now supports:
+
+- one hero image in `image`
+- multiple supporting images in `gallery`
+- inline body images inside `body`
+
+Attach images from URLs with:
+
+```bash
+npm run sanity:attach-images -- --file memory/drafts/lucerne-images.json
+```
+
+Example payload:
+
+```json
+{
+  "documentType": "destination",
+  "slug": "lucerne",
+  "heroImage": {
+    "url": "https://example.com/lucerne-hero.jpg",
+    "alt": "Panoramic view of Lucerne and the lake",
+    "caption": "Lucerne at golden hour"
+  },
+  "gallery": [
+    {
+      "url": "https://example.com/lucerne-gallery-1.jpg",
+      "alt": "Chapel Bridge in Lucerne",
+      "caption": "The Chapel Bridge and waterfront"
+    },
+    {
+      "url": "https://example.com/lucerne-gallery-2.jpg",
+      "alt": "Lake Lucerne boats and mountains",
+      "caption": "Lake Lucerne on a clear day"
+    }
+  ],
+  "bodyImages": [
+    {
+      "url": "https://example.com/lucerne-body-1.jpg",
+      "alt": "Lucerne old town streets",
+      "caption": "A walk through Lucerne old town"
+    }
+  ]
+}
+```
+
+Behavior:
+
+- `heroImage` replaces the single hero image
+- `gallery` is appended to the current gallery array
+- `bodyImages` are appended to the end of the body as image blocks
 
 ## Studio Workflow
 

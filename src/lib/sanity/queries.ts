@@ -83,18 +83,26 @@ export const DESTINATION_BY_SLUG_QUERY = `
   "slug": slug.current,
   summary,
   "body": body[]{
-    _type,
-    _key,
-    children[]{
+    ...,
+    _type == "block" => {
       _type,
-      text
+      _key,
+      children[]{
+        _type,
+        text,
+        marks
+      },
+      style,
+      markDefs[]{
+        _type,
+        href
+      }
     },
-    style,
-    markDefs[]{
+    _type == "image" => {
       _type,
-      href
-    },
-    asset->{
+      _key,
+      alt,
+      caption,
       "url": asset->url
     }
   },
@@ -102,7 +110,14 @@ export const DESTINATION_BY_SLUG_QUERY = `
   bestSeason,
   "image": image{
     "url": asset->url,
-    alt
+    alt,
+    caption
+  },
+  "gallery": gallery[]{
+    _key,
+    alt,
+    caption,
+    "url": asset->url
   }
 }
 `;
@@ -128,25 +143,40 @@ export const GUIDE_BY_SLUG_QUERY = `
   "slug": slug.current,
   summary,
   "body": body[]{
-    _type,
-    _key,
-    children[]{
+    ...,
+    _type == "block" => {
       _type,
-      text
+      _key,
+      children[]{
+        _type,
+        text,
+        marks
+      },
+      style,
+      markDefs[]{
+        _type,
+        href
+      }
     },
-    style,
-    markDefs[]{
+    _type == "image" => {
       _type,
-      href
-    },
-    asset->{
+      _key,
+      alt,
+      caption,
       "url": asset->url
     }
   },
   category,
   "image": image{
     "url": asset->url,
-    alt
+    alt,
+    caption
+  },
+  "gallery": gallery[]{
+    _key,
+    alt,
+    caption,
+    "url": asset->url
   }
 }
 `;

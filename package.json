@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "start": "node scripts/start-astro.mjs",
     "sanity:check": "node --env-file=.env scripts/check-sanity.mjs",
+    "sanity:attach-images": "node --env-file=.env scripts/sanity/attach-images.mjs",
     "sanity:import-draft": "node --env-file=.env scripts/sanity/import-draft.mjs",
     "sanity:publish": "node --env-file=.env scripts/sanity/import-draft.mjs --mode publish",
     "sanity:write": "node --env-file=.env scripts/sanity/import-draft.mjs",

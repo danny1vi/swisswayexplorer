@@ -26,7 +26,17 @@ const destination = {
       name: "body",
       type: "array",
       title: "Body",
-      of: [{ type: "block" }],
+      of: [
+        { type: "block" },
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            { name: "alt", type: "string", title: "Alt text" },
+            { name: "caption", type: "string", title: "Caption" },
+          ],
+        },
+      ],
       description: "Full editorial content for this destination",
     },
     {
@@ -34,7 +44,26 @@ const destination = {
       type: "image",
       title: "Image",
       options: { hotspot: true },
-      fields: [{ name: "alt", type: "string", title: "Alt text" }],
+      fields: [
+        { name: "alt", type: "string", title: "Alt text" },
+        { name: "caption", type: "string", title: "Caption" },
+      ],
+    },
+    {
+      name: "gallery",
+      type: "array",
+      title: "Gallery",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            { name: "alt", type: "string", title: "Alt text" },
+            { name: "caption", type: "string", title: "Caption" },
+          ],
+        },
+      ],
+      description: "Optional secondary images for this destination.",
     },
     {
       name: "workflowStatus",

@@ -4,6 +4,7 @@ export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getGuideBySlug } from "../../lib/sanity/content";
 import PortableText from "../../components/shared/PortableText.astro";
+import ImageGallery from "../../components/shared/ImageGallery.astro";
 import { resolveGuideImage } from "../../lib/contentImages";
 
 const { slug = "" } = Astro.params;
@@ -39,6 +40,7 @@ if (!guide) {
               {guide.category && <span class="badge" data-category={guide.category}>{guide.category.replace("-", " ")}</span>}
               <h1>{guide.title}</h1>
               <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
+              {guide.gallery && <ImageGallery images={guide.gallery} title={`${guide.title} gallery`} />}
               {guide.body && <PortableText blocks={guide.body} />}
               <a href="/guides/" class="back-link">&larr; Back to all guides</a>
             </div>

@@ -31,3 +31,4 @@
 - Rejected Coolify Dockerfile deployment for production because Coolify's BuildKit invocation fails with `--network coolify` on this server.
 - Standardized the production runtime target as `Nixpacks + Astro Node SSR` with `npm run start` serving `dist/server/entry.mjs`.
 - Standardized Sanity editorial ingestion on a shared script that supports both `draft` and direct `publish` modes from the same JSON contract.
+- Extended `guide` and `destination` content models to support gallery images and inline body image blocks, plus a URL-to-Sanity asset upload helper script.

@@ -1,0 +1,65 @@
+---
+import type { ImageAsset } from "../../lib/sanity/types";
+
+type Props = {
+  images?: ImageAsset[];
+  title?: string;
+};
+
+const { images = [], title = "Photo gallery" } = Astro.props;
+const validImages = images.filter((image) => image?.url);
+
+if (validImages.length === 0) {
+  return null;
+}
+---
+
+<section class="gallery" aria-label={title}>
+  <div class="gallery-grid">
+    {validImages.map((image, index) => (
+      <figure class="gallery-card" key={image._key || `${image.url}-${index}`}>
+        <img src={image.url} alt={image.alt || title} loading="lazy" />
+        {image.caption && <figcaption>{image.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  .gallery {
+    margin-top: 1.5rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .gallery-card {
+    margin: 0;
+  }
+
+  .gallery-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .gallery-card figcaption {
+    margin-top: 0.55rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 760px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
