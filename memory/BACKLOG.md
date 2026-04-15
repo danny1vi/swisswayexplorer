@@ -10,10 +10,10 @@
 - Add a brief-to-Sanity draft import step after the research-only pipeline is proven
 - Add destination metadata sidebar and related destinations section
 - Add guide TOC, anchored sections, and waypoint cards
-- Wire Sanity publish to an automatic rebuild webhook
+- Remove the temporary Dockerfile deployment path once Nixpacks SSR is stable
 
 ## Later
 - Add browser QA automation once design and content stabilize
 - Add richer destination/guide modular content blocks in Sanity
-- Evaluate SSR only if webhook rebuild latency becomes a real product problem
+- Add a protected deploy webhook proxy if Coolify API access needs tighter IP restrictions later
 - Add staging acceptance checklist automation

@@ -26,3 +26,7 @@
 - Kept informational utility pages prerendered.
 - Made request-time Sanity reads bypass the CDN to reduce propagation lag after publish.
 - Docker runtime now serves the Astro Node server instead of nginx static files.
+
+## 2026-04-15
+- Rejected Coolify Dockerfile deployment for production because Coolify's BuildKit invocation fails with `--network coolify` on this server.
+- Standardized the production runtime target as `Nixpacks + Astro Node SSR` with `npm run start` serving `dist/server/entry.mjs`.
