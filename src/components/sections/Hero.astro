@@ -70,21 +70,21 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
   }
 
   .hero-with-media {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
   }
 
   .hero-with-media .hero-copy {
-    order: 0;
-  }
-
-  .hero-with-media .hero-media {
-    order: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   .hero-copy {
     min-width: 0;
-    padding: clamp(1.2rem, 4vw, 3.25rem) 0;
+    padding: 0;
   }
 
   .eyebrow {
@@ -198,6 +198,7 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
       max-width: none;
       aspect-ratio: 16 / 9;
       max-height: none;
+      justify-self: stretch;
     }
   }
 </style>
