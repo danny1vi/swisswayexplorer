@@ -9,7 +9,7 @@ Add a repeatable editorial workflow for SwissWayExplorer:
 1. research a topic
 2. turn research into a usable brief
 3. draft content against the current Sanity schema
-4. publish and rebuild
+4. send the content to Sanity as a draft or publish it directly
 
 This pipeline treats `seo-research-mcp` as a research-only dependency. It does not become part of the Astro runtime, Sanity Studio runtime, or production deploy path.
 
@@ -36,7 +36,7 @@ The workflow lives in the content layer, not the web app layer.
 - Brief generation: local repo scripts under `scripts/seo/`
 - Working state: `memory/content-backlog.json`
 - Content target: Sanity documents in `destination` and `guide`
-- Publish path: existing Sanity publish plus rebuild webhook flow
+- Publish path: Sanity write via script, then live request-time rendering on the next request
 
 ## Workflow
 
@@ -130,12 +130,18 @@ Short-term rule:
 
 - use `summary` as both editorial summary and practical SEO description fallback
 
-### 7. Import as a Sanity draft
+### 7. Send the content to Sanity
 
 Import the drafted JSON into Sanity as a draft document:
 
 ```bash
 npm run sanity:import-draft -- --file memory/drafts/guide-swiss-travel-pass-vs-half-fare-card.json
+```
+
+Or publish it directly:
+
+```bash
+npm run sanity:publish -- --file memory/drafts/guide-swiss-travel-pass-vs-half-fare-card.json
 ```
 
 See:
@@ -155,13 +161,13 @@ Before publish:
 - copy `imageAltSuggestion` into the real image alt field
 - move `workflowStatus` to `review_ready`
 
-### 9. Publish and rebuild
+### 9. Publish behavior
 
-Use the existing rebuild runbook:
+SwissWayExplorer now serves Sanity-backed routes via Astro SSR.
 
-- `docs/SANITY_WEBHOOK_SETUP.md`
-
-This keeps the content workflow aligned with the current static Astro deployment model.
+- Draft mode needs a later manual publish in Studio
+- Direct publish mode is live on the next request
+- Rebuild webhook is no longer required for normal content-only changes
 
 ## Current Commands
 
@@ -183,6 +189,14 @@ Validates a generated brief before queueing or drafting.
 ### `npm run seo:queue`
 
 Adds or updates the topic in `memory/content-backlog.json`.
+
+### `npm run sanity:import-draft`
+
+Creates or replaces a Sanity draft document.
+
+### `npm run sanity:publish`
+
+Creates or replaces the published Sanity document and removes the matching draft copy if it exists.
 
 ## Current Constraints
 

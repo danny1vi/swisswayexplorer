@@ -56,6 +56,30 @@ function normalizeBody(body) {
   }));
 }
 
+function resolveMode(args) {
+  const requestedMode = String(args.mode || "").trim().toLowerCase();
+  if (args.publish || requestedMode === "publish" || requestedMode === "live") {
+    return "publish";
+  }
+  return "draft";
+}
+
+function buildDocumentId(documentType, slug, mode, overrideId) {
+  if (overrideId) return overrideId;
+  if (mode === "publish") return `${documentType}.${slug}`;
+  return `drafts.${documentType}.${slug}`;
+}
+
+function buildLiveUrl(documentType, slug) {
+  const siteUrl = String(process.env.SITE_URL || "https://swisswayexplorer.com").replace(/\/+$/, "");
+
+  if (documentType === "guide") {
+    return `${siteUrl}/guides/${slug}/`;
+  }
+
+  return `${siteUrl}/destinations/${slug}/`;
+}
+
 function pickDraftShape(input) {
   if (input?.sanityMapping?.fields) {
     return {
@@ -89,8 +113,9 @@ function buildDocument(input, overrides = {}) {
   if (!slug) throw new Error("slug could not be derived");
 
   const now = new Date().toISOString();
+  const mode = overrides.mode || "draft";
   const document = {
-    _id: overrides.documentId || `drafts.${documentType}.${slug}`,
+    _id: buildDocumentId(documentType, slug, mode, overrides.documentId),
     _type: documentType,
     title,
     slug: {
@@ -99,7 +124,8 @@ function buildDocument(input, overrides = {}) {
     },
     summary: draft.summary || "",
     body: normalizeBody(draft.body || ""),
-    workflowStatus: overrides.status || draft.workflowStatus || "image_pending",
+    workflowStatus:
+      overrides.status || draft.workflowStatus || (mode === "publish" ? "published" : "image_pending"),
     generatedBy: overrides.generatedBy || draft.generatedBy || "ai-editorial-pipeline",
     generatedAt: draft.generatedAt || now,
     imageAltSuggestion: draft.imageAltSuggestion || draft.imageAlt || "",
@@ -119,6 +145,7 @@ function buildDocument(input, overrides = {}) {
 
 const args = parseArgs(process.argv.slice(2));
 const file = args.file;
+const mode = resolveMode(args);
 
 if (!file) {
   console.error("Missing --file path/to/draft.json");
@@ -133,13 +160,15 @@ const token = process.env.SANITY_WRITE_TOKEN;
 const raw = await readFile(file, "utf8");
 const input = JSON.parse(raw);
 const document = buildDocument(input, {
+  mode,
   status: args.status,
   generatedBy: args["generated-by"],
   documentId: args["document-id"],
 });
+const liveUrl = buildLiveUrl(document._type, document.slug.current);
 
 if (args["dry-run"]) {
-  console.log(JSON.stringify({ ok: true, mode: "dry-run", document }, null, 2));
+  console.log(JSON.stringify({ ok: true, mode: `dry-run:${mode}`, document, liveUrl }, null, 2));
   process.exit(0);
 }
 
@@ -161,16 +190,31 @@ const client = createClient({
   useCdn: false,
 });
 
-const result = await client.createOrReplace(document);
+let result;
+
+if (mode === "publish") {
+  const draftId = `drafts.${document._type}.${document.slug.current}`;
+  const transaction = client.transaction().createOrReplace(document);
+
+  if (draftId !== document._id) {
+    transaction.delete(draftId);
+  }
+
+  result = await transaction.commit();
+} else {
+  result = await client.createOrReplace(document);
+}
 
 console.log(
   JSON.stringify(
     {
       ok: true,
+      mode,
       documentId: result._id,
       documentType: result._type,
       slug: document.slug.current,
       workflowStatus: document.workflowStatus,
+      liveUrl,
     },
     null,
     2

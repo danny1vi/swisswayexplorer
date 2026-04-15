@@ -7,7 +7,7 @@
 - Create the missing `siteSettings` document in Sanity
 - Install and review `seo-research-mcp` in the content workstation environment
 - Extend `destination` and `guide` schemas with page-level SEO fields
-- Add a brief-to-Sanity draft import step after the research-only pipeline is proven
+- Wire Hermes/Telegram to the shared Sanity draft/publish workflow
 - Add destination metadata sidebar and related destinations section
 - Add guide TOC, anchored sections, and waypoint cards
 - Remove the temporary Dockerfile deployment path once Nixpacks SSR is stable

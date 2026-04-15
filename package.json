@@ -12,6 +12,8 @@
     "start": "node scripts/start-astro.mjs",
     "sanity:check": "node --env-file=.env scripts/check-sanity.mjs",
     "sanity:import-draft": "node --env-file=.env scripts/sanity/import-draft.mjs",
+    "sanity:publish": "node --env-file=.env scripts/sanity/import-draft.mjs --mode publish",
+    "sanity:write": "node --env-file=.env scripts/sanity/import-draft.mjs",
     "seo:brief": "node scripts/seo/generate-brief.mjs",
     "seo:queue": "node scripts/seo/queue-topic.mjs",
     "seo:validate": "node scripts/seo/validate-brief.mjs",

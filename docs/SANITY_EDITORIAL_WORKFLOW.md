@@ -4,16 +4,16 @@ Updated: 2026-04-14
 
 ## Goal
 
-Use AI to create draft content in Sanity, then finish visuals manually in Studio.
+Use AI to create either draft or immediately published content in Sanity, then finish visuals manually in Studio when needed.
 
 Target flow:
 
 1. Generate brief
 2. Generate draft JSON
-3. Import draft into Sanity
-4. Open Studio locally
+3. Import draft into Sanity or publish directly
+4. Open Studio locally when image/manual QA is needed
 5. Add image and copy the alt suggestion
-6. Publish
+6. Publish if the document was created as a draft
 7. The live site reads the new published content on the next request
 
 ## Current Setup
@@ -21,6 +21,7 @@ Target flow:
 - Hermes on the VPS already has a configured `sanity` MCP server in `~/.hermes/config.yaml`
 - Local repo now supports draft import through:
   - `npm run sanity:import-draft`
+  - `npm run sanity:publish`
 - Studio now has editorial queue lists:
   - `Image Pending`
   - `Review Ready`
@@ -83,13 +84,33 @@ Write draft:
 npm run sanity:import-draft -- --file memory/drafts/guide-swiss-pass.json
 ```
 
+Dry-run a direct publish:
+
+```bash
+npm run sanity:publish -- --file memory/drafts/guide-swiss-pass.json --dry-run
+```
+
+Write directly to the live published document:
+
+```bash
+npm run sanity:publish -- --file memory/drafts/guide-swiss-pass.json
+```
+
 Optional overrides:
 
 ```bash
 npm run sanity:import-draft -- --file memory/drafts/guide-swiss-pass.json --status review_ready --generated-by minimax
 ```
 
+```bash
+npm run sanity:publish -- --file memory/drafts/guide-swiss-pass.json --generated-by minimax
+```
+
+Direct publish writes the canonical document id, sets `workflowStatus` to `published`, and removes any matching draft copy for the same slug.
+
 ## Studio Workflow
+
+### Draft mode
 
 1. Run `npx sanity dev`
 2. Open local Studio
@@ -99,6 +120,13 @@ npm run sanity:import-draft -- --file memory/drafts/guide-swiss-pass.json --stat
 6. Copy `Image alt suggestion` into the real image alt field
 7. Change `Workflow status` to `review_ready` or `published`
 8. Publish
+
+### Direct publish mode
+
+1. Generate a Sanity-ready JSON file
+2. Run `npm run sanity:publish -- --file ...`
+3. Open local Studio only if you want to enrich the image or make editorial tweaks
+4. Publish is not needed again unless you edit the document afterward in Studio
 
 ## Publish Behavior
 
@@ -124,5 +152,14 @@ Ask MiniMax or Codex to return:
 - `imageAltSuggestion`
 - optional `generatedBy`
 
-Do not ask the model to publish directly.
-The model should stop at a Sanity-ready draft JSON file.
+Use the same JSON contract for both modes.
+
+- If you want manual review first, import it with `sanity:import-draft`.
+- If you want the article live immediately, run `sanity:publish`.
+
+Recommended operator instruction for Telegram/Hermes:
+
+- `draft this as a guide for SwissWayExplorer`
+- `write and publish this guide live on SwissWayExplorer`
+
+The model should still return structured JSON internally even when the final operator intent is direct publish.

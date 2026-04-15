@@ -1,6 +1,6 @@
 # REMEMBERME
 
-Updated: 2026-04-13
+Updated: 2026-04-15
 
 If a future session starts with "baglan" or "connect", read this file first after `TOOLS_REGISTRY.md`.
 
@@ -67,7 +67,11 @@ site-factory-qa /opt/fabrika/swisswayexplorer https://swisswayexplorer.com/ --br
   - `docs/CONTENT_BRIEF_TEMPLATE.md`
   - `memory/content-backlog.json`
   - `scripts/seo/*`
-- This scaffold is research-only and is not part of the production runtime or VPS deploy path yet
+- Local repo now also contains a shared Sanity write flow:
+  - `npm run sanity:import-draft`
+  - `npm run sanity:publish`
+- SwissWayExplorer content routes now read published Sanity content live at request time
+- Result: content edits and direct publish operations do not need a rebuild
 
 ## Current UX / Design Status
 
@@ -108,7 +112,8 @@ If the user wants editorial content operations next:
 
 1. Install and review `seo-research-mcp` in the content workstation environment
 2. Use `npm run seo:brief`, `seo:validate`, and `seo:queue` from `swisswayexplorer_main_sync`
-3. Extend Sanity schemas with page-level SEO fields once the research-only workflow is proven
+3. Use `npm run sanity:import-draft` for review-first flow or `npm run sanity:publish` for direct-live flow
+4. Extend Sanity schemas with page-level SEO fields once the research-only workflow is proven
 
 ## Important VPS Paths
 
