@@ -10,6 +10,40 @@ const { blocks } = Astro.props;
 if (!blocks || blocks.length === 0) {
   return null;
 }
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderSpan(span: any): string {
+  if (span._type !== "span") return "";
+  let text: string = escapeHtml(span.text || "");
+  const marks: string[] = span.marks || [];
+  const markDefs: any[] = span.markDefs || [];
+
+  if (marks.includes("strong")) {
+    text = `<strong>${text}</strong>`;
+  }
+  if (marks.includes("em")) {
+    text = `<em>${text}</em>`;
+  }
+
+  for (const markKey of marks) {
+    const markDef = markDefs.find((m) => m._key === markKey && m._type === "link");
+    if (markDef && markDef.href) {
+      const isExternal =
+        markDef.href.startsWith("http://") || markDef.href.startsWith("https://");
+      const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : "";
+      text = `<a href="${escapeHtml(markDef.href)}"${target}>${text}</a>`;
+    }
+  }
+
+  return text;
+}
 ---
 
 <div class="portable-text">
@@ -24,14 +58,12 @@ if (!blocks || blocks.length === 0) {
     }
 
     if (block._type !== "block") return null;
-    const text = (block.children || []).map((c) => c.text).join("");
-    if (block.style === "h2") {
-      return <h2>{text}</h2>;
-    }
-    if (block.style === "h3") {
-      return <h3>{text}</h3>;
-    }
-    return <p>{text}</p>;
+
+    const children = block.children || [];
+    const html = children.map((child: any) => renderSpan(child)).join("");
+    const Tag = block.style === "h2" ? "h2" : block.style === "h3" ? "h3" : "p";
+
+    return <Tag set:html={html} />;
   })}
 </div>
 
@@ -64,11 +96,21 @@ if (!blocks || blocks.length === 0) {
     margin-top: 0;
   }
 
+  .portable-text a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .portable-text a:hover {
+    color: var(--accent-amber);
+  }
+
   .portable-image {
     margin: 1.35rem 0 0;
   }
 
-  .portable-image img {
+  .portable-text .portable-image img {
     width: 100%;
     display: block;
     border-radius: 16px;
@@ -76,7 +118,7 @@ if (!blocks || blocks.length === 0) {
     background: var(--bg);
   }
 
-  .portable-image figcaption {
+  .portable-text .portable-image figcaption {
     margin-top: 0.55rem;
     color: var(--muted);
     font-size: 0.9rem;
