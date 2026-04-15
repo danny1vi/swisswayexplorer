@@ -19,11 +19,10 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function renderSpan(span: any): string {
+function renderSpan(span: any, markDefs: any[]): string {
   if (span._type !== "span") return "";
   let text: string = escapeHtml(span.text || "");
   const marks: string[] = span.marks || [];
-  const markDefs: any[] = span.markDefs || [];
 
   if (marks.includes("strong")) {
     text = `<strong>${text}</strong>`;
@@ -60,7 +59,8 @@ function renderSpan(span: any): string {
     if (block._type !== "block") return null;
 
     const children = block.children || [];
-    const html = children.map((child: any) => renderSpan(child)).join("");
+    const markDefs: any[] = block.markDefs || [];
+    const html = children.map((child: any) => renderSpan(child, markDefs)).join("");
     const Tag = block.style === "h2" ? "h2" : block.style === "h3" ? "h3" : "p";
 
     return <Tag set:html={html} />;
