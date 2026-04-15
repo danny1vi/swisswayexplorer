@@ -52,21 +52,21 @@ const paragraphs = (body || "")
 <style>
   .editorial-split {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(1.25rem, 4vw, 3rem);
+    grid-template-columns: 1fr;
+    gap: clamp(1.25rem, 4vw, 2.5rem);
     align-items: stretch;
   }
 
-  .editorial-split.is-reversed .editorial-media {
-    order: 2;
-  }
-
-  .editorial-split.is-reversed .editorial-copy {
-    order: 1;
+  .editorial-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(0.5rem, 2vw, 1rem) 0;
   }
 
   .editorial-media {
-    min-height: 460px;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: calc(var(--radius) + 2px);
     border: 1px solid rgba(26, 60, 52, 0.12);
@@ -80,14 +80,7 @@ const paragraphs = (body || "")
     height: 100%;
     display: block;
     object-fit: cover;
-  }
-
-  .editorial-copy {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1rem;
-    padding: clamp(1rem, 3vw, 2rem) 0;
+    object-position: center;
   }
 
   .lead,
@@ -110,20 +103,5 @@ const paragraphs = (body || "")
   .editorial-copy .btn {
     margin-top: 0.5rem;
     align-self: flex-start;
-  }
-
-  @media (max-width: 900px) {
-    .editorial-split {
-      grid-template-columns: 1fr;
-    }
-
-    .editorial-split.is-reversed .editorial-media,
-    .editorial-split.is-reversed .editorial-copy {
-      order: initial;
-    }
-
-    .editorial-media {
-      min-height: 300px;
-    }
   }
 </style>

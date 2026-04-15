@@ -62,17 +62,24 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
   }
 
   .hero {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
     padding: clamp(1rem, 2vw, 1.5rem);
     border-radius: calc(var(--radius) + 10px);
   }
 
   .hero-with-media {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 459px);
-    gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-with-media .hero-copy {
+    order: 0;
+  }
+
+  .hero-with-media .hero-media {
+    order: 1;
   }
 
   .hero-copy {
