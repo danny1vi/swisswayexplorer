@@ -70,9 +70,9 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
 
   .hero-with-media {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 360px);
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 459px);
     gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: stretch;
+    align-items: start;
   }
 
   .hero-copy {
@@ -115,10 +115,11 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
 
   .hero-media {
     position: relative;
-    width: 100%;
-    min-height: clamp(30rem, 52vw, 39rem);
-    aspect-ratio: 9 / 14;
-    align-self: stretch;
+    width: min(100%, 459px);
+    max-width: 459px;
+    aspect-ratio: 459 / 545;
+    max-height: 545px;
+    justify-self: end;
     border-radius: calc(var(--radius) + 10px);
     overflow: hidden;
     border: 1px solid rgba(26, 60, 52, 0.12);
@@ -186,8 +187,10 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
     }
 
     .hero-media {
+      width: 100%;
+      max-width: none;
       aspect-ratio: 16 / 9;
-      min-height: unset;
+      max-height: none;
     }
   }
 </style>
