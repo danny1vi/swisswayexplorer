@@ -132,15 +132,22 @@ const client = createClient({
   apiVersion,
   token,
   useCdn: false,
+  perspective: "raw",
 });
 
-const document =
+const documentCandidates =
   documentId
-    ? await client.fetch(`*[_id == $documentId][0]{_id, _type, title, body, gallery, slug}`, { documentId })
-    : await client.fetch(
-        `*[_type == $documentType && slug.current == $slug][0]{_id, _type, title, body, gallery, slug}`,
-        { documentType, slug }
-      );
+    ? await client.fetch(`*[_id == $documentId]{_id, _type, title, body, gallery, slug}`, { documentId })
+    : await client.fetch(`*[_type == $documentType && slug.current == $slug]{_id, _type, title, body, gallery, slug}`, {
+        documentType,
+        slug,
+      });
+
+const document = ensureArray(documentCandidates).sort((left, right) => {
+  const leftIsDraft = String(left?._id || "").startsWith("drafts.");
+  const rightIsDraft = String(right?._id || "").startsWith("drafts.");
+  return Number(rightIsDraft) - Number(leftIsDraft);
+})[0];
 
 if (!document?._id) {
   console.error("Target document not found.");
