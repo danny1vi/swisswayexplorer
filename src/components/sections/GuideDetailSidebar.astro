@@ -1,0 +1,413 @@
+---
+import { getGuides } from "../../lib/sanity/content";
+import { resolveGuideImage } from "../../lib/contentImages";
+import { siteConfig } from "../../config/site";
+
+type Props = {
+  currentSlug: string;
+  currentTitle: string;
+  currentCategory?: string;
+  headings?: Array<{ text: string; depth: number; slug: string }>;
+};
+
+const { currentSlug, currentTitle, currentCategory, headings = [] } = Astro.props;
+
+// Fetch all guides and filter out current
+const allGuides = (await getGuides())
+  .map((g) => ({ ...g, image: resolveGuideImage(g) }))
+  .filter((g) => g.slug !== currentSlug)
+  .slice(0, 4); // Show max 4 other guides
+
+const destinations = siteConfig.featured;
+
+const categoryColors: Record<string, string> = {
+  itinerary: "var(--accent-amber)",
+  transport: "var(--accent-blue)",
+  seasonal: "var(--accent-purple)",
+  budget: "var(--accent-green)",
+};
+---
+
+<aside class="sidebar">
+  <!-- Current Guide Summary -->
+  <div class="sidebar-widget current-guide">
+    <p class="widget-label">Current Guide</p>
+    {currentCategory && (
+      <span class="guide-badge" style={`background: ${categoryColors[currentCategory.toLowerCase()] || "var(--primary)"}`}>
+        {currentCategory.replace("-", " ")}
+      </span>
+    )}
+    <p class="guide-title">{currentTitle}</p>
+    <a href="/guides/" class="back-link">← All guides</a>
+  </div>
+
+  <!-- Table of Contents (if headings exist) -->
+  {headings.length > 0 && (
+    <div class="sidebar-widget toc-widget">
+      <p class="widget-label">In This Guide</p>
+      <nav aria-label="Guide sections">
+        <ul class="toc-list">
+          {headings
+            .filter((h) => h.depth === 2 || h.depth === 3)
+            .slice(0, 8)
+            .map((h) => (
+              <li class={`toc-item toc-depth-${h.depth}`}>
+                <a href={`#${h.slug}`} class="toc-link">
+                  {h.text}
+                </a>
+              </li>
+            ))}
+        </ul>
+      </nav>
+    </div>
+  )}
+
+  <!-- Other Guides -->
+  {allGuides.length > 0 && (
+    <div class="sidebar-widget other-guides">
+      <p class="widget-label">More Guides</p>
+      <ul class="guide-list">
+        {allGuides.map((g) => (
+          <li>
+            <a href={`/guides/${g.slug}/`} class="guide-card">
+              <div class="guide-thumb">
+                {g.image ? (
+                  <img src={g.image.url} alt={g.image.alt || g.title} loading="lazy" />
+                ) : (
+                  <div class="thumb-placeholder" aria-hidden="true"></div>
+                )}
+              </div>
+              <div class="guide-info">
+                {g.category && (
+                  <span
+                    class="guide-cat"
+                    style={`color: ${categoryColors[g.category.toLowerCase()] || "var(--muted)"}`}
+                  >
+                    {g.category.replace("-", " ")}
+                  </span>
+                )}
+                <p class="guide-name">{g.title}</p>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <!-- Related Destinations -->
+  <div class="sidebar-widget destinations-widget">
+    <p class="widget-label">Related Destinations</p>
+    <ul class="dest-list">
+      {destinations.map((d) => (
+        <li>
+          <a href={d.href} class="dest-item">
+            <span class="dest-eyebrow">{d.eyebrow}</span>
+            <span class="dest-name">{d.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href="/destinations/" class="view-all">View all destinations →</a>
+  </div>
+
+  <!-- Quick Navigation -->
+  <div class="sidebar-widget quick-nav">
+    <p class="widget-label">Quick Links</p>
+    <ul class="quick-list">
+      <li><a href="/guides/7-day-switzerland-route-basics/">7-Day Route Basics</a></li>
+      <li><a href="/guides/swiss-transport-pass-quick-decision-guide/">Transport Pass Guide</a></li>
+      <li><a href="/guides/seasonal-planning-spring-vs-summer/">Seasonal Planning</a></li>
+    </ul>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: sticky;
+    top: 2rem;
+    align-self: flex-start;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  .sidebar-widget {
+    background: linear-gradient(135deg, rgba(255, 252, 245, 0.92), rgba(255, 252, 245, 0.82));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .widget-label {
+    margin: 0 0 0.7rem;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 800;
+    color: var(--primary);
+    font-family: var(--font-body);
+  }
+
+  /* Current Guide */
+  .current-guide .guide-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: #fff;
+    margin-bottom: 0.4rem;
+  }
+
+  .current-guide .guide-title {
+    margin: 0.3rem 0 0.6rem;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .back-link {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .back-link:hover {
+    color: var(--accent-amber);
+  }
+
+  /* Table of Contents */
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .toc-item {
+    border-left: 2px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+
+  .toc-item.toc-depth-3 {
+    padding-left: 0.75rem;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 4px;
+    line-height: 1.4;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .toc-link:hover {
+    color: var(--primary);
+    background: rgba(26, 60, 52, 0.05);
+  }
+
+  .toc-item:has(.toc-link:hover) {
+    border-left-color: var(--accent-amber);
+  }
+
+  /* Other Guides */
+  .guide-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .guide-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .guide-card:hover {
+    background: rgba(26, 60, 52, 0.05);
+    transform: translateX(2px);
+  }
+
+  .guide-thumb {
+    width: 54px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--border);
+  }
+
+  .guide-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.1));
+  }
+
+  .guide-info {
+    min-width: 0;
+  }
+
+  .guide-cat {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    display: block;
+  }
+
+  .guide-name {
+    margin: 0.2rem 0 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Destinations */
+  .dest-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .dest-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .dest-item:hover {
+    background: rgba(26, 60, 52, 0.05);
+  }
+
+  .dest-eyebrow {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .dest-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 0.1rem;
+  }
+
+  .view-all {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .view-all:hover {
+    color: var(--accent-amber);
+  }
+
+  /* Quick Nav */
+  .quick-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .quick-list a {
+    display: block;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .quick-list a:hover {
+    color: var(--primary);
+    background: rgba(26, 60, 52, 0.05);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .sidebar {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .sidebar-widget {
+      flex: 1 1 220px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .sidebar {
+      flex-direction: column;
+    }
+
+    .sidebar-widget {
+      flex: none;
+    }
+  }
+</style>

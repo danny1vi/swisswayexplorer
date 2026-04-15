@@ -6,10 +6,31 @@ import { getGuideBySlug } from "../../lib/sanity/content";
 import PortableText from "../../components/shared/PortableText.astro";
 import ImageGallery from "../../components/shared/ImageGallery.astro";
 import { resolveGuideImage } from "../../lib/contentImages";
+import GuideDetailSidebar from "../../components/sections/GuideDetailSidebar.astro";
 
 const { slug = "" } = Astro.params;
 const guide = await getGuideBySlug(slug);
 const guideImage = resolveGuideImage(guide);
+
+// Extract headings from body for table of contents
+function extractHeadings(body: unknown): Array<{ text: string; depth: number; slug: string }> {
+  if (!Array.isArray(body)) return [];
+  const headings: Array<{ text: string; depth: number; slug: string }> = [];
+  for (const block of body) {
+    if (block?._type === "block" && (block.style === "h2" || block.style === "h3")) {
+      const text = block.children?.map((c: { text?: string }) => c.text || "").join("") || "";
+      const slug = text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+      headings.push({ text, depth: block.style === "h2" ? 2 : 3, slug });
+    }
+  }
+  return headings;
+}
+
+const headings = extractHeadings(guide?.body);
 
 if (!guide) {
   Astro.response.status = 404;
@@ -24,35 +45,56 @@ if (!guide) {
 >
   <section class="section">
     <div class="container">
-      {
-        guide ? (
-          <article class="card detail">
-            {guideImage ? (
-              <div class="hero-image">
-                <img src={guideImage.url} alt={guideImage.alt || guide.title} />
-              </div>
+      <div class="page-layout">
+        <!-- Main article content -->
+        <div class="main-content">
+          {
+            guide ? (
+              <article class="card detail">
+                {guideImage ? (
+                  <div class="hero-image">
+                    <img src={guideImage.url} alt={guideImage.alt || guide.title} />
+                  </div>
+                ) : (
+                  <div class="hero-image hero-image-placeholder" aria-hidden="true">
+                    <span>{guide.title}</span>
+                  </div>
+                )}
+                <div class="detail-body">
+                  {guide.category && (
+                    <span class="badge" data-category={guide.category}>
+                      {guide.category.replace("-", " ")}
+                    </span>
+                  )}
+                  <h1>{guide.title}</h1>
+                  <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
+                  {guide.gallery && <ImageGallery images={guide.gallery} title={`${guide.title} gallery`} />}
+                  {guide.body && <PortableText blocks={guide.body} />}
+                  <a href="/guides/" class="back-link">&larr; Back to all guides</a>
+                </div>
+              </article>
             ) : (
-              <div class="hero-image hero-image-placeholder" aria-hidden="true">
-                <span>{guide.title}</span>
-              </div>
-            )}
-            <div class="detail-body">
-              {guide.category && <span class="badge" data-category={guide.category}>{guide.category.replace("-", " ")}</span>}
-              <h1>{guide.title}</h1>
-              <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
-              {guide.gallery && <ImageGallery images={guide.gallery} title={`${guide.title} gallery`} />}
-              {guide.body && <PortableText blocks={guide.body} />}
-              <a href="/guides/" class="back-link">&larr; Back to all guides</a>
-            </div>
-          </article>
-        ) : (
-          <article class="card detail">
-            <h1>Guide not found</h1>
-            <p>The guide you requested is not available yet.</p>
-            <a href="/guides/" class="back-link">&larr; Back to all guides</a>
-          </article>
-        )
-      }
+              <article class="card detail">
+                <h1>Guide not found</h1>
+                <p>The guide you requested is not available yet.</p>
+                <a href="/guides/" class="back-link">&larr; Back to all guides</a>
+              </article>
+            )
+          }
+        </div>
+
+        <!-- Sidebar -->
+        {
+          guide && (
+            <GuideDetailSidebar
+              currentSlug={guide.slug}
+              currentTitle={guide.title}
+              currentCategory={guide.category}
+              headings={headings}
+            />
+          )
+        }
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -61,6 +103,13 @@ if (!guide) {
   .detail {
     padding: 0;
     overflow: hidden;
+  }
+
+  .page-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 2.5rem;
+    align-items: flex-start;
   }
 
   .hero-image {
@@ -95,7 +144,6 @@ if (!guide) {
 
   .detail-body {
     padding: 1.5rem;
-    max-width: 780px;
   }
 
   .badge {
@@ -109,10 +157,18 @@ if (!guide) {
     display: inline-block;
   }
 
-  .badge[data-category="transport"] { background: var(--accent-blue); }
-  .badge[data-category="budget"] { background: var(--accent-green); }
-  .badge[data-category="itinerary"] { background: var(--accent-amber); }
-  .badge[data-category="seasonal"] { background: var(--accent-purple); }
+  .badge[data-category="transport"] {
+    background: var(--accent-blue);
+  }
+  .badge[data-category="budget"] {
+    background: var(--accent-green);
+  }
+  .badge[data-category="itinerary"] {
+    background: var(--accent-amber);
+  }
+  .badge[data-category="seasonal"] {
+    background: var(--accent-purple);
+  }
 
   h1 {
     margin: 0.65rem 0 0;
@@ -138,7 +194,14 @@ if (!guide) {
     color: var(--primary-strong);
   }
 
-  @media (max-width: 760px) {
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .page-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
     .hero-image {
       max-height: 260px;
     }
