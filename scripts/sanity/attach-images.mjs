@@ -52,6 +52,14 @@ function deriveFilename(sourceUrl, fallbackBase, index, contentType) {
   return `${safeBase}.${ext}`;
 }
 
+function guessContentTypeFromPath(filePath) {
+  const ext = path.extname(filePath || "").replace(".", "").toLowerCase();
+  if (ext === "png") return "image/png";
+  if (ext === "webp") return "image/webp";
+  if (ext === "gif") return "image/gif";
+  return "image/jpeg";
+}
+
 function buildImageValue(assetId, image, includeKey = true) {
   const value = {
     _type: "image",
@@ -71,18 +79,28 @@ function buildImageValue(assetId, image, includeKey = true) {
 }
 
 async function uploadImage(client, image, index, fallbackBase) {
-  if (!image?.url) {
-    throw new Error(`Image at index ${index} is missing a url`);
+  if (!image?.url && !image?.path) {
+    throw new Error(`Image at index ${index} is missing a url or path`);
   }
 
-  const response = await fetch(image.url);
-  if (!response.ok) {
-    throw new Error(`Failed to download image ${image.url}: HTTP ${response.status}`);
-  }
+  let bytes;
+  let contentType;
+  let filename;
 
-  const contentType = response.headers.get("content-type") || "image/jpeg";
-  const filename = image.filename || deriveFilename(image.url, fallbackBase, index, contentType);
-  const bytes = Buffer.from(await response.arrayBuffer());
+  if (image.path) {
+    bytes = await readFile(image.path);
+    contentType = guessContentTypeFromPath(image.path);
+    filename = image.filename || path.basename(image.path);
+  } else {
+    const response = await fetch(image.url);
+    if (!response.ok) {
+      throw new Error(`Failed to download image ${image.url}: HTTP ${response.status}`);
+    }
+
+    contentType = response.headers.get("content-type") || "image/jpeg";
+    filename = image.filename || deriveFilename(image.url, fallbackBase, index, contentType);
+    bytes = Buffer.from(await response.arrayBuffer());
+  }
 
   const asset = await client.assets.upload("image", bytes, {
     filename,
