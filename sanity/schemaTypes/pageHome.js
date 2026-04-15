@@ -2,6 +2,14 @@ const pageHome = {
   name: "pageHome",
   type: "document",
   title: "Homepage",
+  preview: {
+    prepare() {
+      return {
+        title: "Homepage",
+        subtitle: "SwissWayExplorer landing page content",
+      };
+    },
+  },
   fields: [
     {
       name: "heading",

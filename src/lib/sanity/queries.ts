@@ -14,7 +14,7 @@ export const SITE_SETTINGS_QUERY = `
 `;
 
 export const HOME_PAGE_QUERY = `
-*[_type == "pageHome"][0]{
+*[_type == "pageHome" && _id == "pageHome"][0]{
   heading,
   description,
   "image": image{
