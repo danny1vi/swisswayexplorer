@@ -94,6 +94,7 @@ export const DESTINATION_BY_SLUG_QUERY = `
       },
       style,
       markDefs[]{
+        _key,
         _type,
         href
       }
@@ -154,6 +155,7 @@ export const GUIDE_BY_SLUG_QUERY = `
       },
       style,
       markDefs[]{
+        _key,
         _type,
         href
       }
