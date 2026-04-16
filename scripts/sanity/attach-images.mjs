@@ -34,6 +34,35 @@ function ensureArray(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [];
 }
 
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function blockToText(block) {
+  if (!block || block._type !== "block") return "";
+  return ensureArray(block.children)
+    .map((child) => child?.text || "")
+    .join("")
+    .trim();
+}
+
+function findHeadingIndex(body, heading, headingStyle = "h2") {
+  const target = normalizeText(heading);
+  if (!target) return -1;
+
+  return body.findIndex((block) => {
+    if (!block || block._type !== "block") return false;
+    if ((block.style || "normal") !== headingStyle) return false;
+    return normalizeText(blockToText(block)) === target;
+  });
+}
+
 function guessExtension(sourceUrl, contentType) {
   const ext = path.extname(new URL(sourceUrl).pathname || "").replace(".", "").toLowerCase();
   if (ext) return ext;
@@ -207,11 +236,25 @@ if (galleryImages.length > 0) {
 }
 
 if (bodyImages.length > 0) {
-  const uploadedBody = [];
+  const updatedBody = [...ensureArray(document.body)];
   for (let index = 0; index < bodyImages.length; index += 1) {
-    uploadedBody.push(await uploadImage(client, bodyImages[index], index, `${fallbackBase}-body`));
+    const bodyImage = bodyImages[index];
+    const uploadedBodyImage = await uploadImage(client, bodyImage, index, `${fallbackBase}-body`);
+    const insertBeforeHeading = bodyImage.insertBeforeHeading || bodyImage.heading;
+    const headingStyle = bodyImage.headingStyle || "h2";
+
+    if (insertBeforeHeading) {
+      const headingIndex = findHeadingIndex(updatedBody, insertBeforeHeading, headingStyle);
+      if (headingIndex === -1) {
+        throw new Error(`Heading not found for body image insertion: "${insertBeforeHeading}" (${headingStyle})`);
+      }
+      updatedBody.splice(headingIndex, 0, uploadedBodyImage);
+      continue;
+    }
+
+    updatedBody.push(uploadedBodyImage);
   }
-  nextValues.body = [...ensureArray(document.body), ...uploadedBody];
+  nextValues.body = updatedBody;
 }
 
 if (Object.keys(nextValues).length === 0) {

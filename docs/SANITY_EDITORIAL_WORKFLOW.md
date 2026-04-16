@@ -150,7 +150,9 @@ Example payload:
     {
       "url": "https://example.com/lucerne-body-1.jpg",
       "alt": "Lucerne old town streets",
-      "caption": "A walk through Lucerne old town"
+      "caption": "A walk through Lucerne old town",
+      "insertBeforeHeading": "What Lucerne is known for",
+      "headingStyle": "h2"
     }
   ]
 }
@@ -160,7 +162,9 @@ Behavior:
 
 - `heroImage` replaces the single hero image
 - `gallery` is appended to the current gallery array
-- `bodyImages` are appended to the end of the body as image blocks
+- `bodyImages` are appended to the end of the body as image blocks when no heading target is given
+- add `insertBeforeHeading` to place a body image immediately before a matching heading
+- `headingStyle` defaults to `h2`
 
 ## Studio Workflow
 

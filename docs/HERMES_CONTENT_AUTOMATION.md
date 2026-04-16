@@ -84,11 +84,20 @@ Example image payload:
     {
       "url": "https://example.com/body-1.jpg",
       "alt": "Train journey through the Bernese Oberland",
-      "caption": "A sample inline article image"
+      "caption": "A sample inline article image",
+      "insertBeforeHeading": "Mountain access and scenic experience",
+      "headingStyle": "h2"
     }
   ]
 }
 ```
+
+H2-aware insertion:
+
+- add `insertBeforeHeading` to a `bodyImages` item to place it immediately before that heading
+- `headingStyle` defaults to `h2`
+- heading text must match the Sanity body heading text
+- if no heading is provided, the image is appended to the end of the body
 
 ## Important Rule
 
