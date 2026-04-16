@@ -11,6 +11,7 @@ import GuideDetailSidebar from "../../components/sections/GuideDetailSidebar.ast
 const { slug = "" } = Astro.params;
 const guide = await getGuideBySlug(slug);
 const guideImage = resolveGuideImage(guide);
+const useReadableTypography = slug === "how-to-structure-a-7-day-switzerland-trip";
 
 // Extract headings from body for table of contents
 function extractHeadings(body: unknown): Array<{ text: string; depth: number; slug: string }> {
@@ -50,7 +51,7 @@ if (!guide) {
         <div class="main-content">
           {
             guide ? (
-              <article class="card detail">
+              <article class:list={["card", "detail", useReadableTypography && "detail-readable"]}>
                 {guideImage ? (
                   <div class="hero-image">
                     <img src={guideImage.url} alt={guideImage.alt || guide.title} />
@@ -179,6 +180,67 @@ if (!guide) {
     margin: 0.7rem 0 0;
     font-size: 1.02rem;
     line-height: 1.65;
+  }
+
+  .detail-readable .detail-body {
+    padding: 1.8rem 1.75rem 1.9rem;
+  }
+
+  .detail-readable h1 {
+    font-family: "Inter", "Segoe UI", sans-serif;
+    font-size: clamp(2rem, 3.2vw, 2.7rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.03;
+    max-width: 15ch;
+  }
+
+  .detail-readable .summary {
+    font-family: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 1.08rem;
+    line-height: 1.78;
+    max-width: 62ch;
+    color: #415045;
+  }
+
+  .detail-readable :global(.portable-text) {
+    margin-top: 1.7rem;
+  }
+
+  .detail-readable :global(.portable-text p) {
+    font-family: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 1.08rem;
+    line-height: 1.84;
+    color: #324036;
+    max-width: 66ch;
+    text-wrap: pretty;
+  }
+
+  .detail-readable :global(.portable-text h2) {
+    font-family: "Inter", "Segoe UI", sans-serif;
+    font-size: 1.28rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 1.9rem 0 0.62rem;
+  }
+
+  .detail-readable :global(.portable-text h3) {
+    font-family: "Inter", "Segoe UI", sans-serif;
+    font-size: 1.06rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .detail-readable :global(.portable-text .quick-verdict h3),
+  .detail-readable :global(.portable-text .highlight-box h3) {
+    font-family: "Inter", "Segoe UI", sans-serif;
+  }
+
+  .detail-readable :global(.portable-text .quick-verdict p),
+  .detail-readable :global(.portable-text .highlight-box p),
+  .detail-readable :global(.portable-text figcaption) {
+    font-family: "Inter", "Segoe UI", sans-serif;
   }
 
   .back-link {
