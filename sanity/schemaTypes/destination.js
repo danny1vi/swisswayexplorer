@@ -27,7 +27,19 @@ const destination = {
       type: "array",
       title: "Body",
       of: [
-        { type: "block" },
+        {
+          type: "block",
+          styles: [
+            { title: "Paragraph", value: "normal" },
+            { title: "Paragraph - Justified", value: "bodyJustify" },
+            { title: "Paragraph - Left", value: "bodyLeft" },
+            { title: "Paragraph - Center", value: "bodyCenter" },
+            { title: "Paragraph - Right", value: "bodyRight" },
+            { title: "Heading 2", value: "h2" },
+            { title: "Heading 3", value: "h3" },
+            { title: "Quote", value: "blockquote" },
+          ],
+        },
         {
           type: "object",
           name: "quickVerdict",

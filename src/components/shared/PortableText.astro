@@ -82,9 +82,20 @@ function renderSpan(span: any, markDefs: any[]): string {
     const children = block.children || [];
     const markDefs: any[] = block.markDefs || [];
     const html = children.map((child: any) => renderSpan(child, markDefs)).join("");
-    const Tag = block.style === "h2" ? "h2" : block.style === "h3" ? "h3" : "p";
+    const style = block.style || "normal";
+    const Tag = style === "h2" ? "h2" : style === "h3" ? "h3" : style === "blockquote" ? "blockquote" : "p";
+    const alignClass =
+      style === "bodyLeft"
+        ? "align-left"
+        : style === "bodyCenter"
+          ? "align-center"
+          : style === "bodyRight"
+            ? "align-right"
+            : style === "bodyJustify" || style === "normal"
+              ? "align-justify"
+              : undefined;
 
-    return <Tag set:html={html} />;
+    return <Tag class={alignClass} set:html={html} />;
   })}
 </div>
 
@@ -109,6 +120,8 @@ function renderSpan(span: any, markDefs: any[]): string {
     margin: 0.7rem 0 0;
     color: var(--muted);
     line-height: 1.7;
+    text-align: justify;
+    text-justify: inter-word;
   }
 
   .portable-text-readable p {
@@ -150,6 +163,32 @@ function renderSpan(span: any, markDefs: any[]): string {
 
   .portable-text a:hover {
     color: var(--accent-amber);
+  }
+
+  .portable-text .align-left {
+    text-align: left;
+  }
+
+  .portable-text .align-center {
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .portable-text .align-right {
+    text-align: right;
+  }
+
+  .portable-text .align-justify {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .portable-text blockquote {
+    margin: 1.2rem 0 0;
+    padding: 0.1rem 0 0.1rem 1rem;
+    border-left: 4px solid rgba(26, 60, 52, 0.18);
+    color: #415045;
+    font-style: italic;
   }
 
   .portable-image {
