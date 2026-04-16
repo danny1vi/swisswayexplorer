@@ -29,9 +29,6 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
       {image?.url && (
         <div class="hero-media">
           <img src={image.url} alt={image.alt || heading} loading="eager" />
-          <div class="hero-note">
-            <span>Editorial route notes for modern Switzerland planning</span>
-          </div>
         </div>
       )}
     </div>
@@ -149,28 +146,6 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
     object-fit: cover;
     object-position: center center;
     display: block;
-  }
-
-  .hero-note {
-    position: absolute;
-    left: 1.2rem;
-    right: 1.2rem;
-    bottom: 1.2rem;
-    z-index: 1;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .hero-note span {
-    display: inline-flex;
-    width: min(18rem, 100%);
-    padding: 0.85rem 1rem;
-    border-radius: 1.15rem;
-    background: rgba(16, 44, 38, 0.64);
-    color: rgba(255, 250, 241, 0.96);
-    font-size: 0.88rem;
-    line-height: 1.5;
-    backdrop-filter: blur(8px);
   }
 
   @media (max-width: 640px) {
