@@ -70,7 +70,7 @@ if (!guide) {
                   <h1>{guide.title}</h1>
                   <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
                   {guide.gallery && <ImageGallery images={guide.gallery} title={`${guide.title} gallery`} />}
-                  {guide.body && <PortableText blocks={guide.body} />}
+                  {guide.body && <PortableText blocks={guide.body} variant={useReadableTypography ? "readable" : "default"} />}
                   <a href="/guides/" class="back-link">&larr; Back to all guides</a>
                 </div>
               </article>
@@ -196,51 +196,11 @@ if (!guide) {
   }
 
   .detail-readable .summary {
-    font-family: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-family: var(--font-reading);
     font-size: 1.08rem;
     line-height: 1.78;
     max-width: 62ch;
     color: #415045;
-  }
-
-  .detail-readable :global(.portable-text) {
-    margin-top: 1.7rem;
-  }
-
-  .detail-readable :global(.portable-text p) {
-    font-family: Charter, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-    font-size: 1.08rem;
-    line-height: 1.84;
-    color: #324036;
-    max-width: 66ch;
-    text-wrap: pretty;
-  }
-
-  .detail-readable :global(.portable-text h2) {
-    font-family: "Inter", "Segoe UI", sans-serif;
-    font-size: 1.28rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    margin: 1.9rem 0 0.62rem;
-  }
-
-  .detail-readable :global(.portable-text h3) {
-    font-family: "Inter", "Segoe UI", sans-serif;
-    font-size: 1.06rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  .detail-readable :global(.portable-text .quick-verdict h3),
-  .detail-readable :global(.portable-text .highlight-box h3) {
-    font-family: "Inter", "Segoe UI", sans-serif;
-  }
-
-  .detail-readable :global(.portable-text .quick-verdict p),
-  .detail-readable :global(.portable-text .highlight-box p),
-  .detail-readable :global(.portable-text figcaption) {
-    font-family: "Inter", "Segoe UI", sans-serif;
   }
 
   .back-link {

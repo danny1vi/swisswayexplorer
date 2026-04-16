@@ -3,9 +3,10 @@ import type { BodyBlock } from "../../lib/sanity/types";
 
 type Props = {
   blocks?: BodyBlock[];
+  variant?: "default" | "readable";
 };
 
-const { blocks } = Astro.props;
+const { blocks, variant = "default" } = Astro.props;
 
 if (!blocks || blocks.length === 0) {
   return null;
@@ -45,7 +46,7 @@ function renderSpan(span: any, markDefs: any[]): string {
 }
 ---
 
-<div class="portable-text">
+<div class:list={["portable-text", variant === "readable" && "portable-text-readable"]}>
   {blocks.map((block) => {
     if (block._type === "quickVerdict") {
       return (
@@ -110,10 +111,35 @@ function renderSpan(span: any, markDefs: any[]): string {
     line-height: 1.7;
   }
 
+  .portable-text-readable p {
+    font-family: var(--font-reading);
+    font-size: 1.08rem;
+    line-height: 1.84;
+    color: #324036;
+    max-width: 66ch;
+    text-wrap: pretty;
+  }
+
   .portable-text p:first-child,
   .portable-text h2:first-child,
   .portable-text h3:first-child {
     margin-top: 0;
+  }
+
+  .portable-text-readable h2 {
+    font-family: var(--font-body);
+    font-size: 1.28rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 1.9rem 0 0.62rem;
+  }
+
+  .portable-text-readable h3 {
+    font-family: var(--font-body);
+    font-size: 1.06rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   .portable-text a {
@@ -162,6 +188,14 @@ function renderSpan(span: any, markDefs: any[]): string {
   .portable-text .quick-verdict p {
     margin-top: 0.6rem;
     color: rgba(255, 249, 240, 0.92);
+  }
+
+  .portable-text-readable .quick-verdict h3,
+  .portable-text-readable .highlight-box h3,
+  .portable-text-readable .quick-verdict p,
+  .portable-text-readable .highlight-box p,
+  .portable-text-readable .portable-image figcaption {
+    font-family: var(--font-body);
   }
 
   .highlight-box {
