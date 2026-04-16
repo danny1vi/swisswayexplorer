@@ -1,19 +1,41 @@
 # Backlog
 
-## Next
-- Lock the editorial design system in code: typography, palette, spacing, and header behavior
-- Extend Sanity homepage schema with category grid, editorial split, and itinerary teaser sections
-- Redesign the homepage to the Swiss Editorial structure
-- Create the missing `siteSettings` document in Sanity
-- Install and review `seo-research-mcp` in the content workstation environment
-- Extend `destination` and `guide` schemas with page-level SEO fields
-- Wire Hermes/Telegram to the shared Sanity draft/publish workflow
-- Add destination metadata sidebar and related destinations section
-- Add guide TOC, anchored sections, and waypoint cards
-- Remove the temporary Dockerfile deployment path once Nixpacks SSR is stable
+## Faz 1 — Destination Temelleri (Oncelikli)
+- [ ] Geneva & Lake Geneva → Sanity draft publish et (~1200 kelime) ← IN PROGRESS
+- [ ] Zurich & Northern Switzerland → yeniden yaz (~1200 kelime)
+- [ ] Basel & Northwest Switzerland → yeniden yaz (~1200 kelime)
+- [ ] Lugano & Ticino → yeniden yaz (~1200 kelime)
+
+## Faz 2 — Guide Temelleri
+- [ ] Swiss Budget Guide (Backpacker Edition) ~1500 kelime
+- [ ] Swiss Train System Explained ~1200 kelime
+- [ ] Swiss Food Guide ~1200 kelime
+- [ ] Where to Stay in Each Region ~1500 kelime
+- [ ] Swiss Alps Guide: Which Mountain for You ~1200 kelime
+- [ ] Best Free Things to Do in Switzerland ~1000 kelime
+- [ ] Swiss Weather by Month (mevcut Best Time guide'a ekle) ~800 kelime
+
+## Faz 3 — Yeni Sayfa Tipleri
+- [ ] /[destination]/hotels/ — Booking.com widget altyapisi
+- [ ] /[destination]/activities/ — GetYourGuide link altyapisi
+- [ ] /deals/ — Email capture + affiliate deals sayfasi
+
+## Faz 4 — Ek Destination'lar
+- [ ] Bern & Emmental ~1200 kelime
+- [ ] Lausanne & Lake Geneva ~1200 kelime
+
+## Altyapi / Teknik
+- [ ] siteSettings document in Sanity
+- [ ] Homepage editorial redesign
+- [ ] Lock editorial design system (typography, palette, spacing)
+- [ ] Extend destination/guide schemas with SEO fields
+- [ ] Wire Hermes/Telegram to Sanity draft/publish workflow
+- [ ] Add destination metadata sidebar + related destinations
+- [ ] Add guide TOC + anchored sections
+- [ ] Coolify Dockerfile yolunu kaldir (Nixpacks SSR stable olunca)
 
 ## Later
-- Add browser QA automation once design and content stabilize
-- Add richer destination/guide modular content blocks in Sanity
-- Add a protected deploy webhook proxy if Coolify API access needs tighter IP restrictions later
-- Add staging acceptance checklist automation
+- [ ] Browser QA automation
+- [ ] /journal/ editorial content
+- [ ] Chatwoot customer communication
+- [ ] Staging acceptance checklist
