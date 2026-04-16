@@ -77,7 +77,23 @@ export type BodyImageBlock = ImageAsset & {
   _type: "image";
 };
 
-export type BodyBlock = BodyTextBlock | BodyImageBlock;
+export type QuickVerdictBlock = {
+  _type: "quickVerdict";
+  _key?: string;
+  eyebrow?: string;
+  title: string;
+  body: string;
+};
+
+export type HighlightBoxBlock = {
+  _type: "highlightBox";
+  _key?: string;
+  tone?: "tip" | "important" | "budget" | "route";
+  title?: string;
+  body: string;
+};
+
+export type BodyBlock = BodyTextBlock | BodyImageBlock | QuickVerdictBlock | HighlightBoxBlock;
 
 export type Destination = {
   _id?: string;

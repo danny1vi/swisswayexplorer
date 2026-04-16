@@ -47,6 +47,26 @@ function renderSpan(span: any, markDefs: any[]): string {
 
 <div class="portable-text">
   {blocks.map((block) => {
+    if (block._type === "quickVerdict") {
+      return (
+        <section class="quick-verdict">
+          {block.eyebrow && <p class="quick-verdict-eyebrow">{block.eyebrow}</p>}
+          <h3>{block.title}</h3>
+          <p>{block.body}</p>
+        </section>
+      );
+    }
+
+    if (block._type === "highlightBox") {
+      return (
+        <aside class:list={["highlight-box", `highlight-${block.tone || "tip"}`]}>
+          <div class="highlight-label">{block.tone || "tip"}</div>
+          {block.title && <h3>{block.title}</h3>}
+          <p>{block.body}</p>
+        </aside>
+      );
+    }
+
     if (block._type === "image" && block.url) {
       return (
         <figure class="portable-image">
@@ -108,6 +128,116 @@ function renderSpan(span: any, markDefs: any[]): string {
 
   .portable-image {
     margin: 1.35rem 0 0;
+  }
+
+  .quick-verdict,
+  .highlight-box {
+    margin-top: 1.35rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .quick-verdict {
+    padding: 1rem 1.1rem 1.1rem;
+    background:
+      linear-gradient(160deg, rgba(26, 60, 52, 0.98) 0%, rgba(39, 84, 73, 0.94) 100%);
+    color: rgba(255, 249, 240, 0.98);
+  }
+
+  .quick-verdict-eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(229, 195, 113, 0.92);
+  }
+
+  .portable-text .quick-verdict h3 {
+    margin: 0;
+    color: inherit;
+    font-size: 1.1rem;
+  }
+
+  .portable-text .quick-verdict p {
+    margin-top: 0.6rem;
+    color: rgba(255, 249, 240, 0.92);
+  }
+
+  .highlight-box {
+    position: relative;
+    padding: 1rem 1.1rem 1rem 1.2rem;
+    background: rgba(251, 247, 238, 0.96);
+    overflow: hidden;
+  }
+
+  .highlight-box::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 6px;
+    background: var(--primary);
+  }
+
+  .highlight-label {
+    display: inline-flex;
+    margin-bottom: 0.55rem;
+    padding: 0.28rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(26, 60, 52, 0.08);
+    color: var(--primary);
+  }
+
+  .portable-text .highlight-box h3 {
+    margin: 0;
+    font-size: 1.02rem;
+  }
+
+  .portable-text .highlight-box p {
+    margin-top: 0.45rem;
+  }
+
+  .highlight-important {
+    background: rgba(255, 245, 228, 0.98);
+  }
+
+  .highlight-important::before {
+    background: #d07a18;
+  }
+
+  .highlight-important .highlight-label {
+    background: rgba(208, 122, 24, 0.12);
+    color: #9a5709;
+  }
+
+  .highlight-budget {
+    background: rgba(244, 250, 245, 0.98);
+  }
+
+  .highlight-budget::before {
+    background: #3d7a52;
+  }
+
+  .highlight-budget .highlight-label {
+    background: rgba(61, 122, 82, 0.12);
+    color: #2a5f3d;
+  }
+
+  .highlight-route {
+    background: rgba(242, 246, 251, 0.98);
+  }
+
+  .highlight-route::before {
+    background: #4d658a;
+  }
+
+  .highlight-route .highlight-label {
+    background: rgba(77, 101, 138, 0.12);
+    color: #3a4f73;
   }
 
   .portable-text .portable-image img {

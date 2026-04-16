@@ -29,6 +29,59 @@ const guide = {
       of: [
         { type: "block" },
         {
+          type: "object",
+          name: "quickVerdict",
+          title: "Quick Verdict",
+          fields: [
+            { name: "eyebrow", type: "string", title: "Eyebrow" },
+            { name: "title", type: "string", title: "Title", validation: (Rule) => Rule.required() },
+            { name: "body", type: "text", title: "Body", rows: 4, validation: (Rule) => Rule.required() },
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "eyebrow",
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "highlightBox",
+          title: "Highlight Box",
+          fields: [
+            {
+              name: "tone",
+              type: "string",
+              title: "Tone",
+              initialValue: "tip",
+              options: {
+                list: [
+                  { title: "Tip", value: "tip" },
+                  { title: "Important", value: "important" },
+                  { title: "Budget Note", value: "budget" },
+                  { title: "Route Note", value: "route" },
+                ],
+                layout: "radio",
+              },
+            },
+            { name: "title", type: "string", title: "Title" },
+            { name: "body", type: "text", title: "Body", rows: 4, validation: (Rule) => Rule.required() },
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "tone",
+              body: "body",
+            },
+            prepare({ title, subtitle, body }) {
+              return {
+                title: title || "Highlight Box",
+                subtitle: subtitle || body,
+              };
+            },
+          },
+        },
+        {
           type: "image",
           options: { hotspot: true },
           fields: [
