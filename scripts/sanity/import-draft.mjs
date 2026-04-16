@@ -150,6 +150,42 @@ function normalizeHighlightBoxes(items = []) {
     .filter(Boolean);
 }
 
+function defaultHighlightBoxes({ draft, documentType, title, body }) {
+  const headings = body.filter((entry) => entry?._type === "block" && (entry.style || "normal") === "h2");
+  const firstHeading = extractBlockText(headings[0]);
+  const secondHeading = extractBlockText(headings[1]);
+  const summary = String(draft.summary || "").trim();
+
+  const firstBox = {
+    _type: "highlightBox",
+    _key: createKey("highlight-box"),
+    tone: documentType === "guide" ? "important" : "route",
+    title: documentType === "guide" ? "What this page helps you decide" : "How to use this destination page",
+    body:
+      summary ||
+      (documentType === "guide"
+        ? `Use this guide to compare the options in a practical way before you lock in your route, pace, and budget.`
+        : `Use this page to decide whether ${title} fits the pace, routing, and style of trip you want in Switzerland.`),
+    insertBeforeHeading: firstHeading,
+    headingStyle: "h2",
+  };
+
+  const secondBox = {
+    _type: "highlightBox",
+    _key: createKey("highlight-box"),
+    tone: documentType === "guide" ? "tip" : "budget",
+    title: documentType === "guide" ? "Best way to read this guide" : "Planning note",
+    body:
+      documentType === "guide"
+        ? `Focus on the route, cost, and tradeoff sections before making a final choice, especially if this is your first Switzerland trip.`
+        : `Check this page against your route length, travel season, and onward stops so the destination fits naturally into the rest of your trip.`,
+    insertBeforeHeading: secondHeading,
+    headingStyle: "h2",
+  };
+
+  return [firstBox, secondBox];
+}
+
 function insertQuickVerdict(body, block) {
   if (!block) return body;
   if (body.some((item) => item?._type === "quickVerdict")) return body;
@@ -208,9 +244,13 @@ function insertHighlightBoxes(body, items) {
 function enhanceBody({ body, draft, documentType }) {
   const quickVerdict = normalizeQuickVerdict(draft.quickVerdict, draft, documentType);
   const highlightBoxes = normalizeHighlightBoxes(draft.highlightBoxes);
+  const ensuredHighlightBoxes =
+    highlightBoxes.length >= 2
+      ? highlightBoxes
+      : [...highlightBoxes, ...defaultHighlightBoxes({ draft, documentType, title: draft.title, body })].slice(0, 2);
 
   let next = insertQuickVerdict(body, quickVerdict);
-  next = insertHighlightBoxes(next, highlightBoxes);
+  next = insertHighlightBoxes(next, ensuredHighlightBoxes);
   return next;
 }
 
