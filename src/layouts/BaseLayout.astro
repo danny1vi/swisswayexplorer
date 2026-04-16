@@ -58,7 +58,7 @@ const ogImageAlt = imageAlt || siteSettings?.ogImage?.alt || `${siteName} social
 </html>
 
 <style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=Playfair+Display:wght@500;600;700&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700&display=swap");
 
   :root {
     --bg: #f6f1e8;
@@ -76,7 +76,7 @@ const ogImageAlt = imageAlt || siteSettings?.ogImage?.alt || `${siteName} social
     --accent-amber: #c9a84c;
     --accent-purple: #75608b;
     --shadow-soft: 0 24px 60px rgba(22, 37, 31, 0.09);
-    --font-heading: "Playfair Display", Georgia, serif;
+    --font-heading: "Merriweather", Georgia, serif;
     --font-body: "Inter", "Segoe UI", sans-serif;
     --font-reading: "Merriweather", Georgia, serif;
   }
@@ -118,8 +118,25 @@ const ogImageAlt = imageAlt || siteSettings?.ogImage?.alt || `${siteName} social
   h6 {
     font-family: var(--font-heading);
     font-weight: 600;
-    letter-spacing: -0.02em;
     color: var(--text);
+  }
+
+  h1 {
+    letter-spacing: -0.07em;
+  }
+
+  h2 {
+    letter-spacing: -0.07em;
+  }
+
+  h3 {
+    letter-spacing: -0.06em;
+  }
+
+  h4,
+  h5,
+  h6 {
+    letter-spacing: -0.02em;
   }
 
   p {
