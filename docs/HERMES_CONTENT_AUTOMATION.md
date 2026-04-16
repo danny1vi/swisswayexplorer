@@ -28,6 +28,27 @@ Hermes should normalize the article into this JSON shape before calling the Sani
   "title": "Lucerne vs Interlaken for First-Time Visitors",
   "slug": "lucerne-vs-interlaken-for-first-time-visitors",
   "summary": "A practical comparison to help first-time Switzerland travelers choose the better base.",
+  "quickVerdict": {
+    "eyebrow": "Quick verdict",
+    "title": "Choose Lucerne for ease, Interlaken for mountain days",
+    "body": "Lucerne is usually the better first base if you want a smoother, lower-friction trip. Interlaken works better if your priority is packing in Jungfrau-region mountain outings."
+  },
+  "highlightBoxes": [
+    {
+      "tone": "important",
+      "title": "Best for first-timers",
+      "body": "Lucerne is usually easier for first-time visitors who want a cleaner mix of lake, town, and simple onward travel.",
+      "insertBeforeHeading": "Which is better for first-time visitors",
+      "headingStyle": "h2"
+    },
+    {
+      "tone": "route",
+      "title": "When Interlaken makes more sense",
+      "body": "Choose Interlaken if your itinerary is built around Jungfrau Region mountain days rather than city atmosphere.",
+      "insertBeforeHeading": "Mountain access and scenic experience",
+      "headingStyle": "h2"
+    }
+  ],
   "body": "Paragraph one.\n\nParagraph two.",
   "category": "itinerary",
   "imageAltSuggestion": "Lake Lucerne and Interlaken mountain scenery split comparison",
@@ -39,6 +60,17 @@ For `destination` documents, replace `category` with:
 
 - `region`
 - `bestSeason`
+
+## Editorial Blocks Rule
+
+For every SwissWayExplorer article Hermes generates:
+
+- include exactly one `quickVerdict`
+- include at least two `highlightBoxes`
+- prefer `important`, `route`, or `budget` tones when they genuinely help the reader decide
+- attach each `highlightBox` to a real heading with `insertBeforeHeading` when possible
+
+If the operator does not mention these blocks explicitly, Hermes should still include them as part of the internal JSON.
 
 ## Local Commands
 
@@ -108,6 +140,7 @@ The writing flow should be:
 1. understand whether the user wants `guide` or `destination`
 2. understand whether the operator intent is `draft` or `publish`
 3. generate the article content
-4. normalize it into the Sanity JSON contract
-5. call the correct Sanity write command
-6. return the resulting slug and live URL
+4. generate one `quickVerdict` and at least two `highlightBoxes`
+5. normalize everything into the Sanity JSON contract
+6. call the correct Sanity write command
+7. return the resulting slug and live URL

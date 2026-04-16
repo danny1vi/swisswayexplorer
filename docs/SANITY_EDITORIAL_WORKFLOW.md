@@ -205,12 +205,35 @@ Ask MiniMax or Codex to return:
 - `title`
 - `slug`
 - `summary`
+- `quickVerdict`
+- `highlightBoxes`
 - `body`
 - `category` or `region` / `bestSeason`
 - `imageAltSuggestion`
 - optional `generatedBy`
 
 Use the same JSON contract for both modes.
+
+## Editorial Block Defaults
+
+Every new SwissWayExplorer article should now include:
+
+- `quickVerdict`: one concise framed summary block near the top
+- `highlightBoxes`: at least two framed emphasis blocks inside the article body
+
+Recommended usage:
+
+- `guide`
+  - one `quickVerdict`
+  - one `important` or `route` highlight
+  - one `budget` or `tip` highlight
+- `destination`
+  - one `quickVerdict`
+  - one `route` highlight
+  - one `budget`, `important`, or `tip` highlight
+
+When `insertBeforeHeading` is provided on a `highlightBoxes` item, the importer will place it immediately before that heading.
+If no heading target is provided, the block is appended to the end of the body.
 
 - If you want manual review first, import it with `sanity:import-draft`.
 - If you want the article live immediately, run `sanity:publish`.
