@@ -173,7 +173,8 @@ const sliderId = "homepage-photo-slider";
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     padding: 0 3rem;
-    /* NO scroll-behavior: smooth here — JS handles it */
+    scroll-behavior: auto;
+    /* Explicitly override global html{scroll-behavior:smooth} */
   }
 
   .photo-slider-track::-webkit-scrollbar {
