@@ -56,131 +56,146 @@ const sliderId = "homepage-photo-slider";
 
     var prevBtn = document.getElementById(sliderId + "-prev");
     var nextBtn = document.getElementById(sliderId + "-next");
+    if (!prevBtn || !nextBtn) return;
+
     var autoTimer;
+    var isAnimating = false;
+    var ANIM_DURATION = 420; // ms for smooth slide animation
 
-    // Add clones to both ends for infinite scroll illusion
-    var slides = Array.prototype.slice.call(track.querySelectorAll(".photo-slide"));
-    if (slides.length < 2) return;
+    // Collect original slides
+    var originalSlides = Array.prototype.slice.call(track.querySelectorAll(".photo-slide"));
+    var REAL_COUNT = originalSlides.length;
+    if (REAL_COUNT < 2) return;
 
-    var cloneCount = 1;
-    // Clone first N and last N slides
-    var clonesHead = slides.slice(0, cloneCount).map(function (s) { return s.cloneNode(true); });
-    var clonesTail = slides.slice(-cloneCount).map(function (s) { return s.cloneNode(true); });
+    // Clone 1 slide from each end for infinite loop illusion
+    var CLONE_COUNT = 1;
+    var lastClone = originalSlides[REAL_COUNT - 1].cloneNode(true);
+    var firstClone = originalSlides[0].cloneNode(true);
 
-    clonesHead.forEach(function (c) { track.appendChild(c); });
-    clonesTail.forEach(function (c) { track.insertBefore(c, slides[0]); });
+    // Prepend lastClone (before all real slides)
+    track.insertBefore(lastClone, track.firstChild);
+    // Append firstClone (after all real slides)
+    track.appendChild(firstClone);
 
-    // After prepending tails, slides shift to the right by cloneCount
-    var realCount = slides.length;
-    var realStart = cloneCount; // index of first real slide after prepending
-    var total = track.querySelectorAll(".photo-slide").length;
-    var realEnd = realStart + realCount - 1; // index of last real slide
-
-    // Scroll track to show first real slide, skipping the prepended clones
+    // Re-query all slides including clones: order is [lastClone, R0...R4, firstClone]
     var allSlides = track.querySelectorAll(".photo-slide");
-    var firstReal = allSlides[realStart];
-    if (firstReal) {
-      track.scrollLeft = firstReal.offsetLeft - track.offsetLeft;
+    var TOTAL = allSlides.length; // REAL_COUNT + 2
+
+    // realStart=1, realEnd=TOTAL-2 (index of last real slide)
+    var REAL_START = CLONE_COUNT;           // = 1
+    var REAL_END = TOTAL - CLONE_COUNT - 1; // = TOTAL - 2
+
+    // Track current index directly — not derived from scrollLeft
+    var currentIdx = REAL_START; // start on first real slide
+
+    // Get exact pixel offset of a slide index
+    function getOffset(idx) {
+      return allSlides[idx].offsetLeft - track.offsetLeft;
     }
 
-    function getSlideWidth() {
-      var firstSlide = track.querySelector(".photo-slide");
-      if (!firstSlide) return 300;
-      var style = window.getComputedStyle(track);
-      var gap = parseFloat(style.columnGap || style.gap || "0");
-      return firstSlide.offsetWidth + gap;
+    // Instant jump to a slide index (no animation)
+    function jumpToIdx(idx) {
+      idx = Math.max(0, Math.min(TOTAL - 1, idx));
+      currentIdx = idx;
+      track.scrollLeft = getOffset(idx);
     }
 
-    function getCurrentIndex() {
-      var sw = getSlideWidth();
-      var idx = Math.round(track.scrollLeft / sw);
-      // Clamp to real slide range
-      if (idx < realStart) idx = realStart;
-      if (idx > realEnd) idx = realEnd;
-      return idx;
+    // Smooth animate from current scrollLeft to target pixel
+    function animateTo(targetPx, duration) {
+      if (isAnimating) return;
+      isAnimating = true;
+      var startPx = track.scrollLeft;
+      var startTime = performance.now();
+
+      function step(now) {
+        var elapsed = now - startTime;
+        var t = Math.min(elapsed / duration, 1);
+        // ease-out quad
+        var ease = t < 1 ? 1 - (1 - t) * (1 - t) : 1;
+        track.scrollLeft = startPx + (targetPx - startPx) * ease;
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          isAnimating = false;
+          checkBoundary();
+        }
+      }
+      requestAnimationFrame(step);
     }
 
-    function goTo(index) {
-      var allS = track.querySelectorAll(".photo-slide");
-      var el = allS[index];
-      if (!el) return;
-      var targetLeft = el.offsetLeft - track.offsetLeft;
-      track.scrollTo({ left: targetLeft, behavior: "smooth" });
-    }
-
-    function jumpTo(index) {
-      var allS = track.querySelectorAll(".photo-slide");
-      var el = allS[index];
-      if (!el) return;
-      track.scrollLeft = el.offsetLeft - track.offsetLeft;
-    }
-
-    function next() {
-      var cur = getCurrentIndex();
-      var nextIdx = cur + 1;
-      if (nextIdx > realEnd) {
-        // Past last real slide — go to first real with smooth, then jump
-        goTo(realEnd);
-        setTimeout(function () { jumpTo(realStart); }, 380);
-      } else {
-        goTo(nextIdx);
+    // After any animation/jump, silently move to real slide if in clone zone
+    function checkBoundary() {
+      if (currentIdx === REAL_START - 1) {
+        // In left clone zone — jump to last real instantly
+        jumpToIdx(REAL_END);
+      } else if (currentIdx === REAL_END + 1) {
+        // In right clone zone — jump to first real instantly
+        jumpToIdx(REAL_START);
       }
     }
 
-    function prev() {
-      var cur = getCurrentIndex();
-      var prevIdx = cur - 1;
-      if (prevIdx < realStart) {
-        // Past first real slide — go to last real with smooth, then jump
-        goTo(realStart);
-        setTimeout(function () { jumpTo(realEnd); }, 380);
+    // Initialize: scroll to first real slide (index 1)
+    jumpToIdx(REAL_START);
+
+    // --- Navigation ---
+
+    function goToNext() {
+      var nextIdx = currentIdx + 1;
+      if (nextIdx > REAL_END) {
+        // Past last real — smooth scroll to right clone, then instant jump back
+        animateTo(getOffset(nextIdx), ANIM_DURATION);
+        setTimeout(function () { jumpToIdx(REAL_START); }, ANIM_DURATION + 30);
       } else {
-        goTo(prevIdx);
+        animateTo(getOffset(nextIdx), ANIM_DURATION);
+        currentIdx = nextIdx;
       }
     }
+
+    function goToPrev() {
+      var prevIdx = currentIdx - 1;
+      if (prevIdx < REAL_START) {
+        // Past first real — smooth scroll to left clone, then instant jump back
+        animateTo(getOffset(prevIdx), ANIM_DURATION);
+        setTimeout(function () { jumpToIdx(REAL_END); }, ANIM_DURATION + 30);
+      } else {
+        animateTo(getOffset(prevIdx), ANIM_DURATION);
+        currentIdx = prevIdx;
+      }
+    }
+
+    // Passive scroll handler — detect manual scroll into clone zones
+    // We use a simpler approach: if scrollLeft settles more than sw*0.5
+    // beyond clone boundaries, jump back silently
+    var lastSeenScroll = track.scrollLeft;
+    track.addEventListener("scroll", function () {
+      lastSeenScroll = track.scrollLeft;
+    }, { passive: true });
 
     function startAuto() {
       stopAuto();
-      autoTimer = setInterval(next, 4200);
+      autoTimer = setInterval(goToNext, 4200);
     }
 
     function stopAuto() {
       clearInterval(autoTimer);
     }
 
-    // Scroll handler — detect when user lands in clone zone and silently jump back
-    var jumping = false;
-    track.addEventListener("scroll", function () {
-      if (jumping) return;
-      var allS = track.querySelectorAll(".photo-slide");
-      var sw = getSlideWidth();
-
-      // User scrolled into the prepended clone region (left of real slides)
-      var lastCloneEl = allS[cloneCount - 1];
-      if (lastCloneEl && track.scrollLeft < lastCloneEl.offsetLeft - track.offsetLeft - sw * 0.3) {
-        jumping = true;
-        jumpTo(realEnd);
-        setTimeout(function () { jumping = false; }, 80);
-        return;
-      }
-
-      // User scrolled into the appended clone region (right of real slides)
-      var firstCloneEl = allS[total - cloneCount];
-      if (firstCloneEl && track.scrollLeft > firstCloneEl.offsetLeft - track.offsetLeft + sw * 0.3) {
-        jumping = true;
-        jumpTo(realStart);
-        setTimeout(function () { jumping = false; }, 80);
-        return;
-      }
-    }, { passive: true });
-
-    // Mouse hover pauses auto-advance
+    // Pause on hover
     track.addEventListener("mouseenter", stopAuto);
     track.addEventListener("mouseleave", startAuto);
 
     // Button clicks
-    if (prevBtn) prevBtn.addEventListener("click", function () { stopAuto(); prev(); startAuto(); });
-    if (nextBtn) nextBtn.addEventListener("click", function () { stopAuto(); next(); startAuto(); });
+    prevBtn.addEventListener("click", function () {
+      stopAuto();
+      goToPrev();
+      startAuto();
+    });
+
+    nextBtn.addEventListener("click", function () {
+      stopAuto();
+      goToNext();
+      startAuto();
+    });
 
     startAuto();
   })();
@@ -206,7 +221,7 @@ const sliderId = "homepage-photo-slider";
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     padding: 0 3rem;
-    scroll-behavior: smooth;
+    /* NO scroll-behavior: smooth here — JS handles it */
   }
 
   .photo-slider-track::-webkit-scrollbar {

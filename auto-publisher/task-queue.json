@@ -44,21 +44,31 @@
       "created_at": "2026-04-17T15:00:00+03:00"
     },
     "slot_5": {
-      "status": "PENDING",
+      "status": "OUTLINE_READY",
       "topic": "G02",
-      "title": "Best Time to Visit Switzerland: Month-by-Month",
+      "title": "Best Time to Visit Switzerland: Month-by-Month Guide",
       "slug": "best-time-visit-switzerland-month-by-month",
-      "keyword": null,
-      "notes": "Guide enhance — currently 41 blocks, review",
-      "created_at": "2026-04-17T06:00:00+03:00"
+      "keyword": "best time to visit Switzerland, Switzerland weather by month, when to go to Switzerland, Switzerland seasonal travel guide",
+      "notes": "Slot 5 — 21:00 TR — Outline üretildi, onay bekleniyor",
+      "created_at": "2026-04-17T18:00:00+03:00",
+      "outline": {
+        "sections": 11,
+        "longTailQuestions": 6,
+        "research": {
+          "winter": {"best_for": "Skiing & snow sports", "months": "January, February, December"},
+          "spring": {"best_for": "Alpine blossoms, hiking starts", "months": "April, May"},
+          "summer": {"best_for": "Hiking, festivals", "months": "June, July, August"},
+          "autumn": {"best_for": "Fall colors, wine harvest", "months": "September, October"}
+        }
+      }
     }
   },
   "daily_summary": {
     "total": 5,
     "published": 1,
     "approved": 0,
-    "outline_ready": 1,
-    "pending": 2,
+    "outline_ready": 2,
+    "pending": 1,
     "researching": 1,
     "failed": 0
   }
