@@ -154,9 +154,25 @@ const featuredItems = sanityHome?.featuredStories && sanityHome.featuredStories.
 
 const guideCount = (await getGuides()).length;
 const featuredIntro = `Start with the destination brief, then shape nights, passes, and mountain days around the base that gives you the cleanest route logic.${guideCount > 0 ? ` ${guideCount} planning guides are already paired with this editorial layer.` : ""}`;
+
+const websiteJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "SwissWayExplorer",
+  "url": "https://swisswayexplorer.com/",
+  "description": "Editorial destination briefs and practical guides for Switzerland trip planning.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://swisswayexplorer.com/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+});
 ---
 
-<BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt}>
+<BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt} jsonld={websiteJsonLd}>
   <Hero {...hero} />
   <PhotoSlider {...photoGallery} />
   <StoryRail items={storyRail} />

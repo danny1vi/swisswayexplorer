@@ -126,6 +126,19 @@ export type HighlightBoxBlock = {
 
 export type BodyBlock = BodyTextBlock | BodyImageBlock | QuickVerdictBlock | HighlightBoxBlock;
 
+export type FaqItem = {
+  _key?: string;
+  question: string;
+  answer: string;
+};
+
+export type HighlightBoxData = {
+  _key?: string;
+  boxType?: "important" | "budget" | "route" | "tip";
+  title?: string;
+  body: string;
+};
+
 export type Destination = {
   _id?: string;
   title: string;
@@ -136,6 +149,8 @@ export type Destination = {
   bestSeason?: string;
   image?: ImageAsset;
   gallery?: ImageAsset[];
+  faq?: FaqItem[];
+  highlightBoxes?: HighlightBoxData[];
 };
 
 export type Guide = {

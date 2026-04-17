@@ -9,6 +9,7 @@ type Props = {
   description?: string;
   image?: string;
   imageAlt?: string;
+  jsonld?: string;
 };
 
 const { title, description, image, imageAlt } = Astro.props;
@@ -47,6 +48,9 @@ const ogImageAlt = imageAlt || siteSettings?.ogImage?.alt || `${siteName} social
     <meta name="twitter:description" content={resolvedDescription} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
+    {Astro.props.jsonld && (
+      <script type="application/ld+json" set:html={Astro.props.jsonld} />
+    )}
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script is:inline>

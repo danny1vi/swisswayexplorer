@@ -40,6 +40,31 @@ const headings = extractHeadings(guide?.body);
 if (!guide) {
   Astro.response.status = 404;
 }
+
+const guideJsonLd = guide ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": guide.title,
+  "description": guide.summary,
+  "url": `https://swisswayexplorer.com/guides/${guide.slug}/`,
+  "image": guideImage?.url ? [guideImage.url] : [],
+  "datePublished": guide._createdAt,
+  "dateModified": guide._updatedAt,
+  "author": {
+    "@type": "Organization",
+    "name": "SwissWayExplorer",
+    "url": "https://swisswayexplorer.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SwissWayExplorer",
+    "url": "https://swisswayexplorer.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://swisswayexplorer.com/favicon.svg"
+    }
+  }
+}) : undefined;
 ---
 
 <BaseLayout
@@ -47,6 +72,7 @@ if (!guide) {
   description={guide?.summary || "Guide brief is not available yet."}
   image={guideImage?.url}
   imageAlt={guideImage?.alt}
+  jsonld={guideJsonLd}
 >
   <section class="section">
     <div class="container">
