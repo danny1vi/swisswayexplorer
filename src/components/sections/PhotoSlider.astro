@@ -104,7 +104,8 @@ const sliderId = "homepage-photo-slider";
       var allS = track.querySelectorAll(".photo-slide");
       var el = allS[index];
       if (!el) return;
-      track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: "smooth" });
+      var targetLeft = el.offsetLeft - track.offsetLeft;
+      track.scrollTo({ left: targetLeft, behavior: "smooth" });
     }
 
     function jumpTo(index) {
@@ -178,8 +179,8 @@ const sliderId = "homepage-photo-slider";
     track.addEventListener("mouseleave", startAuto);
 
     // Button clicks
-    if (prevBtn) prevBtn.addEventListener("click", prev);
-    if (nextBtn) nextBtn.addEventListener("click", next);
+    if (prevBtn) prevBtn.addEventListener("click", function () { stopAuto(); prev(); startAuto(); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { stopAuto(); next(); startAuto(); });
 
     startAuto();
   })();
