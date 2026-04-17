@@ -29,18 +29,12 @@ export type StoryRailItem = {
 };
 
 export type PhotoGalleryItem = {
-  eyebrow?: string;
-  title: string;
-  summary?: string;
   href: string;
   imageUrl: string;
   imageAlt: string;
 };
 
 export type PhotoGallery = {
-  eyebrow?: string;
-  title: string;
-  description?: string;
   items: PhotoGalleryItem[];
 };
 
@@ -154,34 +148,31 @@ export const siteConfig = {
       },
     ] as StoryRailItem[],
     photoGallery: {
-      eyebrow: "Photo Gallery",
-      title: "Jump into the route questions that usually begin with one strong image.",
-      description:
-        "Use these photo-led links to open a destination brief or planning guide directly from the top of the homepage.",
       items: [
         {
-          eyebrow: "Base choice",
-          title: "Lucerne",
-          summary: "Open the destination brief that works well as a calm first Switzerland base.",
           href: "/destinations/lucerne/",
           imageUrl: "/images/fallbacks/destination-lucerne.svg",
           imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
         },
         {
-          eyebrow: "Mountain focus",
-          title: "Interlaken & Jungfrau",
-          summary: "See the alpine base where weather windows and route timing matter most.",
           href: "/destinations/interlaken-jungfrau/",
           imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
           imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
         },
         {
-          eyebrow: "Route planning",
-          title: "7-Day Structure",
-          summary: "Open the guide for a cleaner two-hub Switzerland itinerary.",
           href: "/guides/7-day-switzerland-route-basics/",
           imageUrl: "/images/fallbacks/guide-7-day-route.svg",
           imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
+        },
+        {
+          href: "/guides/swiss-transport-pass-quick-decision-guide/",
+          imageUrl: "/images/fallbacks/guide-transport-pass.svg",
+          imageAlt: "Swiss rail ticket and train illustration for transport pass planning.",
+        },
+        {
+          href: "/destinations/zermatt/",
+          imageUrl: "/images/fallbacks/destination-zermatt.svg",
+          imageAlt: "Matterhorn-style mountain silhouette above the Zermatt valley at sunrise.",
         },
       ],
     } as PhotoGallery,

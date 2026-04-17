@@ -3,7 +3,7 @@ export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
-import PhotoGallery from "../components/sections/PhotoGallery.astro";
+import PhotoSlider from "../components/sections/PhotoSlider.astro";
 import StoryRail from "../components/sections/StoryRail.astro";
 import CategoryGrid from "../components/sections/CategoryGrid.astro";
 import EditorialSplit from "../components/sections/EditorialSplit.astro";
@@ -73,15 +73,12 @@ const storyRail =
 
 const photoGallery = sanityHome?.photoGallery?.items?.length
   ? {
-      eyebrow: sanityHome.photoGallery.eyebrow,
-      title: sanityHome.photoGallery.title,
-      description: sanityHome.photoGallery.description,
       items: sanityHome.photoGallery.items.map((item) => {
         const image = resolveHomepageLinkImage(item.href, item.image);
         return {
-          ...item,
           imageUrl: image?.url || "",
-          imageAlt: image?.alt || item.title,
+          imageAlt: image?.alt || "",
+          href: item.href,
         };
       }).filter((item) => item.imageUrl),
     }
@@ -161,7 +158,7 @@ const featuredIntro = `Start with the destination brief, then shape nights, pass
 
 <BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt}>
   <Hero {...hero} />
-  <PhotoGallery {...photoGallery} />
+  <PhotoSlider {...photoGallery} />
   <StoryRail items={storyRail} />
   <CategoryGrid items={categoryHighlights} />
   <EditorialSplit {...editorialSplit} />

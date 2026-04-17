@@ -54,13 +54,7 @@ export const HOME_PAGE_QUERY = `
     }
   },
   photoGallery{
-    eyebrow,
-    title,
-    description,
     items[]{
-      eyebrow,
-      title,
-      summary,
       href,
       "image": image{
         "url": asset->url,

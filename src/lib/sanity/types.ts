@@ -38,17 +38,11 @@ export type StoryRailItem = {
 };
 
 export type HomepageLinkedPhoto = {
-  eyebrow?: string;
-  title: string;
-  summary?: string;
   href: string;
   image?: ImageAsset;
 };
 
 export type PhotoGalleryData = {
-  eyebrow?: string;
-  title: string;
-  description?: string;
   items: HomepageLinkedPhoto[];
 };
 

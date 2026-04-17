@@ -189,50 +189,19 @@ const pageHome = {
     {
       name: "photoGallery",
       type: "object",
-      title: "Hero-adjacent photo gallery",
+      title: "Hero-adjacent photo slider",
       description:
-        "Linkable gallery shown near the top of the homepage. Each photo can point to either a guide or a destination URL.",
+        "Linkable photo slider shown near the top of the homepage. Use equal-size travel photos with alt text and a guide or destination link.",
       fields: [
-        {
-          name: "eyebrow",
-          type: "string",
-          title: "Eyebrow",
-          initialValue: "Photo Gallery",
-        },
-        {
-          name: "title",
-          type: "string",
-          title: "Title",
-          validation: (Rule) => Rule.required(),
-        },
-        {
-          name: "description",
-          type: "text",
-          title: "Description",
-          rows: 3,
-        },
         {
           name: "items",
           type: "array",
-          title: "Gallery photos",
+          title: "Slider photos",
           of: [
             {
               type: "object",
-              title: "Gallery photo",
+              title: "Slider photo",
               fields: [
-                { name: "eyebrow", type: "string", title: "Eyebrow" },
-                {
-                  name: "title",
-                  type: "string",
-                  title: "Title",
-                  validation: (Rule) => Rule.required(),
-                },
-                {
-                  name: "summary",
-                  type: "text",
-                  title: "Summary",
-                  rows: 2,
-                },
                 {
                   name: "href",
                   type: "string",
@@ -258,7 +227,7 @@ const pageHome = {
               ],
               preview: {
                 select: {
-                  title: "title",
+                  title: "href",
                   subtitle: "href",
                   media: "image",
                 },
