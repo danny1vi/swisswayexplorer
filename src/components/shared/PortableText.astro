@@ -112,7 +112,11 @@ function renderSpan(span: any, markDefs: any[]): string {
               ? "align-justify"
               : undefined;
 
-    return <Tag id={headingId} class={alignClass} set:html={html} />;
+    // Use headingText (## stripped) for heading tags, html for everything else
+    const isHeading = inferredStyle === "h2" || inferredStyle === "h3";
+    return isHeading
+      ? <Tag id={headingId} class={alignClass} set:html={headingText} />
+      : <Tag class={alignClass} set:html={html} />;
   })}
 </div>
 
