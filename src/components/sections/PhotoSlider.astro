@@ -17,18 +17,32 @@ const sliderId = "homepage-photo-slider";
   <section class="section photo-slider-section" aria-label="Featured travel photos">
     <div class="container">
       <div class="photo-slider-shell">
-        <button class="slider-arrow slider-arrow-prev" type="button" aria-label="Previous photos" data-slider-prev={sliderId}>
-          <span aria-hidden="true">←</span>
+        <button
+          class="slider-arrow slider-arrow-prev"
+          type="button"
+          aria-label="Previous photos"
+          id={`${sliderId}-prev`}
+        >
+          <span aria-hidden="true">&#8592;</span>
         </button>
-        <div class="photo-slider-track" id={sliderId} data-photo-slider>
+        <div
+          class="photo-slider-track"
+          id={sliderId}
+          data-photo-slider
+        >
           {items.map((item) => (
             <a class="photo-slide" href={item.href}>
               <img src={item.imageUrl} alt={item.imageAlt || ""} loading="lazy" />
             </a>
           ))}
         </div>
-        <button class="slider-arrow slider-arrow-next" type="button" aria-label="Next photos" data-slider-next={sliderId}>
-          <span aria-hidden="true">→</span>
+        <button
+          class="slider-arrow slider-arrow-next"
+          type="button"
+          aria-label="Next photos"
+          id={`${sliderId}-next`}
+        >
+          <span aria-hidden="true">&#8594;</span>
         </button>
       </div>
     </div>
@@ -37,132 +51,135 @@ const sliderId = "homepage-photo-slider";
 
 <script is:inline define:vars={{ sliderId }}>
   (function () {
-    const track = document.getElementById(sliderId);
-    const prevButton = document.querySelector(`[data-slider-prev="${sliderId}"]`);
-    const nextButton = document.querySelector(`[data-slider-next="${sliderId}"]`);
+    var track = document.getElementById(sliderId);
+    if (!track) return;
 
-    if (!(track instanceof HTMLElement)) return;
+    var prevBtn = document.getElementById(sliderId + "-prev");
+    var nextBtn = document.getElementById(sliderId + "-next");
+    var autoTimer;
 
-    const slides = Array.from(track.querySelectorAll(".photo-slide"));
-    if (slides.length === 0) return;
+    // Add clones to both ends for infinite scroll illusion
+    var slides = Array.prototype.slice.call(track.querySelectorAll(".photo-slide"));
+    if (slides.length < 2) return;
 
-    // Clone first and last N slides for seamless infinite loop
-    const clonesCount = Math.min(2, slides.length);
-    const clonesStart = slides.slice(0, clonesCount).map(s => s.cloneNode(true));
-    const clonesEnd = slides.slice(-clonesCount).map(s => s.cloneNode(true));
+    var cloneCount = 1;
+    // Clone first N and last N slides
+    var clonesHead = slides.slice(0, cloneCount).map(function (s) { return s.cloneNode(true); });
+    var clonesTail = slides.slice(-cloneCount).map(function (s) { return s.cloneNode(true); });
 
-    clonesEnd.forEach(c => track.appendChild(c));
-    clonesStart.slice().reverse().forEach(c => track.prependChild(c));
+    clonesHead.forEach(function (c) { track.appendChild(c); });
+    clonesTail.forEach(function (c) { track.insertBefore(c, slides[0]); });
 
-    // After prepending clones, real slides are at index [clonesCount .. clonesCount + slides.length - 1]
-    const realStartIndex = clonesCount;
-    const realEndIndex = clonesCount + slides.length - 1;
+    // After prepending tails, slides shift to the right by cloneCount
+    var realCount = slides.length;
+    var realStart = cloneCount; // index of first real slide after prepending
+    var total = track.querySelectorAll(".photo-slide").length;
+    var realEnd = realStart + realCount - 1; // index of last real slide
 
-    // Jump positions (in pixels)
-    const getSlideLeft = (index) => {
-      const slide = track.querySelectorAll(".photo-slide")[index];
-      if (!slide) return 0;
-      return slide.offsetLeft;
-    };
+    // Scroll track to show first real slide, skipping the prepended clones
+    var allSlides = track.querySelectorAll(".photo-slide");
+    var firstReal = allSlides[realStart];
+    if (firstReal) {
+      track.scrollLeft = firstReal.offsetLeft - track.offsetLeft;
+    }
 
-    const totalRealSlides = slides.length;
+    function getSlideWidth() {
+      var firstSlide = track.querySelector(".photo-slide");
+      if (!firstSlide) return 300;
+      var style = window.getComputedStyle(track);
+      var gap = parseFloat(style.columnGap || style.gap || "0");
+      return firstSlide.offsetWidth + gap;
+    }
 
-    // Get gap from CSS
-    const getGap = () => {
-      const style = window.getComputedStyle(track);
-      return Number.parseFloat(style.columnGap || style.gap || "0");
-    };
+    function getCurrentIndex() {
+      var sw = getSlideWidth();
+      var idx = Math.round(track.scrollLeft / sw);
+      // Clamp to real slide range
+      if (idx < realStart) idx = realStart;
+      if (idx > realEnd) idx = realEnd;
+      return idx;
+    }
 
-    const slideWidth = () => {
-      const firstSlide = track.querySelector(".photo-slide");
-      if (!(firstSlide instanceof HTMLElement)) return track.clientWidth * 0.82;
-      return firstSlide.offsetWidth + getGap();
-    };
+    function goTo(index) {
+      var allS = track.querySelectorAll(".photo-slide");
+      var el = allS[index];
+      if (!el) return;
+      track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: "smooth" });
+    }
 
-    let isJumping = false;
-    let autoAdvance;
+    function jumpTo(index) {
+      var allS = track.querySelectorAll(".photo-slide");
+      var el = allS[index];
+      if (!el) return;
+      track.scrollLeft = el.offsetLeft - track.offsetLeft;
+    }
 
-    // Navigate — smooth scroll between real slides only; wrap at boundaries
-    const move = (direction) => {
-      const allSlides = track.querySelectorAll(".photo-slide");
-      const total = allSlides.length;
-      const currentScroll = track.scrollLeft;
-      const sw = slideWidth() - getGap();
-
-      // Find which real slide is currently visible (match by scroll position)
-      let currentRealIndex = -1;
-      for (let i = realStartIndex; i <= realEndIndex; i++) {
-        const left = getSlideLeft(i);
-        if (Math.abs(currentScroll - left) < sw * 0.6) {
-          currentRealIndex = i;
-          break;
-        }
+    function next() {
+      var cur = getCurrentIndex();
+      var nextIdx = cur + 1;
+      if (nextIdx > realEnd) {
+        // Past last real slide — go to first real with smooth, then jump
+        goTo(realEnd);
+        setTimeout(function () { jumpTo(realStart); }, 380);
+      } else {
+        goTo(nextIdx);
       }
-      if (currentRealIndex === -1) currentRealIndex = realStartIndex;
+    }
 
-      const targetRealIndex = currentRealIndex + direction;
-
-      // Wrap at boundaries — smooth scroll to opposite end
-      if (targetRealIndex < realStartIndex) {
-        track.scrollTo({ left: getSlideLeft(realEndIndex), behavior: "smooth" });
-        return;
+    function prev() {
+      var cur = getCurrentIndex();
+      var prevIdx = cur - 1;
+      if (prevIdx < realStart) {
+        // Past first real slide — go to last real with smooth, then jump
+        goTo(realStart);
+        setTimeout(function () { jumpTo(realEnd); }, 380);
+      } else {
+        goTo(prevIdx);
       }
-      if (targetRealIndex > realEndIndex) {
-        track.scrollTo({ left: getSlideLeft(realStartIndex), behavior: "smooth" });
-        return;
-      }
+    }
 
-      // Normal case — smooth scroll to target
-      track.scrollTo({ left: getSlideLeft(targetRealIndex), behavior: "smooth" });
-    };
-
-    const jumpToReal = (realIndex) => {
-      isJumping = true;
-      track.scrollTo({ left: getSlideLeft(realIndex), behavior: "instant" });
-      setTimeout(() => { isJumping = false; }, 60);
-    };
-
-    const handleScroll = () => {
-      if (isJumping) return;
-      const allSlides = track.querySelectorAll(".photo-slide");
-      const total = allSlides.length;
-      if (total <= clonesCount * 2) return;
-
-      const sw = slideWidth();
-      const scrollLeft = track.scrollLeft;
-
-      // Scrolled past the last clone region (right end) — jump to real start
-      const lastCloneFirst = getSlideLeft(total - clonesCount);
-      if (scrollLeft > lastCloneFirst - sw * 0.3) {
-        jumpToReal(realStartIndex);
-        return;
-      }
-
-      // Scrolled before the first clone region (left end) — jump to real end
-      const firstCloneLast = getSlideLeft(clonesCount - 1);
-      if (scrollLeft < firstCloneLast + sw * 0.3) {
-        jumpToReal(realEndIndex);
-        return;
-      }
-    };
-
-    prevButton?.addEventListener("click", () => move(-1));
-    nextButton?.addEventListener("click", () => move(1));
-
-    const stopAuto = () => clearInterval(autoAdvance);
-    const startAuto = () => {
+    function startAuto() {
       stopAuto();
-      autoAdvance = setInterval(() => move(1), 4200);
-    };
+      autoTimer = setInterval(next, 4200);
+    }
 
-    track.addEventListener("scroll", handleScroll, { passive: true });
+    function stopAuto() {
+      clearInterval(autoTimer);
+    }
+
+    // Scroll handler — detect when user lands in clone zone and silently jump back
+    var jumping = false;
+    track.addEventListener("scroll", function () {
+      if (jumping) return;
+      var allS = track.querySelectorAll(".photo-slide");
+      var sw = getSlideWidth();
+
+      // User scrolled into the prepended clone region (left of real slides)
+      var lastCloneEl = allS[cloneCount - 1];
+      if (lastCloneEl && track.scrollLeft < lastCloneEl.offsetLeft - track.offsetLeft - sw * 0.3) {
+        jumping = true;
+        jumpTo(realEnd);
+        setTimeout(function () { jumping = false; }, 80);
+        return;
+      }
+
+      // User scrolled into the appended clone region (right of real slides)
+      var firstCloneEl = allS[total - cloneCount];
+      if (firstCloneEl && track.scrollLeft > firstCloneEl.offsetLeft - track.offsetLeft + sw * 0.3) {
+        jumping = true;
+        jumpTo(realStart);
+        setTimeout(function () { jumping = false; }, 80);
+        return;
+      }
+    }, { passive: true });
+
+    // Mouse hover pauses auto-advance
     track.addEventListener("mouseenter", stopAuto);
     track.addEventListener("mouseleave", startAuto);
-    track.addEventListener("focusin", stopAuto);
-    track.addEventListener("focusout", startAuto);
 
-    // Initialize scroll position to real first slide (skip clones)
-    track.scrollTo({ left: getSlideLeft(realStartIndex), behavior: "instant" });
+    // Button clicks
+    if (prevBtn) prevBtn.addEventListener("click", prev);
+    if (nextBtn) nextBtn.addEventListener("click", next);
 
     startAuto();
   })();
