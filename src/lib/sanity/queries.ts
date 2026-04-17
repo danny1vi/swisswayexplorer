@@ -66,6 +66,16 @@ export const HOME_PAGE_QUERY = `
     cta{
       label,
       href
+    },
+    relatedStories[]{
+      eyebrow,
+      title,
+      summary,
+      href,
+      "image": image{
+        "url": asset->url,
+        alt
+      }
     }
   },
   itineraryTeasers[]{

@@ -40,6 +40,13 @@ export type EditorialSplit = {
     alt: string;
   };
   imageSide?: "left" | "right";
+  relatedStories?: Array<{
+    eyebrow?: string;
+    title: string;
+    summary: string;
+    href: string;
+    imageUrl?: string;
+  }>;
 };
 
 export type ItineraryTeaser = {
@@ -136,6 +143,32 @@ export const siteConfig = {
         alt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
       },
       imageSide: "left",
+      relatedStories: [
+        {
+          eyebrow: "First trip",
+          title: "Start with a base that keeps weather risk manageable",
+          summary:
+            "Lucerne buys flexibility when mountain plans need to move without collapsing the whole route.",
+          href: "/destinations/lucerne/",
+          imageUrl: "/images/fallbacks/destination-lucerne.svg",
+        },
+        {
+          eyebrow: "Mountain switch",
+          title: "Only shift fully alpine when the payoff is worth the nights",
+          summary:
+            "Interlaken works best when the mountains are the trip, not when they are only one scenic chapter.",
+          href: "/destinations/interlaken-jungfrau/",
+          imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+        },
+        {
+          eyebrow: "Route logic",
+          title: "A seven-day trip improves fast when the transfers are grouped",
+          summary:
+            "Use a cleaner two-hub plan before adding extra scenic stops that look good but slow the whole week.",
+          href: "/guides/7-day-switzerland-route-basics/",
+          imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+        },
+      ],
     } as EditorialSplit,
     itineraryTeasers: [
       {

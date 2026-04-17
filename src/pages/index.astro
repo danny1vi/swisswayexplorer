@@ -80,6 +80,17 @@ const editorialSplit = {
   image: sanityHome?.editorialSplit?.image?.url
     ? sanityHome.editorialSplit.image
     : siteConfig.homepage.editorialSplit.image,
+  relatedStories:
+    sanityHome?.editorialSplit?.relatedStories && sanityHome.editorialSplit.relatedStories.length > 0
+      ? sanityHome.editorialSplit.relatedStories.map((item) => {
+          const image = resolveHomepageLinkImage(item.href, item.image);
+          return {
+            ...item,
+            imageUrl: image?.url,
+            imageAlt: image?.alt,
+          };
+        })
+      : siteConfig.homepage.editorialSplit.relatedStories,
 };
 
 const itineraryTeasers =

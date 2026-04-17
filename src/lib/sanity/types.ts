@@ -45,6 +45,13 @@ export type EditorialSplitData = {
   cta?: GenericCta;
   image?: ImageAsset;
   imageSide?: "left" | "right";
+  relatedStories?: Array<{
+    eyebrow?: string;
+    title: string;
+    summary: string;
+    href: string;
+    image?: ImageAsset;
+  }>;
 };
 
 export type ItineraryTeaser = {

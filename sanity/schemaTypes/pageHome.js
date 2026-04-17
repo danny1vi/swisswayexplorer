@@ -239,6 +239,64 @@ const pageHome = {
             { name: "href", type: "string", title: "Href" },
           ],
         },
+        {
+          name: "relatedStories",
+          type: "array",
+          title: "Related photo cards",
+          description:
+            "Small image-led cards shown directly under the editorial feature. Use 3:2 or 4:3 crops and keep the summaries short.",
+          of: [
+            {
+              type: "object",
+              title: "Related card",
+              fields: [
+                { name: "eyebrow", type: "string", title: "Eyebrow" },
+                {
+                  name: "title",
+                  type: "string",
+                  title: "Title",
+                  validation: (Rule) => Rule.required(),
+                },
+                {
+                  name: "summary",
+                  type: "text",
+                  title: "Summary",
+                  rows: 3,
+                  validation: (Rule) => Rule.required(),
+                },
+                {
+                  name: "href",
+                  type: "string",
+                  title: "Link",
+                  validation: (Rule) => Rule.required(),
+                },
+                {
+                  name: "image",
+                  type: "image",
+                  title: "Photo",
+                  options: { hotspot: true },
+                  fields: [
+                    {
+                      name: "alt",
+                      type: "string",
+                      title: "Alt text",
+                      validation: (Rule) => Rule.required(),
+                    },
+                  ],
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
+              preview: {
+                select: {
+                  title: "title",
+                  subtitle: "eyebrow",
+                  media: "image",
+                },
+              },
+            },
+          ],
+          validation: (Rule) => Rule.max(3),
+        },
       ],
     },
     {
