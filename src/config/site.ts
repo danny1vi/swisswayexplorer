@@ -151,27 +151,27 @@ export const siteConfig = {
       items: [
         {
           href: "/destinations/lucerne/",
-          imageUrl: "/images/fallbacks/destination-lucerne.svg",
+          imageUrl: "https://cdn.sanity.io/images/lxmhb5oh/production/25130d6f9a5cc2bf44b1b329f4e0fe2ef96c8d68-1200x800.jpg",
           imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
         },
         {
           href: "/destinations/interlaken-jungfrau/",
-          imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+          imageUrl: "https://cdn.sanity.io/images/lxmhb5oh/production/960a0e5e90558229c506cbaaf03bafd2e883c316-1200x800.jpg",
           imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
         },
         {
           href: "/guides/7-day-switzerland-route-basics/",
-          imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+          imageUrl: "https://cdn.sanity.io/images/lxmhb5oh/production/283fd7480cbe3a3a2ba6bb11da83072dea54bb62-1200x797.jpg",
           imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
         },
         {
           href: "/guides/swiss-transport-pass-quick-decision-guide/",
-          imageUrl: "/images/fallbacks/guide-transport-pass.svg",
+          imageUrl: "https://cdn.sanity.io/images/lxmhb5oh/production/8f228ecaefabacadd78c7d34be398bd0cbbaf207-1200x707.jpg",
           imageAlt: "Swiss rail ticket and train illustration for transport pass planning.",
         },
         {
           href: "/destinations/zermatt/",
-          imageUrl: "/images/fallbacks/destination-zermatt.svg",
+          imageUrl: "https://cdn.sanity.io/images/lxmhb5oh/production/d06af60cbcc3491a4e92011ed6d7be32b8d5f9e2-1200x800.jpg",
           imageAlt: "Matterhorn-style mountain silhouette above the Zermatt valley at sunrise.",
         },
       ],
