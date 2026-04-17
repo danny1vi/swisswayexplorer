@@ -91,18 +91,24 @@ function renderSpan(span: any, markDefs: any[]): string {
     const children = block.children || [];
     const markDefs: any[] = block.markDefs || [];
     const html = children.map((child: any) => renderSpan(child, markDefs)).join("");
-    const style = block.style || "normal";
-    const Tag = style === "h2" ? "h2" : style === "h3" ? "h3" : style === "blockquote" ? "blockquote" : "p";
-    const headingText = children.map((c: any) => c.text || "").join("");
-    const headingId = (style === "h2" || style === "h3") ? slugify(headingText) : undefined;
+    const rawStyle = block.style || "normal";
+    const rawText = children.map((c: any) => c.text || "").join("");
+    // Fallback: if style is "normal" but text starts with "## " or "### ",
+    // treat as heading to handle legacy/corrupt data from Sanity
+    const headingText = rawText.replace(/^#{2,3}\s*/, "");
+    const inferredStyle = (rawStyle === "normal" && rawText.startsWith("### ")) ? "h3"
+      : (rawStyle === "normal" && rawText.startsWith("## ")) ? "h2"
+      : rawStyle;
+    const Tag = inferredStyle === "h2" ? "h2" : inferredStyle === "h3" ? "h3" : inferredStyle === "blockquote" ? "blockquote" : "p";
+    const headingId = (inferredStyle === "h2" || inferredStyle === "h3") ? slugify(headingText) : undefined;
     const alignClass =
-      style === "bodyLeft"
+      rawStyle === "bodyLeft"
         ? "align-left"
-        : style === "bodyCenter"
+        : rawStyle === "bodyCenter"
           ? "align-center"
-          : style === "bodyRight"
+          : rawStyle === "bodyRight"
             ? "align-right"
-            : style === "bodyJustify" || style === "normal"
+            : rawStyle === "bodyJustify" || rawStyle === "normal"
               ? "align-justify"
               : undefined;
 
