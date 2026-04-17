@@ -3,6 +3,7 @@ export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
+import StoryRail from "../components/sections/StoryRail.astro";
 import CategoryGrid from "../components/sections/CategoryGrid.astro";
 import EditorialSplit from "../components/sections/EditorialSplit.astro";
 import FeaturedGrid from "../components/sections/FeaturedGrid.astro";
@@ -10,7 +11,7 @@ import ItineraryTeasers from "../components/sections/ItineraryTeasers.astro";
 import CTA from "../components/sections/CTA.astro";
 import { siteConfig } from "../config/site";
 import { getDestinations, getGuides, getHomePage } from "../lib/sanity/content";
-import { resolveDestinationImage } from "../lib/contentImages";
+import { resolveDestinationImage, resolveGuideImage } from "../lib/contentImages";
 
 const sanityHome = await getHomePage();
 const hero = sanityHome
@@ -32,6 +33,35 @@ const categoryHighlights =
     ? sanityHome.categoryHighlights
     : siteConfig.homepage.categoryHighlights;
 
+function resolveHomepageLinkImage(href: string, image?: { url: string; alt?: string } | null) {
+  if (image?.url) {
+    return image;
+  }
+
+  const slug = href.split("/").filter(Boolean).pop() || "";
+  if (href.includes("/destinations/")) {
+    return resolveDestinationImage({ slug });
+  }
+
+  if (href.includes("/guides/")) {
+    return resolveGuideImage({ slug });
+  }
+
+  return undefined;
+}
+
+const storyRail =
+  sanityHome?.storyRail && sanityHome.storyRail.length > 0
+    ? sanityHome.storyRail.map((item) => {
+        const image = resolveHomepageLinkImage(item.href, item.image);
+        return {
+          ...item,
+          imageUrl: image?.url,
+          imageAlt: image?.alt,
+        };
+      })
+    : siteConfig.homepage.storyRail;
+
 const editorialSplit = {
   ...siteConfig.homepage.editorialSplit,
   ...sanityHome?.editorialSplit,
@@ -46,7 +76,14 @@ const editorialSplit = {
 
 const itineraryTeasers =
   sanityHome?.itineraryTeasers && sanityHome.itineraryTeasers.length > 0
-    ? sanityHome.itineraryTeasers
+    ? sanityHome.itineraryTeasers.map((item) => {
+        const image = resolveHomepageLinkImage(item.href, item.image);
+        return {
+          ...item,
+          imageUrl: image?.url,
+          imageAlt: image?.alt,
+        };
+      })
     : siteConfig.homepage.itineraryTeasers;
 
 const sanityDestinations = await getDestinations();
@@ -73,6 +110,7 @@ const featuredIntro = `Start with the destination brief, then shape nights, pass
 
 <BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt}>
   <Hero {...hero} />
+  <StoryRail items={storyRail} />
   <CategoryGrid items={categoryHighlights} />
   <EditorialSplit {...editorialSplit} />
   <FeaturedGrid

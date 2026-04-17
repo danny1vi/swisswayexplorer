@@ -29,6 +29,14 @@ export type CategoryHighlight = {
   href: string;
 };
 
+export type StoryRailItem = {
+  eyebrow?: string;
+  title: string;
+  summary: string;
+  href: string;
+  image?: ImageAsset;
+};
+
 export type EditorialSplitData = {
   eyebrow?: string;
   title: string;
@@ -44,6 +52,7 @@ export type ItineraryTeaser = {
   title: string;
   description: string;
   href: string;
+  image?: ImageAsset;
 };
 
 export type PageHomeData = {
@@ -54,6 +63,9 @@ export type PageHomeData = {
   seoDescription?: string;
   primaryCta: GenericCta;
   secondaryCta?: GenericCta;
+  heroVideoUrl?: string;
+  heroVideoPoster?: ImageAsset;
+  storyRail?: StoryRailItem[];
   categoryHighlights?: CategoryHighlight[];
   editorialSplit?: EditorialSplitData;
   itineraryTeasers?: ItineraryTeaser[];

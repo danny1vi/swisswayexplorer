@@ -46,6 +46,20 @@ const pageHome = {
       description: "Optional override for meta description and social description on the homepage.",
     },
     {
+      name: "heroVideoUrl",
+      type: "url",
+      title: "Hero video URL",
+      description: "Optional direct video URL for the homepage hero media panel.",
+    },
+    {
+      name: "heroVideoPoster",
+      type: "image",
+      title: "Hero video poster",
+      description: "Fallback poster image shown before the hero video loads or on devices that cannot autoplay.",
+      options: { hotspot: true },
+      fields: [{ name: "alt", type: "string", title: "Alt text" }],
+    },
+    {
       name: "primaryCta",
       type: "object",
       title: "Primary CTA",
@@ -102,6 +116,54 @@ const pageHome = {
         },
       ],
       validation: (Rule) => Rule.max(3),
+    },
+    {
+      name: "storyRail",
+      type: "array",
+      title: "Story rail",
+      description: "Large photo-led homepage cards designed to trigger curiosity and clicks.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "eyebrow", type: "string", title: "Eyebrow" },
+            {
+              name: "title",
+              type: "string",
+              title: "Title",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "summary",
+              type: "text",
+              title: "Summary",
+              rows: 3,
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "href",
+              type: "string",
+              title: "Link",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: { hotspot: true },
+              fields: [{ name: "alt", type: "string", title: "Alt text" }],
+            },
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "eyebrow",
+              media: "image",
+            },
+          },
+        },
+      ],
+      validation: (Rule) => Rule.max(4),
     },
     {
       name: "editorialSplit",
@@ -189,11 +251,19 @@ const pageHome = {
               title: "Link",
               validation: (Rule) => Rule.required(),
             },
+            {
+              name: "image",
+              type: "image",
+              title: "Thumbnail image",
+              options: { hotspot: true },
+              fields: [{ name: "alt", type: "string", title: "Alt text" }],
+            },
           ],
           preview: {
             select: {
               title: "title",
               subtitle: "duration",
+              media: "image",
             },
           },
         },

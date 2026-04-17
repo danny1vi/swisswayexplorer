@@ -1,4 +1,6 @@
 ---
+import { truncateText } from "../../lib/truncate";
+
 type Card = {
   eyebrow?: string;
   title: string;
@@ -35,10 +37,10 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
               <span class="placeholder-label">{item.title}</span>
             </div>
           )}
-          <div class="card-body">
-            {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
-            <h3>{item.title}</h3>
-            <p>{item.summary}</p>
+            <div class="card-body">
+              {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
+              <h3>{item.title}</h3>
+            <p>{truncateText(item.summary, 100)}</p>
             <a href={item.href}>Read brief</a>
           </div>
         </article>

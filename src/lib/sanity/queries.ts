@@ -23,6 +23,11 @@ export const HOME_PAGE_QUERY = `
   },
   seoTitle,
   seoDescription,
+  heroVideoUrl,
+  "heroVideoPoster": heroVideoPoster{
+    "url": asset->url,
+    alt
+  },
   primaryCta{
     label,
     href
@@ -36,6 +41,16 @@ export const HOME_PAGE_QUERY = `
     title,
     description,
     href
+  },
+  storyRail[]{
+    eyebrow,
+    title,
+    summary,
+    href,
+    "image": image{
+      "url": asset->url,
+      alt
+    }
   },
   editorialSplit{
     eyebrow,
@@ -56,7 +71,11 @@ export const HOME_PAGE_QUERY = `
     duration,
     title,
     description,
-    href
+    href,
+    "image": image{
+      "url": asset->url,
+      alt
+    }
   }
 }
 `;

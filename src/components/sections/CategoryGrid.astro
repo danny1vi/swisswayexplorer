@@ -1,4 +1,6 @@
 ---
+import { truncateText } from "../../lib/truncate";
+
 type CategoryItem = {
   eyebrow?: string;
   title: string;
@@ -27,7 +29,7 @@ const { items } = Astro.props;
         <a class="category-card card" href={item.href} data-tone={index % 3}>
           {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
           <h3>{item.title}</h3>
-          <p>{item.description}</p>
+          <p>{truncateText(item.description, 110)}</p>
           <span class="card-link">Open section</span>
         </a>
       ))}

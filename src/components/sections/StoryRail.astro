@@ -1,0 +1,181 @@
+---
+import { truncateText } from "../../lib/truncate";
+
+type StoryItem = {
+  eyebrow?: string;
+  title: string;
+  summary: string;
+  href: string;
+  imageUrl?: string;
+  imageAlt?: string;
+};
+
+type Props = {
+  items: StoryItem[];
+};
+
+const { items } = Astro.props;
+---
+
+<section class="section story-rail-section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-label">Photo Stories</p>
+      <h2 class="section-title">Open the sections that change the shape of the whole trip.</h2>
+      <p class="section-copy">
+        The strongest Switzerland decisions usually start with one image-led question: which base, which mountain rhythm, and which route logic deserves your week?
+      </p>
+    </div>
+    <div class="story-rail">
+      {items.map((item, index) => (
+        <a class:list={["story-card card", index === 0 && "story-card-featured"]} href={item.href}>
+          {item.imageUrl ? (
+            <div class="story-media">
+              <img src={item.imageUrl} alt={item.imageAlt || item.title} loading="lazy" />
+            </div>
+          ) : null}
+          <div class="story-overlay">
+            {item.eyebrow && <p class="story-eyebrow">{item.eyebrow}</p>}
+            <h3>{item.title}</h3>
+            <p>{truncateText(item.summary, 100)}</p>
+            <span class="story-link">Open story</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .story-rail-section {
+    padding-top: 0.25rem;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    max-width: 62rem;
+  }
+
+  .story-rail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .story-card {
+    position: relative;
+    min-height: 420px;
+    overflow: hidden;
+    padding: 0;
+    text-decoration: none;
+    border-radius: calc(var(--radius) + 12px);
+    isolation: isolate;
+  }
+
+  .story-card-featured {
+    min-height: 520px;
+  }
+
+  .story-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(9, 16, 14, 0.04) 8%, rgba(9, 16, 14, 0.78) 100%),
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.12), transparent 38%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .story-card:hover,
+  .story-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 72px rgba(22, 37, 31, 0.16);
+  }
+
+  .story-card:hover .story-media img,
+  .story-card:focus-visible .story-media img {
+    transform: scale(1.04);
+  }
+
+  .story-media,
+  .story-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .story-media img {
+    object-fit: cover;
+    transition: transform 260ms ease;
+  }
+
+  .story-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: grid;
+    gap: 0.7rem;
+    padding: 1.4rem;
+    z-index: 2;
+    color: rgba(255, 251, 245, 0.96);
+  }
+
+  .story-eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(255, 240, 206, 0.92);
+  }
+
+  .story-card h3 {
+    margin: 0;
+    max-width: 16ch;
+    font-size: clamp(1.35rem, 2vw, 2rem);
+    line-height: 1.02;
+    color: white;
+  }
+
+  .story-card p {
+    margin: 0;
+    max-width: 34ch;
+    color: rgba(255, 247, 238, 0.92);
+    line-height: 1.62;
+  }
+
+  .story-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: rgba(255, 246, 232, 0.98);
+  }
+
+  .story-link::after {
+    content: "->";
+    color: var(--accent-amber);
+    transition: transform 0.2s ease;
+  }
+
+  .story-card:hover .story-link::after,
+  .story-card:focus-visible .story-link::after {
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 1100px) {
+    .story-rail {
+      grid-template-columns: 1fr;
+    }
+
+    .story-card,
+    .story-card-featured {
+      min-height: 360px;
+    }
+  }
+</style>

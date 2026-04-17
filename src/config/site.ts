@@ -18,6 +18,14 @@ export type CategoryHighlight = {
   href: string;
 };
 
+export type StoryRailItem = {
+  eyebrow?: string;
+  title: string;
+  summary: string;
+  href: string;
+  imageUrl?: string;
+};
+
 export type EditorialSplit = {
   eyebrow: string;
   title: string;
@@ -39,6 +47,7 @@ export type ItineraryTeaser = {
   title: string;
   description: string;
   href: string;
+  imageUrl?: string;
 };
 
 export const siteConfig = {
@@ -88,6 +97,32 @@ export const siteConfig = {
         href: "/guides/",
       },
     ] as CategoryHighlight[],
+    storyRail: [
+      {
+        eyebrow: "First-time logic",
+        title: "Pick the base that makes the rest of the trip easier",
+        summary:
+          "See which Switzerland bases reduce transfer friction before you commit nights, passes, or mountain days.",
+        href: "/destinations/lucerne/",
+        imageUrl: "/images/fallbacks/destination-lucerne.svg",
+      },
+      {
+        eyebrow: "Alpine payoff",
+        title: "Compare the mountains that justify a full route shift",
+        summary:
+          "Use one strong alpine zone instead of scattering your week across too many scenic stops.",
+        href: "/destinations/interlaken-jungfrau/",
+        imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+      },
+      {
+        eyebrow: "Route discipline",
+        title: "See how a 7-day trip holds together when the pacing is right",
+        summary:
+          "Follow the planning logic that keeps Switzerland intense without turning every day into a transfer day.",
+        href: "/guides/7-day-switzerland-route-basics/",
+        imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+      },
+    ] as StoryRailItem[],
     editorialSplit: {
       eyebrow: "Editor's Pick",
       title: "Lucerne remains the cleanest first base for many Switzerland itineraries.",
@@ -109,6 +144,7 @@ export const siteConfig = {
         description:
           "A compact framework for deciding whether to stay local, take a scenic loop, or protect energy for the next rail day.",
         href: "/guides/7-day-switzerland-route-basics/",
+        imageUrl: "/images/fallbacks/guide-7-day-route.svg",
       },
       {
         duration: "2 days",
@@ -116,6 +152,7 @@ export const siteConfig = {
         description:
           "Use passes, saver tickets, and route grouping deliberately instead of buying rail products too early.",
         href: "/guides/swiss-transport-pass-quick-decision-guide/",
+        imageUrl: "/images/fallbacks/guide-transport-pass.svg",
       },
       {
         duration: "Shoulder season",
@@ -123,6 +160,7 @@ export const siteConfig = {
         description:
           "A faster way to weigh scenery, crowd pressure, and mountain reliability before you lock dates.",
         href: "/guides/seasonal-planning-spring-vs-summer/",
+        imageUrl: "/images/fallbacks/guide-seasonal-planning.svg",
       },
     ] as ItineraryTeaser[],
   },
