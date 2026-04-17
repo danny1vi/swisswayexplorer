@@ -59,8 +59,6 @@ const sliderId = "homepage-photo-slider";
     if (!prevBtn || !nextBtn) return;
 
     var autoTimer;
-    var isAnimating = false;
-    var ANIM_DURATION = 420; // ms for smooth slide animation
 
     // Collect original slides
     var originalSlides = Array.prototype.slice.call(track.querySelectorAll(".photo-slide"));
@@ -100,76 +98,30 @@ const sliderId = "homepage-photo-slider";
       track.scrollLeft = getOffset(idx);
     }
 
-    // Smooth animate from current scrollLeft to target pixel
-    function animateTo(targetPx, duration) {
-      if (isAnimating) return;
-      isAnimating = true;
-      var startPx = track.scrollLeft;
-      var startTime = performance.now();
-
-      function step(now) {
-        var elapsed = now - startTime;
-        var t = Math.min(elapsed / duration, 1);
-        // ease-out quad
-        var ease = t < 1 ? 1 - (1 - t) * (1 - t) : 1;
-        track.scrollLeft = startPx + (targetPx - startPx) * ease;
-        if (t < 1) {
-          requestAnimationFrame(step);
-        } else {
-          isAnimating = false;
-          checkBoundary();
-        }
-      }
-      requestAnimationFrame(step);
-    }
-
-    // After any animation/jump, silently move to real slide if in clone zone
-    function checkBoundary() {
-      if (currentIdx === REAL_START - 1) {
-        // In left clone zone — jump to last real instantly
-        jumpToIdx(REAL_END);
-      } else if (currentIdx === REAL_END + 1) {
-        // In right clone zone — jump to first real instantly
-        jumpToIdx(REAL_START);
-      }
-    }
-
     // Initialize: scroll to first real slide (index 1)
     jumpToIdx(REAL_START);
 
-    // --- Navigation ---
+    // --- Navigation (instant scroll, no animation to avoid scroll-behavior conflicts) ---
 
     function goToNext() {
       var nextIdx = currentIdx + 1;
       if (nextIdx > REAL_END) {
-        // Past last real — smooth scroll to right clone, then instant jump back
-        animateTo(getOffset(nextIdx), ANIM_DURATION);
-        setTimeout(function () { jumpToIdx(REAL_START); }, ANIM_DURATION + 30);
+        // Past last real — instant jump to first real slide (seamless loop)
+        jumpToIdx(REAL_START);
       } else {
-        animateTo(getOffset(nextIdx), ANIM_DURATION);
-        currentIdx = nextIdx;
+        jumpToIdx(nextIdx);
       }
     }
 
     function goToPrev() {
       var prevIdx = currentIdx - 1;
       if (prevIdx < REAL_START) {
-        // Past first real — smooth scroll to left clone, then instant jump back
-        animateTo(getOffset(prevIdx), ANIM_DURATION);
-        setTimeout(function () { jumpToIdx(REAL_END); }, ANIM_DURATION + 30);
+        // Past first real — instant jump to last real slide (seamless loop)
+        jumpToIdx(REAL_END);
       } else {
-        animateTo(getOffset(prevIdx), ANIM_DURATION);
-        currentIdx = prevIdx;
+        jumpToIdx(prevIdx);
       }
     }
-
-    // Passive scroll handler — detect manual scroll into clone zones
-    // We use a simpler approach: if scrollLeft settles more than sw*0.5
-    // beyond clone boundaries, jump back silently
-    var lastSeenScroll = track.scrollLeft;
-    track.addEventListener("scroll", function () {
-      lastSeenScroll = track.scrollLeft;
-    }, { passive: true });
 
     function startAuto() {
       stopAuto();
