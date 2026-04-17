@@ -1,0 +1,15 @@
+{
+  "hero": {
+    "path": null,
+    "prompt": "Best budget hotels in Lucerne, dramatic Swiss Alps landscape, golden hour, cinematic travel editorial photography",
+    "aspectRatio": "16:9 landscape",
+    "status": "pending"
+  },
+  "sections": [],
+  "social": {
+    "path": null,
+    "prompt": "",
+    "aspectRatio": "9:16 portrait",
+    "status": "pending"
+  }
+}

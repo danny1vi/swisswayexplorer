@@ -1,0 +1,27 @@
+{
+  "documentId": "3a321468-92be-4e15-918f-f1bb726b800e",
+  "heroImage": {
+    "url": "http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-04-15%2F5d073eb2-9d5c-4b55-9b76-6e39335732f7_aigc.jpeg",
+    "alt": "What Lucerne Is Best For - Lake Lucerne with Chapel Bridge and Mount Pilatus",
+    "filename": "lucerne-what-its-best-for.jpg"
+  },
+  "gallery": [
+    {
+      "url": "http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-04-15%2F7f15e0d9-dff8-4f64-b658-a05791ccaf4f_aigc.jpeg",
+      "alt": "What Interlaken Is Best For - Interlaken between Lake Thun and Lake Brienz",
+      "filename": "interlaken-what-its-best-for.jpg"
+    },
+    {
+      "url": "http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-04-15%2F4b5307e2-a3b3-4f8d-b579-8be38ca49535_aigc.jpeg",
+      "alt": "Mountain Access and Scenic Value - Swiss Alps scenic train",
+      "filename": "mountain-access-scenic-value.jpg"
+    }
+  ],
+  "bodyImages": [
+    {
+      "url": "http://hailuo-image-algeng-data-us.oss-us-east-1.aliyuncs.com/image_inference_output%2Ftalkie%2Fprod%2Fimg%2F2026-04-15%2Fbe7ae92f-4b09-4539-96c1-9f013013af25_aigc.jpeg",
+      "alt": "Final Verdict - Lucerne vs Interlaken comparison",
+      "filename": "lucerne-interlaken-final-verdict.jpg"
+    }
+  ]
+}

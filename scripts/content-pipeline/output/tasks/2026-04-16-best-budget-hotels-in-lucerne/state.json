@@ -1,0 +1,84 @@
+{
+  "id": "5efc07d9",
+  "createdAt": "2026-04-16T00:12:27.372375+00:00",
+  "updatedAt": "2026-04-16T00:12:27.377517+00:00",
+  "status": "done",
+  "topic": "Best budget hotels in Lucerne",
+  "language": "English",
+  "slug": "best-budget-hotels-in-lucerne",
+  "goal": {
+    "h1": "Best Budget Hotels In Lucerne",
+    "targetKeyword": "Best budget hotels in Lucerne",
+    "wordTarget": 2000
+  },
+  "accumulatedContext": {
+    "competitorNotes": "",
+    "uniqueAngle": "",
+    "researchData": {
+      "searchVolumeNotes": "Target: ",
+      "topCompetitors": []
+    },
+    "affiliateOpportunities": [],
+    "relatedGuides": []
+  },
+  "structure": {
+    "yapı": []
+  },
+  "imageManifest": {
+    "hero": {
+      "path": null,
+      "prompt": "Best budget hotels in Lucerne, dramatic Swiss Alps landscape, golden hour, cinematic travel editorial photography",
+      "aspectRatio": "16:9 landscape",
+      "status": "pending"
+    },
+    "sections": [],
+    "social": {
+      "path": null,
+      "prompt": "",
+      "aspectRatio": "9:16 portrait",
+      "status": "pending"
+    }
+  },
+  "completedSteps": [
+    {
+      "step": "pipeline_initialized",
+      "at": "2026-04-16T00:12:27.372644+00:00",
+      "notes": "Task ID: 5efc07d9"
+    },
+    {
+      "step": "research_complete",
+      "at": "2026-04-16T00:12:27.374867+00:00",
+      "notes": "0 keywords, 0 sections planned"
+    },
+    {
+      "step": "writing_complete",
+      "at": "2026-04-16T00:12:27.376238+00:00",
+      "notes": "20 words written"
+    },
+    {
+      "step": "review_complete",
+      "at": "2026-04-16T00:12:27.376756+00:00",
+      "notes": "score: 8"
+    },
+    {
+      "step": "images_error",
+      "at": "2026-04-16T00:12:27.377212+00:00",
+      "notes": "No module named 'hermes_tools'"
+    }
+  ],
+  "currentDraft": {
+    "fullMarkdown": "# Best Budget Hotels In Lucerne\n\n{'error': \"No module named 'hermes_tools'\", 'fallback': True}\n\n{'error': \"No module named 'hermes_tools'\", 'fallback': True}",
+    "lastUpdated": "2026-04-16T00:12:27.376058+00:00"
+  },
+  "knownPitfalls": [],
+  "finalOutput": {
+    "markdownPath": "/opt/fabrika/swisswayexplorer/scripts/content-pipeline/output/tasks/2026-04-16-best-budget-hotels-in-lucerne/06-final.md",
+    "imagesDir": "/opt/fabrika/swisswayexplorer/scripts/content-pipeline/output/tasks/2026-04-16-best-budget-hotels-in-lucerne/images",
+    "sanityDraftId": null
+  },
+  "_paths": {
+    "taskDir": "/opt/fabrika/swisswayexplorer/scripts/content-pipeline/output/tasks/2026-04-16-best-budget-hotels-in-lucerne",
+    "imagesDir": "/opt/fabrika/swisswayexplorer/scripts/content-pipeline/output/tasks/2026-04-16-best-budget-hotels-in-lucerne/images",
+    "stateFile": "/opt/fabrika/swisswayexplorer/scripts/content-pipeline/output/tasks/2026-04-16-best-budget-hotels-in-lucerne/state.json"
+  }
+}

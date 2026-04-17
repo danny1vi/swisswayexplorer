@@ -1,0 +1,65 @@
+{
+  "date": "2026-04-17",
+  "slots": {
+    "slot_1": {
+      "status": "PENDING",
+      "topic": "D02",
+      "title": "Zurich & Northern Switzerland",
+      "slug": "zurich",
+      "keyword": null,
+      "notes": "Phase 1 — body enhance + hero image",
+      "created_at": "2026-04-17T06:00:00+03:00"
+    },
+    "slot_2": {
+      "status": "PUBLISHED",
+      "topic": "G01",
+      "title": "How to Structure a 7-Day Switzerland Trip",
+      "slug": "how-to-structure-a-7-day-switzerland-trip",
+      "keyword": null,
+      "notes": "Zaten published — 2026-04-16T19:46:38Z",
+      "created_at": "2026-04-17T09:00:00+03:00",
+      "published_at": "2026-04-16T19:46:38Z",
+      "draftId": "0a0694de-22f9-435b-b749-b8d5db74fe5f"
+    },
+    "slot_3": {
+      "status": "OUTLINE_READY",
+      "topic": "G04",
+      "title": "Spring vs Summer: When to Go to Switzerland",
+      "slug": "seasonal-planning-spring-vs-summer",
+      "keyword": "spring vs summer Switzerland travel, best time visit Switzerland, Switzerland weather spring summer",
+      "notes": "Outline üretildi — onay bekleniyor",
+      "created_at": "2026-04-17T12:00:00+03:00",
+      "outline": {
+        "sections": 10,
+        "longTailQuestions": 5
+      }
+    },
+    "slot_4": {
+      "status": "RESEARCHING",
+      "topic": "G08",
+      "title": "Switzerland by Train: The Complete Guide",
+      "slug": "switzerland-by-train-complete-guide",
+      "keyword": null,
+      "notes": "Slot 4 — 18:00 TR — CONTENT_PLAN G08 öncelik",
+      "created_at": "2026-04-17T15:00:00+03:00"
+    },
+    "slot_5": {
+      "status": "PENDING",
+      "topic": "G02",
+      "title": "Best Time to Visit Switzerland: Month-by-Month",
+      "slug": "best-time-visit-switzerland-month-by-month",
+      "keyword": null,
+      "notes": "Guide enhance — currently 41 blocks, review",
+      "created_at": "2026-04-17T06:00:00+03:00"
+    }
+  },
+  "daily_summary": {
+    "total": 5,
+    "published": 1,
+    "approved": 0,
+    "outline_ready": 1,
+    "pending": 2,
+    "researching": 1,
+    "failed": 0
+  }
+}

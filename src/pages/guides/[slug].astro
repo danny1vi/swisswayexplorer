@@ -71,6 +71,26 @@ if (!guide) {
                   <p class="summary">{guide.summary || "Editorial guide summary will be added soon."}</p>
                   {guide.gallery && <ImageGallery images={guide.gallery} title={`${guide.title} gallery`} />}
                   {guide.body && <PortableText blocks={guide.body} variant={useReadableTypography ? "readable" : "default"} />}
+                  {guide.faq && guide.faq.length > 0 && (
+                    <div class="faq-section">
+                      <h2 class="faq-heading">Frequently Asked Questions</h2>
+                      <div class="faq-list">
+                        {guide.faq.map((item: { question?: string; answer?: string }, i: number) => (
+                          <details class="faq-item" name="faq">
+                            <summary class="faq-question">
+                              <span class="faq-number">{String(i + 1).padStart(2, '0')}</span>
+                              {item.question}
+                            </summary>
+                            <div class="faq-answer">
+                              {(item.answer || '').split('\n').map((line: string, idx: number) => (
+                                <p class={line.match(/^\d+\./) ? 'list-item' : ''}>{line}</p>
+                              ))}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <a href="/guides/" class="back-link">&larr; Back to all guides</a>
                 </div>
               </article>
@@ -230,4 +250,87 @@ if (!guide) {
       max-height: 260px;
     }
   }
+
+  /* FAQ Section */
+  .faq-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+  }
+
+  .faq-heading {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-strong);
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .faq-item {
+    background: var(--surface-raised);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .faq-item[open] {
+    border-color: var(--primary-soft);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.97rem;
+    color: var(--primary-strong);
+    list-style: none;
+    transition: background 0.15s;
+  }
+
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question::marker { display: none; }
+
+  .faq-question:hover {
+    background: var(--surface-hover);
+  }
+
+  .faq-number {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] .faq-number {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .faq-answer {
+    padding: 0.2rem 1.1rem 1rem calc(1.1rem + 0.75rem + 2.2ch);
+    font-size: 0.94rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .faq-answer p { margin: 0 0 0.5rem; }
+  .faq-answer p:last-child { margin-bottom: 0; }
+  .faq-answer ol, .faq-answer ul { margin: 0.4rem 0; padding-left: 1.2rem; }
+  .faq-answer li { margin-bottom: 0.25rem; }
+  .faq-answer .list-item { margin: 0 0 0.35rem; }
 </style>

@@ -105,6 +105,13 @@ const guide = {
       description: "Full editorial content for this guide",
     },
     {
+      name: "faq",
+      type: "array",
+      title: "Frequently Asked Questions",
+      description: "SEO-friendly FAQ section — FAQ schema markup için kullanılır",
+      of: [{ type: "faqItem" }],
+    },
+    {
       name: "image",
       type: "image",
       title: "Image",

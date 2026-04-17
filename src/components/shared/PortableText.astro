@@ -20,6 +20,15 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+}
+
 function renderSpan(span: any, markDefs: any[]): string {
   if (span._type !== "span") return "";
   let text: string = escapeHtml(span.text || "");
@@ -84,6 +93,8 @@ function renderSpan(span: any, markDefs: any[]): string {
     const html = children.map((child: any) => renderSpan(child, markDefs)).join("");
     const style = block.style || "normal";
     const Tag = style === "h2" ? "h2" : style === "h3" ? "h3" : style === "blockquote" ? "blockquote" : "p";
+    const headingText = children.map((c: any) => c.text || "").join("");
+    const headingId = (style === "h2" || style === "h3") ? slugify(headingText) : undefined;
     const alignClass =
       style === "bodyLeft"
         ? "align-left"
@@ -95,7 +106,7 @@ function renderSpan(span: any, markDefs: any[]): string {
               ? "align-justify"
               : undefined;
 
-    return <Tag class={alignClass} set:html={html} />;
+    return <Tag id={headingId} class={alignClass} set:html={html} />;
   })}
 </div>
 

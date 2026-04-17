@@ -1,0 +1,56 @@
+{
+  "documentId": "drafts.0a0694de-22f9-435b-b749-b8d5db74fe5f",
+  "heroImage": {
+    "path": "/opt/fabrika/swisswayexplorer/images/7day/hero-infographic-map.jpeg",
+    "alt": "Switzerland 7-Day Two-Hub Route Infographic Map",
+    "caption": "Central Switzerland route: Lucerne to Interlaken"
+  },
+  "gallery": [],
+  "bodyImages": [
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-two-hubs-only.jpeg",
+      "alt": "Two Hubs Only — Lucerne and Interlaken split view",
+      "caption": "The Two-Hub Rule: pick two bases and stop"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-north-vs-south.jpeg",
+      "alt": "North vs South — Lucerne and Interlaken Hub comparison",
+      "caption": "Lucerne vs Interlaken as first hub"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-alpine-payoff.jpeg",
+      "alt": "Alpine Payoff — Mürren Eiger viewpoint",
+      "caption": "The second hub: where the trip peaks"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-days-that-count.jpeg",
+      "alt": "7 Days That Count — Swiss itinerary route map",
+      "caption": "A sample 7-night two-hub route"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-fomo-protection.jpeg",
+      "alt": "FOMO Protection — traveller at Harder Kulm viewpoint",
+      "caption": "What the Two-Hub Rule protects you from"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-smart-tradeoffs.jpeg",
+      "alt": "Smart Trade-offs — Glacier Express vs intercity train",
+      "caption": "The biggest decisions before you book"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-your-call.jpeg",
+      "alt": "Your Call in 30 Seconds — decision signpost infographic",
+      "caption": "Quick decision guide — answer one question"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-budget-reality.jpeg",
+      "alt": "Budget Reality — Swiss travel cost tiers",
+      "caption": "Backpacker, mid-range, and comfort budget ranges"
+    },
+    {
+      "path": "/opt/fabrika/swisswayexplorer/images/7day/h2-faq.jpeg",
+      "alt": "Switzerland 7 Days FAQ — travel questions answered",
+      "caption": "Frequently asked questions"
+    }
+  ]
+}
