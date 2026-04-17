@@ -82,12 +82,38 @@ const sliderId = "homepage-photo-slider";
     let isJumping = false;
     let autoAdvance;
 
+    // Navigate — smooth scroll between real slides only; wrap at boundaries
     const move = (direction) => {
       const allSlides = track.querySelectorAll(".photo-slide");
-      const currentIndex = Math.round(track.scrollLeft / (slideWidth() - getGap()));
-      const targetIndex = currentIndex + direction;
-      const targetLeft = getSlideLeft(targetIndex);
-      track.scrollTo({ left: targetLeft, behavior: "smooth" });
+      const total = allSlides.length;
+      const currentScroll = track.scrollLeft;
+      const sw = slideWidth() - getGap();
+
+      // Find which real slide is currently visible (match by scroll position)
+      let currentRealIndex = -1;
+      for (let i = realStartIndex; i <= realEndIndex; i++) {
+        const left = getSlideLeft(i);
+        if (Math.abs(currentScroll - left) < sw * 0.6) {
+          currentRealIndex = i;
+          break;
+        }
+      }
+      if (currentRealIndex === -1) currentRealIndex = realStartIndex;
+
+      const targetRealIndex = currentRealIndex + direction;
+
+      // Wrap at boundaries — smooth scroll to opposite end
+      if (targetRealIndex < realStartIndex) {
+        track.scrollTo({ left: getSlideLeft(realEndIndex), behavior: "smooth" });
+        return;
+      }
+      if (targetRealIndex > realEndIndex) {
+        track.scrollTo({ left: getSlideLeft(realStartIndex), behavior: "smooth" });
+        return;
+      }
+
+      // Normal case — smooth scroll to target
+      track.scrollTo({ left: getSlideLeft(targetRealIndex), behavior: "smooth" });
     };
 
     const jumpToReal = (realIndex) => {
@@ -100,21 +126,23 @@ const sliderId = "homepage-photo-slider";
       if (isJumping) return;
       const allSlides = track.querySelectorAll(".photo-slide");
       const total = allSlides.length;
+      if (total <= clonesCount * 2) return;
 
-      // If we scrolled into the cloned start region (before real first slides), jump to real end
-      if (total > clonesCount * 2) {
-        const clonedStartThreshold = getSlideLeft(clonesCount - 1);
-        if (track.scrollLeft < clonedStartThreshold - slideWidth() * 0.5) {
-          jumpToReal(realEndIndex);
-          return;
-        }
+      const sw = slideWidth();
+      const scrollLeft = track.scrollLeft;
 
-        // If we scrolled into the cloned end region (after real last slides), jump to real start
-        const clonedEndThreshold = getSlideLeft(total - clonesCount);
-        if (track.scrollLeft > clonedEndThreshold - slideWidth() * 0.5) {
-          jumpToReal(realStartIndex);
-          return;
-        }
+      // Scrolled past the last clone region (right end) — jump to real start
+      const lastCloneFirst = getSlideLeft(total - clonesCount);
+      if (scrollLeft > lastCloneFirst - sw * 0.3) {
+        jumpToReal(realStartIndex);
+        return;
+      }
+
+      // Scrolled before the first clone region (left end) — jump to real end
+      const firstCloneLast = getSlideLeft(clonesCount - 1);
+      if (scrollLeft < firstCloneLast + sw * 0.3) {
+        jumpToReal(realEndIndex);
+        return;
       }
     };
 
