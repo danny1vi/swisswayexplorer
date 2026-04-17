@@ -64,6 +64,7 @@ export type PageHomeData = {
   primaryCta: GenericCta;
   secondaryCta?: GenericCta;
   heroVideoUrl?: string;
+  heroYoutubeUrl?: string;
   heroVideoPoster?: ImageAsset;
   storyRail?: StoryRailItem[];
   categoryHighlights?: CategoryHighlight[];

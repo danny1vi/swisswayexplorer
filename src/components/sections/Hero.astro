@@ -6,11 +6,34 @@ type Props = {
   primaryCta: { label: string; href: string };
   secondaryCta?: { label?: string; href?: string };
   image?: { url: string; alt?: string };
-  video?: { url: string; poster?: string; alt?: string };
+  video?: { url?: string; youtubeUrl?: string; poster?: string; alt?: string };
 };
 
 const { eyebrow, heading, description, primaryCta, secondaryCta, image, video } = Astro.props;
-const hasMedia = Boolean(video?.url || image?.url);
+const hasMedia = Boolean(video?.url || video?.youtubeUrl || image?.url);
+
+function toYoutubeEmbed(url?: string) {
+  if (!url) return undefined;
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("youtu.be")) {
+      const id = parsed.pathname.split("/").filter(Boolean)[0];
+      return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&modestbranding=1&playsinline=1` : undefined;
+    }
+
+    if (parsed.hostname.includes("youtube.com")) {
+      const id = parsed.searchParams.get("v");
+      return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&modestbranding=1&playsinline=1` : undefined;
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
+const youtubeEmbedUrl = toYoutubeEmbed(video?.youtubeUrl);
 ---
 
 <section class="hero-section">
@@ -30,7 +53,16 @@ const hasMedia = Boolean(video?.url || image?.url);
       </div>
       {hasMedia && (
         <div class="hero-media">
-          {video?.url ? (
+          {youtubeEmbedUrl ? (
+            <iframe
+              class="hero-youtube"
+              src={youtubeEmbedUrl}
+              title={video?.alt || heading}
+              loading="eager"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+            />
+          ) : video?.url ? (
             <video
               class="hero-video"
               src={video.url}
@@ -157,12 +189,14 @@ const hasMedia = Boolean(video?.url || image?.url);
   }
 
   .hero-media img,
-  .hero-video {
+  .hero-video,
+  .hero-youtube {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center center;
     display: block;
+    border: 0;
   }
 
   @media (max-width: 640px) {

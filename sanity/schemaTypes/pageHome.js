@@ -52,6 +52,13 @@ const pageHome = {
       description: "Optional direct video URL for the homepage hero media panel.",
     },
     {
+      name: "heroYoutubeUrl",
+      type: "url",
+      title: "Hero YouTube URL",
+      description:
+        "Optional YouTube link for the homepage hero media panel. Use a normal YouTube watch link or youtu.be link.",
+    },
+    {
       name: "heroVideoPoster",
       type: "image",
       title: "Hero video poster",

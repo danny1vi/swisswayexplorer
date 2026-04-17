@@ -22,9 +22,10 @@ const hero = sanityHome
       primaryCta: sanityHome.primaryCta,
       secondaryCta: sanityHome.secondaryCta,
       image: sanityHome.image,
-      video: sanityHome.heroVideoUrl
+      video: sanityHome.heroVideoUrl || sanityHome.heroYoutubeUrl
         ? {
             url: sanityHome.heroVideoUrl,
+            youtubeUrl: sanityHome.heroYoutubeUrl,
             poster: sanityHome.heroVideoPoster?.url || sanityHome.image?.url,
             alt: sanityHome.heroVideoPoster?.alt || sanityHome.image?.alt,
           }

@@ -24,6 +24,7 @@ export const HOME_PAGE_QUERY = `
   seoTitle,
   seoDescription,
   heroVideoUrl,
+  heroYoutubeUrl,
   "heroVideoPoster": heroVideoPoster{
     "url": asset->url,
     alt
