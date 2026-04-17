@@ -120,11 +120,13 @@ const pageHome = {
     {
       name: "storyRail",
       type: "array",
-      title: "Story rail",
-      description: "Large photo-led homepage cards designed to trigger curiosity and clicks.",
+      title: "Homepage photo story rail",
+      description:
+        "Upload the large photo cards shown directly under the hero. Best results come from vertical editorial images in 4:5 or 3:4 ratio. Recommended minimum size: 1600x2000.",
       of: [
         {
           type: "object",
+          title: "Photo story card",
           fields: [
             { name: "eyebrow", type: "string", title: "Eyebrow" },
             {
@@ -149,9 +151,19 @@ const pageHome = {
             {
               name: "image",
               type: "image",
-              title: "Image",
+              title: "Photo",
+              description:
+                "Main homepage photo for this card. Use a strong vertical crop that still works when slightly trimmed on desktop.",
               options: { hotspot: true },
-              fields: [{ name: "alt", type: "string", title: "Alt text" }],
+              fields: [
+                {
+                  name: "alt",
+                  type: "string",
+                  title: "Alt text",
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
+              validation: (Rule) => Rule.required(),
             },
           ],
           preview: {
@@ -163,7 +175,7 @@ const pageHome = {
           },
         },
       ],
-      validation: (Rule) => Rule.max(4),
+      validation: (Rule) => Rule.min(3).max(6),
     },
     {
       name: "editorialSplit",

@@ -6,15 +6,17 @@ type Props = {
   primaryCta: { label: string; href: string };
   secondaryCta?: { label?: string; href?: string };
   image?: { url: string; alt?: string };
+  video?: { url: string; poster?: string; alt?: string };
 };
 
-const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro.props;
+const { eyebrow, heading, description, primaryCta, secondaryCta, image, video } = Astro.props;
+const hasMedia = Boolean(video?.url || image?.url);
 ---
 
 <section class="hero-section">
   <div class="hero-bg"></div>
   <div class="container">
-    <div class:list={["hero", image && "hero-with-media"]}>
+    <div class:list={["hero", hasMedia && "hero-with-media"]}>
       <div class="hero-copy">
         <p class="eyebrow">{eyebrow}</p>
         <h1>{heading}</h1>
@@ -26,9 +28,23 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
           )}
         </div>
       </div>
-      {image?.url && (
+      {hasMedia && (
         <div class="hero-media">
-          <img src={image.url} alt={image.alt || heading} loading="eager" />
+          {video?.url ? (
+            <video
+              class="hero-video"
+              src={video.url}
+              poster={video.poster}
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label={video.alt || heading}
+            />
+          ) : image?.url ? (
+            <img src={image.url} alt={image.alt || heading} loading="eager" />
+          ) : null}
         </div>
       )}
     </div>
@@ -140,7 +156,8 @@ const { eyebrow, heading, description, primaryCta, secondaryCta, image } = Astro
     pointer-events: none;
   }
 
-  .hero-media img {
+  .hero-media img,
+  .hero-video {
     width: 100%;
     height: 100%;
     object-fit: cover;

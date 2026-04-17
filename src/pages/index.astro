@@ -22,6 +22,13 @@ const hero = sanityHome
       primaryCta: sanityHome.primaryCta,
       secondaryCta: sanityHome.secondaryCta,
       image: sanityHome.image,
+      video: sanityHome.heroVideoUrl
+        ? {
+            url: sanityHome.heroVideoUrl,
+            poster: sanityHome.heroVideoPoster?.url || sanityHome.image?.url,
+            alt: sanityHome.heroVideoPoster?.alt || sanityHome.image?.alt,
+          }
+        : undefined,
     }
   : siteConfig.hero;
 
