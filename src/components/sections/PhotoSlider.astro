@@ -58,7 +58,6 @@ const sliderId = "homepage-photo-slider";
     var nextBtn = document.getElementById(sliderId + "-next");
     if (!prevBtn || !nextBtn) return;
 
-    var autoTimer;
     var isTransitioning = false;
 
     // Collect original slides
@@ -125,36 +124,17 @@ const sliderId = "homepage-photo-slider";
       }
     }
 
-    // Auto-advance
-    function startAuto() {
-      stopAuto();
-      autoTimer = setInterval(goToNext, 4200);
-    }
-
-    function stopAuto() {
-      clearInterval(autoTimer);
-    }
-
-    // Pause auto on hover
-    track.addEventListener("mouseenter", stopAuto);
-    track.addEventListener("mouseleave", startAuto);
-
     // Button handlers
     prevBtn.addEventListener("click", function () {
-      stopAuto();
       goToPrev();
-      startAuto();
     });
 
     nextBtn.addEventListener("click", function () {
-      stopAuto();
       goToNext();
-      startAuto();
     });
 
     // Init: scroll to first real slide
     jumpToIdx(REAL_START);
-    startAuto();
   })();
 </script>
 
@@ -192,7 +172,8 @@ const sliderId = "homepage-photo-slider";
     aspect-ratio: 4 / 5;
     border-radius: calc(var(--radius) + 12px);
     overflow: hidden;
-    scroll-snap-align: center;
+    /* No scroll-snap — JS controls exact positions */
+    scroll-snap-align: none;
     box-shadow: var(--shadow-soft);
     background: linear-gradient(135deg, #f0ece2 0%, #ded5c6 100%);
     border: 1px solid rgba(26, 60, 52, 0.1);
