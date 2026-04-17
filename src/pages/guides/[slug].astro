@@ -126,6 +126,12 @@ if (!guide) {
     overflow: hidden;
   }
 
+  /* Anchor links: compensate for sticky header */
+  .detail-body :global(h2),
+  .detail-body :global(h3) {
+    scroll-margin-top: 5rem;
+  }
+
   .page-layout {
     display: grid;
     grid-template-columns: 1fr 280px;
