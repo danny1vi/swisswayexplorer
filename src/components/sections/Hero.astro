@@ -23,6 +23,12 @@ function toYoutubeEmbed(url?: string) {
     }
 
     if (parsed.hostname.includes("youtube.com")) {
+      const shortsMatch = parsed.pathname.match(/\/shorts\/([^/?]+)/);
+      if (shortsMatch?.[1]) {
+        const id = shortsMatch[1];
+        return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&modestbranding=1&playsinline=1`;
+      }
+
       const id = parsed.searchParams.get("v");
       return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&modestbranding=1&playsinline=1` : undefined;
     }
