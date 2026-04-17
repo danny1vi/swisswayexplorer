@@ -187,6 +187,89 @@ const pageHome = {
       validation: (Rule) => Rule.min(3).max(6),
     },
     {
+      name: "photoGallery",
+      type: "object",
+      title: "Hero-adjacent photo gallery",
+      description:
+        "Linkable gallery shown near the top of the homepage. Each photo can point to either a guide or a destination URL.",
+      fields: [
+        {
+          name: "eyebrow",
+          type: "string",
+          title: "Eyebrow",
+          initialValue: "Photo Gallery",
+        },
+        {
+          name: "title",
+          type: "string",
+          title: "Title",
+          validation: (Rule) => Rule.required(),
+        },
+        {
+          name: "description",
+          type: "text",
+          title: "Description",
+          rows: 3,
+        },
+        {
+          name: "items",
+          type: "array",
+          title: "Gallery photos",
+          of: [
+            {
+              type: "object",
+              title: "Gallery photo",
+              fields: [
+                { name: "eyebrow", type: "string", title: "Eyebrow" },
+                {
+                  name: "title",
+                  type: "string",
+                  title: "Title",
+                  validation: (Rule) => Rule.required(),
+                },
+                {
+                  name: "summary",
+                  type: "text",
+                  title: "Summary",
+                  rows: 2,
+                },
+                {
+                  name: "href",
+                  type: "string",
+                  title: "Link",
+                  description: "Use a guide or destination path, e.g. /guides/... or /destinations/...",
+                  validation: (Rule) => Rule.required(),
+                },
+                {
+                  name: "image",
+                  type: "image",
+                  title: "Photo",
+                  options: { hotspot: true },
+                  fields: [
+                    {
+                      name: "alt",
+                      type: "string",
+                      title: "Alt text",
+                      validation: (Rule) => Rule.required(),
+                    },
+                  ],
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
+              preview: {
+                select: {
+                  title: "title",
+                  subtitle: "href",
+                  media: "image",
+                },
+              },
+            },
+          ],
+          validation: (Rule) => Rule.min(3).max(6),
+        },
+      ],
+    },
+    {
       name: "editorialSplit",
       type: "object",
       title: "Editorial split feature",
@@ -302,6 +385,64 @@ const pageHome = {
       ],
     },
     {
+      name: "featuredStories",
+      type: "array",
+      title: "Homepage featured briefs",
+      description:
+        "Cards used in the destination briefs section. Add custom photos, alt text, and links to either guides or destinations.",
+      of: [
+        {
+          type: "object",
+          title: "Featured brief",
+          fields: [
+            { name: "eyebrow", type: "string", title: "Eyebrow" },
+            {
+              name: "title",
+              type: "string",
+              title: "Title",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "summary",
+              type: "text",
+              title: "Summary",
+              rows: 3,
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "href",
+              type: "string",
+              title: "Link",
+              description: "Use a guide or destination path, e.g. /guides/... or /destinations/...",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "image",
+              type: "image",
+              title: "Photo",
+              options: { hotspot: true },
+              fields: [
+                {
+                  name: "alt",
+                  type: "string",
+                  title: "Alt text",
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
+            },
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "href",
+              media: "image",
+            },
+          },
+        },
+      ],
+      validation: (Rule) => Rule.max(4),
+    },
+    {
       name: "itineraryTeasers",
       type: "array",
       title: "Itinerary teasers",
@@ -335,7 +476,14 @@ const pageHome = {
               type: "image",
               title: "Thumbnail image",
               options: { hotspot: true },
-              fields: [{ name: "alt", type: "string", title: "Alt text" }],
+              fields: [
+                {
+                  name: "alt",
+                  type: "string",
+                  title: "Alt text",
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
             },
           ],
           preview: {

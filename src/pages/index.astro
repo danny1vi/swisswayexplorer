@@ -3,6 +3,7 @@ export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
+import PhotoGallery from "../components/sections/PhotoGallery.astro";
 import StoryRail from "../components/sections/StoryRail.astro";
 import CategoryGrid from "../components/sections/CategoryGrid.astro";
 import EditorialSplit from "../components/sections/EditorialSplit.astro";
@@ -70,6 +71,22 @@ const storyRail =
       })
     : siteConfig.homepage.storyRail;
 
+const photoGallery = sanityHome?.photoGallery?.items?.length
+  ? {
+      eyebrow: sanityHome.photoGallery.eyebrow,
+      title: sanityHome.photoGallery.title,
+      description: sanityHome.photoGallery.description,
+      items: sanityHome.photoGallery.items.map((item) => {
+        const image = resolveHomepageLinkImage(item.href, item.image);
+        return {
+          ...item,
+          imageUrl: image?.url || "",
+          imageAlt: image?.alt || item.title,
+        };
+      }).filter((item) => item.imageUrl),
+    }
+  : siteConfig.homepage.photoGallery;
+
 const editorialSplit = {
   ...siteConfig.homepage.editorialSplit,
   ...sanityHome?.editorialSplit,
@@ -108,18 +125,33 @@ const itineraryTeasers =
 const sanityDestinations = await getDestinations();
 const fallbackFeaturedItems = siteConfig.featured.map((item) => {
   const slug = item.href.split("/").filter(Boolean).pop() || "";
+  const resolvedImage = item.imageUrl
+    ? { url: item.imageUrl, alt: item.imageAlt || item.title }
+    : resolveDestinationImage({ slug, title: item.title });
   return {
     ...item,
-    imageUrl: item.imageUrl || resolveDestinationImage({ slug, title: item.title })?.url,
+    imageUrl: resolvedImage?.url,
+    imageAlt: resolvedImage?.alt || item.title,
   };
 });
-const featuredItems = sanityDestinations.length > 0
+const featuredItems = sanityHome?.featuredStories && sanityHome.featuredStories.length > 0
+  ? sanityHome.featuredStories.map((item) => {
+      const image = resolveHomepageLinkImage(item.href, item.image);
+      return {
+        ...item,
+        summary: item.summary || "",
+        imageUrl: image?.url,
+        imageAlt: image?.alt || item.title,
+      };
+    })
+  : sanityDestinations.length > 0
   ? sanityDestinations.slice(0, 4).map((destination) => ({
       eyebrow: destination.region || destination.bestSeason || "Destination brief",
       title: destination.title,
       summary: destination.summary || "",
       href: `/destinations/${destination.slug}/`,
       imageUrl: resolveDestinationImage(destination)?.url,
+      imageAlt: resolveDestinationImage(destination)?.alt || destination.title,
     }))
   : fallbackFeaturedItems;
 
@@ -129,6 +161,7 @@ const featuredIntro = `Start with the destination brief, then shape nights, pass
 
 <BaseLayout title={homeTitle} description={homeDescription} image={sanityHome?.image?.url} imageAlt={sanityHome?.image?.alt}>
   <Hero {...hero} />
+  <PhotoGallery {...photoGallery} />
   <StoryRail items={storyRail} />
   <CategoryGrid items={categoryHighlights} />
   <EditorialSplit {...editorialSplit} />

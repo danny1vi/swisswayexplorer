@@ -1,0 +1,186 @@
+---
+type GalleryItem = {
+  eyebrow?: string;
+  title: string;
+  summary?: string;
+  href: string;
+  imageUrl: string;
+  imageAlt?: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: GalleryItem[];
+};
+
+const { eyebrow = "Photo Gallery", title, description, items } = Astro.props;
+---
+
+{items.length > 0 && (
+  <section class="section gallery-section">
+    <div class="container">
+      <div class="gallery-shell card">
+        <div class="gallery-heading">
+          <p class="section-label">{eyebrow}</p>
+          <h2 class="section-title">{title}</h2>
+          {description && <p class="section-copy">{description}</p>}
+        </div>
+        <div class="gallery-grid">
+          {items.map((item, index) => (
+            <a class:list={["gallery-card", index === 0 && "gallery-card-featured"]} href={item.href}>
+              <div class="gallery-media">
+                <img src={item.imageUrl} alt={item.imageAlt || item.title} loading="lazy" />
+              </div>
+              <div class="gallery-copy">
+                {item.eyebrow && <p class="gallery-eyebrow">{item.eyebrow}</p>}
+                <h3>{item.title}</h3>
+                {item.summary && <p>{item.summary}</p>}
+                <span class="gallery-link">Open article</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .gallery-section {
+    padding-top: 0.25rem;
+  }
+
+  .gallery-shell {
+    padding: 1.2rem;
+    display: grid;
+    gap: 1.2rem;
+    background:
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.12), transparent 30%),
+      linear-gradient(180deg, rgba(250, 246, 239, 0.98) 0%, rgba(243, 237, 227, 0.96) 100%);
+  }
+
+  .gallery-heading {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 58rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(0, 0.95fr));
+    gap: 1rem;
+  }
+
+  .gallery-card {
+    display: grid;
+    gap: 0.9rem;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+  }
+
+  .gallery-card-featured {
+    gap: 1rem;
+  }
+
+  .gallery-card:hover .gallery-media img,
+  .gallery-card:focus-visible .gallery-media img {
+    transform: scale(1.04);
+  }
+
+  .gallery-card:hover .gallery-link::after,
+  .gallery-card:focus-visible .gallery-link::after {
+    transform: translateX(2px);
+  }
+
+  .gallery-media {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(var(--radius) + 8px);
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #f0ece2 0%, #ded5c6 100%);
+  }
+
+  .gallery-card-featured .gallery-media {
+    aspect-ratio: 5 / 4;
+  }
+
+  .gallery-media::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 28%;
+    background: linear-gradient(180deg, rgba(14, 30, 26, 0) 0%, rgba(14, 30, 26, 0.18) 100%);
+    pointer-events: none;
+  }
+
+  .gallery-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 220ms ease;
+  }
+
+  .gallery-copy {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .gallery-eyebrow {
+    margin: 0;
+    width: fit-content;
+    padding: 0.34rem 0.58rem;
+    border-radius: 999px;
+    background: rgba(26, 60, 52, 0.06);
+    border: 1px solid rgba(26, 60, 52, 0.08);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .gallery-copy h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.85rem);
+    line-height: 1.06;
+    max-width: 18ch;
+  }
+
+  .gallery-copy p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.68;
+    max-width: 34ch;
+  }
+
+  .gallery-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    color: var(--primary);
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .gallery-link::after {
+    content: "->";
+    transition: transform 200ms ease;
+  }
+
+  @media (max-width: 980px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-card-featured .gallery-media,
+    .gallery-media {
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

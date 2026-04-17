@@ -53,6 +53,21 @@ export const HOME_PAGE_QUERY = `
       alt
     }
   },
+  photoGallery{
+    eyebrow,
+    title,
+    description,
+    items[]{
+      eyebrow,
+      title,
+      summary,
+      href,
+      "image": image{
+        "url": asset->url,
+        alt
+      }
+    }
+  },
   editorialSplit{
     eyebrow,
     title,
@@ -76,6 +91,16 @@ export const HOME_PAGE_QUERY = `
         "url": asset->url,
         alt
       }
+    }
+  },
+  featuredStories[]{
+    eyebrow,
+    title,
+    summary,
+    href,
+    "image": image{
+      "url": asset->url,
+      alt
     }
   },
   itineraryTeasers[]{

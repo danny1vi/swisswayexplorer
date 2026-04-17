@@ -9,6 +9,7 @@ export type FeaturedCard = {
   summary: string;
   href: string;
   imageUrl?: string;
+  imageAlt?: string;
 };
 
 export type CategoryHighlight = {
@@ -24,6 +25,23 @@ export type StoryRailItem = {
   summary: string;
   href: string;
   imageUrl?: string;
+  imageAlt?: string;
+};
+
+export type PhotoGalleryItem = {
+  eyebrow?: string;
+  title: string;
+  summary?: string;
+  href: string;
+  imageUrl: string;
+  imageAlt: string;
+};
+
+export type PhotoGallery = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: PhotoGalleryItem[];
 };
 
 export type EditorialSplit = {
@@ -46,6 +64,7 @@ export type EditorialSplit = {
     summary: string;
     href: string;
     imageUrl?: string;
+    imageAlt?: string;
   }>;
 };
 
@@ -55,6 +74,7 @@ export type ItineraryTeaser = {
   description: string;
   href: string;
   imageUrl?: string;
+  imageAlt?: string;
 };
 
 export const siteConfig = {
@@ -112,6 +132,7 @@ export const siteConfig = {
           "See which Switzerland bases reduce transfer friction before you commit nights, passes, or mountain days.",
         href: "/destinations/lucerne/",
         imageUrl: "/images/fallbacks/destination-lucerne.svg",
+        imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
       },
       {
         eyebrow: "Alpine payoff",
@@ -120,6 +141,7 @@ export const siteConfig = {
           "Use one strong alpine zone instead of scattering your week across too many scenic stops.",
         href: "/destinations/interlaken-jungfrau/",
         imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+        imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
       },
       {
         eyebrow: "Route discipline",
@@ -128,8 +150,41 @@ export const siteConfig = {
           "Follow the planning logic that keeps Switzerland intense without turning every day into a transfer day.",
         href: "/guides/7-day-switzerland-route-basics/",
         imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+        imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
       },
     ] as StoryRailItem[],
+    photoGallery: {
+      eyebrow: "Photo Gallery",
+      title: "Jump into the route questions that usually begin with one strong image.",
+      description:
+        "Use these photo-led links to open a destination brief or planning guide directly from the top of the homepage.",
+      items: [
+        {
+          eyebrow: "Base choice",
+          title: "Lucerne",
+          summary: "Open the destination brief that works well as a calm first Switzerland base.",
+          href: "/destinations/lucerne/",
+          imageUrl: "/images/fallbacks/destination-lucerne.svg",
+          imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
+        },
+        {
+          eyebrow: "Mountain focus",
+          title: "Interlaken & Jungfrau",
+          summary: "See the alpine base where weather windows and route timing matter most.",
+          href: "/destinations/interlaken-jungfrau/",
+          imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+          imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
+        },
+        {
+          eyebrow: "Route planning",
+          title: "7-Day Structure",
+          summary: "Open the guide for a cleaner two-hub Switzerland itinerary.",
+          href: "/guides/7-day-switzerland-route-basics/",
+          imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+          imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
+        },
+      ],
+    } as PhotoGallery,
     editorialSplit: {
       eyebrow: "Editor's Pick",
       title: "Lucerne remains the cleanest first base for many Switzerland itineraries.",
@@ -151,6 +206,7 @@ export const siteConfig = {
             "Lucerne buys flexibility when mountain plans need to move without collapsing the whole route.",
           href: "/destinations/lucerne/",
           imageUrl: "/images/fallbacks/destination-lucerne.svg",
+          imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
         },
         {
           eyebrow: "Mountain switch",
@@ -159,6 +215,7 @@ export const siteConfig = {
             "Interlaken works best when the mountains are the trip, not when they are only one scenic chapter.",
           href: "/destinations/interlaken-jungfrau/",
           imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+          imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
         },
         {
           eyebrow: "Route logic",
@@ -167,9 +224,39 @@ export const siteConfig = {
             "Use a cleaner two-hub plan before adding extra scenic stops that look good but slow the whole week.",
           href: "/guides/7-day-switzerland-route-basics/",
           imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+          imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
         },
       ],
     } as EditorialSplit,
+    featuredStories: [
+      {
+        eyebrow: "Central Switzerland",
+        title: "Lucerne Region",
+        summary:
+          "A reliable first base for many itineraries, combining lakefront city pace with straightforward mountain day trips.",
+        href: "/destinations/lucerne/",
+        imageUrl: "/images/fallbacks/destination-lucerne.svg",
+        imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
+      },
+      {
+        eyebrow: "Bernese Oberland",
+        title: "Interlaken & Jungfrau",
+        summary:
+          "High-impact alpine planning zone where timing, weather windows, and rail strategy strongly shape your trip quality.",
+        href: "/destinations/interlaken-jungfrau/",
+        imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+        imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
+      },
+      {
+        eyebrow: "Valais",
+        title: "Zermatt & Matterhorn",
+        summary:
+          "A premium car-free mountain destination where route sequencing and altitude-aware pacing matter more than volume.",
+        href: "/destinations/zermatt/",
+        imageUrl: "/images/fallbacks/destination-zermatt.svg",
+        imageAlt: "Matterhorn-style mountain silhouette above the Zermatt valley at sunrise.",
+      },
+    ] as FeaturedCard[],
     itineraryTeasers: [
       {
         duration: "12 hours",
@@ -178,6 +265,7 @@ export const siteConfig = {
           "A compact framework for deciding whether to stay local, take a scenic loop, or protect energy for the next rail day.",
         href: "/guides/7-day-switzerland-route-basics/",
         imageUrl: "/images/fallbacks/guide-7-day-route.svg",
+        imageAlt: "Stylized Switzerland route map with two bases linked by a seven-day travel line.",
       },
       {
         duration: "2 days",
@@ -186,6 +274,7 @@ export const siteConfig = {
           "Use passes, saver tickets, and route grouping deliberately instead of buying rail products too early.",
         href: "/guides/swiss-transport-pass-quick-decision-guide/",
         imageUrl: "/images/fallbacks/guide-transport-pass.svg",
+        imageAlt: "Swiss rail ticket and train illustration for transport pass planning.",
       },
       {
         duration: "Shoulder season",
@@ -194,6 +283,7 @@ export const siteConfig = {
           "A faster way to weigh scenery, crowd pressure, and mountain reliability before you lock dates.",
         href: "/guides/seasonal-planning-spring-vs-summer/",
         imageUrl: "/images/fallbacks/guide-seasonal-planning.svg",
+        imageAlt: "Split alpine landscape contrasting spring blossom with bright summer hiking weather.",
       },
     ] as ItineraryTeaser[],
   },
@@ -204,6 +294,8 @@ export const siteConfig = {
       summary:
         "A reliable first base for many itineraries, combining lakefront city pace with straightforward mountain day trips.",
       href: "/destinations/lucerne/",
+      imageUrl: "/images/fallbacks/destination-lucerne.svg",
+      imageAlt: "Lake Lucerne shoreline with alpine ridges and a covered bridge silhouette.",
     },
     {
       eyebrow: "Bernese Oberland",
@@ -211,6 +303,8 @@ export const siteConfig = {
       summary:
         "High-impact alpine planning zone where timing, weather windows, and rail strategy strongly shape your trip quality.",
       href: "/destinations/interlaken-jungfrau/",
+      imageUrl: "/images/fallbacks/destination-interlaken-jungfrau.svg",
+      imageAlt: "Bernese Oberland valley with bright lakes and snowy Jungfrau peaks.",
     },
     {
       eyebrow: "Valais",
@@ -218,6 +312,8 @@ export const siteConfig = {
       summary:
         "A premium car-free mountain destination where route sequencing and altitude-aware pacing matter more than volume.",
       href: "/destinations/zermatt/",
+      imageUrl: "/images/fallbacks/destination-zermatt.svg",
+      imageAlt: "Matterhorn-style mountain silhouette above the Zermatt valley at sunrise.",
     },
   ] as FeaturedCard[],
   cta: {

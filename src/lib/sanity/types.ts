@@ -37,6 +37,21 @@ export type StoryRailItem = {
   image?: ImageAsset;
 };
 
+export type HomepageLinkedPhoto = {
+  eyebrow?: string;
+  title: string;
+  summary?: string;
+  href: string;
+  image?: ImageAsset;
+};
+
+export type PhotoGalleryData = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: HomepageLinkedPhoto[];
+};
+
 export type EditorialSplitData = {
   eyebrow?: string;
   title: string;
@@ -74,8 +89,10 @@ export type PageHomeData = {
   heroYoutubeUrl?: string;
   heroVideoPoster?: ImageAsset;
   storyRail?: StoryRailItem[];
+  photoGallery?: PhotoGalleryData;
   categoryHighlights?: CategoryHighlight[];
   editorialSplit?: EditorialSplitData;
+  featuredStories?: HomepageLinkedPhoto[];
   itineraryTeasers?: ItineraryTeaser[];
 };
 
