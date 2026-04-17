@@ -27,7 +27,7 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
     </div>
     <div class="grid">
       {items.map((item) => (
-        <article class="card item">
+        <a class="card item" href={item.href}>
           {item.imageUrl ? (
             <div class="card-image">
               <img src={item.imageUrl} alt={item.title} loading="lazy" />
@@ -37,13 +37,13 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
               <span class="placeholder-label">{item.title}</span>
             </div>
           )}
-            <div class="card-body">
-              {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
-              <h3>{item.title}</h3>
+          <div class="card-body">
+            {item.eyebrow && <p class="card-eyebrow">{item.eyebrow}</p>}
+            <h3>{item.title}</h3>
             <p>{truncateText(item.summary, 100)}</p>
-            <a href={item.href}>Read brief</a>
+            <span class="card-link">Read brief</span>
           </div>
-        </article>
+        </a>
       ))}
     </div>
   </div>
@@ -64,20 +64,25 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
   }
 
   .item {
+    display: grid;
     padding: 0;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    border-radius: calc(var(--radius) + 12px);
   }
 
   .item:hover,
   .item:focus-within {
     transform: translateY(-4px);
-    box-shadow: 0 28px 64px rgba(22, 37, 31, 0.12);
+    box-shadow: 0 32px 72px rgba(22, 37, 31, 0.14);
   }
 
   .card-image {
     width: 100%;
-    height: 250px;
+    height: 270px;
     overflow: hidden;
+    position: relative;
   }
 
   .card-image img {
@@ -85,6 +90,21 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 240ms ease;
+  }
+
+  .item:hover .card-image img,
+  .item:focus-visible .card-image img {
+    transform: scale(1.04);
+  }
+
+  .card-image::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 34%;
+    background: linear-gradient(180deg, rgba(13, 24, 21, 0) 0%, rgba(13, 24, 21, 0.28) 100%);
+    pointer-events: none;
   }
 
   .card-image-placeholder {
@@ -106,38 +126,56 @@ const { title = "Choose the base with the highest planning leverage.", intro, it
 
   .card-body {
     display: grid;
-    gap: 0.8rem;
-    padding: 1.35rem;
+    gap: 0.85rem;
+    padding: 1.15rem 1.2rem 1.25rem;
   }
 
   .card-eyebrow {
     margin: 0;
     color: var(--primary);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     font-weight: 700;
+    background: rgba(26, 60, 52, 0.06);
+    border: 1px solid rgba(26, 60, 52, 0.08);
+    border-radius: 999px;
+    width: fit-content;
+    padding: 0.36rem 0.58rem;
   }
 
   .item h3 {
     margin: 0;
-    font-size: 1.45rem;
-    line-height: 1.05;
+    font-size: 1.52rem;
+    line-height: 1.08;
+    max-width: 16ch;
   }
 
   .item p {
     margin: 0;
     color: var(--muted);
-    line-height: 1.75;
+    line-height: 1.72;
+    max-width: 34ch;
   }
 
-  .item a {
-    display: inline-block;
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     margin-top: 0.1rem;
-    text-decoration: none;
     color: var(--primary);
     font-weight: 700;
     font-size: 0.92rem;
+  }
+
+  .card-link::after {
+    content: "->";
+    transition: transform 200ms ease;
+  }
+
+  .item:hover .card-link::after,
+  .item:focus-visible .card-link::after {
+    transform: translateX(2px);
   }
 
   @media (max-width: 960px) {

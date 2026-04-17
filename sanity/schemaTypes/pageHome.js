@@ -49,20 +49,22 @@ const pageHome = {
       name: "heroVideoUrl",
       type: "url",
       title: "Hero video URL",
-      description: "Optional direct video URL for the homepage hero media panel.",
+      description:
+        "Optional direct video file for the homepage hero media panel. Best results: MP4, 4:5 ratio, around 864x1080 or 1080x1350, 8-12 seconds, muted loop.",
     },
     {
       name: "heroYoutubeUrl",
       type: "url",
       title: "Hero YouTube URL",
       description:
-        "Optional YouTube link for the homepage hero media panel. Use a normal YouTube watch link or youtu.be link.",
+        "Optional YouTube link for the homepage hero media panel. Use a normal YouTube watch link, youtu.be link, or Shorts link. Vertical videos work best here.",
     },
     {
       name: "heroVideoPoster",
       type: "image",
       title: "Hero video poster",
-      description: "Fallback poster image shown before the hero video loads or on devices that cannot autoplay.",
+      description:
+        "Fallback poster image shown before the hero video loads or on devices that cannot autoplay. Best ratio: 4:5 or close to 459x545.",
       options: { hotspot: true },
       fields: [{ name: "alt", type: "string", title: "Alt text" }],
     },
