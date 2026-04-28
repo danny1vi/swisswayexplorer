@@ -27,6 +27,7 @@ Hermes should normalize the article into this JSON shape before calling the Sani
   "documentType": "guide",
   "title": "Lucerne vs Interlaken for First-Time Visitors",
   "slug": "lucerne-vs-interlaken-for-first-time-visitors",
+  "targetKeyword": "lucerne vs interlaken for first-time visitors",
   "summary": "A practical comparison to help first-time Switzerland travelers choose the better base.",
   "quickVerdict": {
     "eyebrow": "Quick verdict",
@@ -73,6 +74,43 @@ Hermes should normalize the article into this JSON shape before calling the Sani
       "headingStyle": "h2"
     }
   ],
+  "bodyImages": [
+    {
+      "insertBeforeHeading": "Which is better for first-time visitors",
+      "headingStyle": "h2",
+      "alt": "Lucerne lakefront and old town for first-time Switzerland visitors",
+      "caption": "Lucerne is often the easier first base for a balanced Switzerland trip.",
+      "prompt": "Lucerne lakefront, old town, soft alpine light, first-time Switzerland travel editorial photography, realistic detail, landscape orientation"
+    },
+    {
+      "insertBeforeHeading": "Mountain access and scenic experience",
+      "headingStyle": "h2",
+      "alt": "Interlaken valley and Jungfrau region mountain access",
+      "caption": "Interlaken works best when the trip is built around mountain days.",
+      "prompt": "Interlaken valley, Jungfrau region access, dramatic mountain scenery, Switzerland travel editorial photography, realistic detail, landscape orientation"
+    },
+    {
+      "insertBeforeHeading": "Where Lucerne wins",
+      "headingStyle": "h2",
+      "alt": "Historic Lucerne streets and lake views",
+      "caption": "Lucerne combines town atmosphere with easy lake and mountain access.",
+      "prompt": "Lucerne historic streets, lake views, elegant Swiss city atmosphere, editorial travel photography, realistic detail, landscape orientation"
+    },
+    {
+      "insertBeforeHeading": "Where Interlaken wins",
+      "headingStyle": "h2",
+      "alt": "Interlaken base for outdoor adventure and mountain excursions",
+      "caption": "Interlaken is the stronger base for activity-heavy mountain itineraries.",
+      "prompt": "Interlaken adventure base, trains, peaks, outdoor Switzerland travel editorial photography, realistic detail, landscape orientation"
+    },
+    {
+      "insertBeforeHeading": "Final choice",
+      "headingStyle": "h2",
+      "alt": "Swiss travel planning desk comparing Lucerne and Interlaken routes",
+      "caption": "The better choice depends on whether ease or mountain intensity matters more.",
+      "prompt": "Swiss itinerary planning, Lucerne versus Interlaken route decision, premium editorial travel photography, realistic detail, landscape orientation"
+    }
+  ],
   "body": "Paragraph one.\n\nParagraph two.",
   "category": "itinerary",
   "imageAltSuggestion": "Lake Lucerne and Interlaken mountain scenery split comparison",
@@ -93,9 +131,13 @@ For every SwissWayExplorer article Hermes generates:
 - include at least two `highlightBoxes`
 - include a separate `faq` array with question/answer objects
 - use `tables` for comparison or decision grids instead of flattening them into plain paragraphs
+- write at least five real `h2` sections when the topic allows it
+- include at least five `bodyImages` briefs linked to those `h2` headings
 - prefer `important`, `route`, or `budget` tones when they genuinely help the reader decide
 - use `proTip` when the block is an expert shortcut rather than a generic tip
 - attach each `highlightBox` to a real heading with `insertBeforeHeading` when possible
+- every `bodyImages` brief must include `insertBeforeHeading`, `alt`, and `prompt`
+- every image `alt` must naturally include the article `targetKeyword` or the closest Google search phrase for that section
 
 If the operator does not mention these blocks explicitly, Hermes should still include them as part of the internal JSON.
 
@@ -156,6 +198,7 @@ H2-aware insertion:
 - add `insertBeforeHeading` to a `bodyImages` item to place it immediately before that heading
 - `headingStyle` defaults to `h2`
 - heading text must match the Sanity body heading text
+- if a generated image payload omits the heading, `attach-images` falls back to the saved `sectionImagePlan` order in Sanity
 - if no heading is provided, the image is appended to the end of the body
 
 ## Important Rule
@@ -169,7 +212,8 @@ The writing flow should be:
 3. generate the article content
 4. generate one `quickVerdict`, at least two `highlightBoxes`, and a structured `faq` array
 5. convert comparisons into structured `tables` when a table is clearer than prose
-6. keep body images separate from text by using the image payload contract
-7. normalize everything into the Sanity JSON contract
-8. call the correct Sanity write command
-9. return the resulting slug and live URL
+6. plan at least five section images that map to real `h2` headings
+7. keep body images separate from text by using the image payload contract
+8. normalize everything into the Sanity JSON contract
+9. call the correct Sanity write command
+10. return the resulting slug and live URL

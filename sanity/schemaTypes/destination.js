@@ -191,6 +191,71 @@ const destination = {
       description: "Optional secondary images for this destination.",
     },
     {
+      name: "sectionImagePlan",
+      type: "array",
+      title: "Section image plan",
+      description:
+        "Planned inline images for the article body. Keep at least 5 entries and match each one to a real H2 so automation can place the generated image directly above that section.",
+      of: [
+        {
+          type: "object",
+          name: "sectionImageBrief",
+          title: "Section image brief",
+          fields: [
+            {
+              name: "heading",
+              type: "string",
+              title: "Target heading",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "headingStyle",
+              type: "string",
+              title: "Heading style",
+              initialValue: "h2",
+              options: {
+                list: [
+                  { title: "H2", value: "h2" },
+                  { title: "H3", value: "h3" },
+                ],
+                layout: "radio",
+              },
+            },
+            {
+              name: "alt",
+              type: "string",
+              title: "Alt text",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "caption",
+              type: "string",
+              title: "Caption",
+            },
+            {
+              name: "prompt",
+              type: "text",
+              title: "Image prompt",
+              rows: 4,
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              title: "heading",
+              subtitle: "alt",
+            },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Section image",
+                subtitle: subtitle || "Inline image brief",
+              };
+            },
+          },
+        },
+      ],
+    },
+    {
       name: "workflowStatus",
       type: "string",
       title: "Workflow status",
@@ -222,6 +287,12 @@ const destination = {
       type: "string",
       title: "Image alt suggestion",
       description: "Suggested alt text to copy into the image field after uploading the final visual.",
+    },
+    {
+      name: "targetKeyword",
+      type: "string",
+      title: "Target keyword",
+      description: "Primary Google search phrase this article is targeting. Image alt text should naturally include it.",
     },
     {
       name: "region",

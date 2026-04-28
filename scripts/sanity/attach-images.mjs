@@ -52,6 +52,24 @@ function blockToText(block) {
     .trim();
 }
 
+function normalizeKeyword(value, fallback = "") {
+  return String(value || fallback || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function ensureKeywordInAltText(alt, keyword, fallback = "") {
+  const safeKeyword = normalizeKeyword(keyword);
+  const safeAlt = String(alt || fallback || "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!safeKeyword) return safeAlt;
+  if (!safeAlt) return safeKeyword;
+  if (safeAlt.toLowerCase().includes(safeKeyword.toLowerCase())) return safeAlt;
+  return `${safeKeyword} - ${safeAlt}`;
+}
+
 function findHeadingIndex(body, heading, headingStyle = "h2") {
   const target = normalizeText(heading);
   if (!target) return -1;
@@ -89,14 +107,14 @@ function guessContentTypeFromPath(filePath) {
   return "image/jpeg";
 }
 
-function buildImageValue(assetId, image, includeKey = true) {
+function buildImageValue(assetId, image, includeKey = true, keyword = "", fallbackAlt = "") {
   const value = {
     _type: "image",
     asset: {
       _type: "reference",
       _ref: assetId,
     },
-    alt: image.alt || "",
+    alt: ensureKeywordInAltText(image.alt, keyword, fallbackAlt),
     caption: image.caption || "",
   };
 
@@ -107,7 +125,7 @@ function buildImageValue(assetId, image, includeKey = true) {
   return value;
 }
 
-async function uploadImage(client, image, index, fallbackBase) {
+async function uploadImage(client, image, index, fallbackBase, options = {}) {
   if (!image?.url && !image?.path) {
     throw new Error(`Image at index ${index} is missing a url or path`);
   }
@@ -137,7 +155,7 @@ async function uploadImage(client, image, index, fallbackBase) {
     title: image.title || image.alt || filename,
   });
 
-  return buildImageValue(asset._id, image, image.includeKey ?? true);
+  return buildImageValue(asset._id, image, image.includeKey ?? true, options.keyword, options.fallbackAlt);
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -184,8 +202,8 @@ const client = createClient({
 
 const documentCandidates =
   documentId
-    ? await client.fetch(`*[_id == $documentId]{_id, _type, title, body, gallery, slug}`, { documentId })
-    : await client.fetch(`*[_type == $documentType && slug.current == $slug]{_id, _type, title, body, gallery, slug}`, {
+    ? await client.fetch(`*[_id == $documentId]{_id, _type, title, body, gallery, slug, sectionImagePlan, imageAltSuggestion, targetKeyword}`, { documentId })
+    : await client.fetch(`*[_type == $documentType && slug.current == $slug]{_id, _type, title, body, gallery, slug, sectionImagePlan, imageAltSuggestion, targetKeyword}`, {
         documentType,
         slug,
       });
@@ -213,9 +231,37 @@ const plan = {
   galleryImages: galleryImages.length,
   bodyImages: bodyImages.length,
 };
+const targetKeyword = normalizeKeyword(document.targetKeyword, document.title);
+
+const preview = {
+  heroImage: heroImage
+    ? {
+        alt: ensureKeywordInAltText(
+          heroImage.alt,
+          targetKeyword,
+          document.imageAltSuggestion || `${targetKeyword || document.title} hero image`
+        ),
+      }
+    : null,
+  galleryImages: galleryImages.map((image, index) => ({
+    alt: ensureKeywordInAltText(image.alt, targetKeyword, `${targetKeyword || document.title} gallery image ${index + 1}`),
+  })),
+  bodyImages: bodyImages.map((image, index) => {
+    const fallbackPlan = ensureArray(document.sectionImagePlan)[index] || null;
+    return {
+      insertBeforeHeading: image.insertBeforeHeading || image.heading || fallbackPlan?.heading || "",
+      headingStyle: image.headingStyle || fallbackPlan?.headingStyle || "h2",
+      alt: ensureKeywordInAltText(
+        image.alt,
+        targetKeyword,
+        fallbackPlan?.alt || `${targetKeyword || document.title} ${fallbackPlan?.heading || `body image ${index + 1}`}`
+      ),
+    };
+  }),
+};
 
 if (args["dry-run"]) {
-  console.log(JSON.stringify({ ok: true, mode: "dry-run", plan }, null, 2));
+  console.log(JSON.stringify({ ok: true, mode: "dry-run", plan, preview }, null, 2));
   process.exit(0);
 }
 
@@ -223,25 +269,40 @@ const fallbackBase = slug || slugify(document.title || document._id);
 const nextValues = {};
 
 if (heroImage) {
-  const uploadedHero = await uploadImage(client, { ...heroImage, includeKey: false }, 0, `${fallbackBase}-hero`);
+  const uploadedHero = await uploadImage(client, { ...heroImage, includeKey: false }, 0, `${fallbackBase}-hero`, {
+    keyword: targetKeyword,
+    fallbackAlt: document.imageAltSuggestion || `${targetKeyword || document.title} hero image`,
+  });
   nextValues.image = uploadedHero;
 }
 
 if (galleryImages.length > 0) {
   const uploadedGallery = [];
   for (let index = 0; index < galleryImages.length; index += 1) {
-    uploadedGallery.push(await uploadImage(client, galleryImages[index], index, `${fallbackBase}-gallery`));
+    uploadedGallery.push(
+      await uploadImage(client, galleryImages[index], index, `${fallbackBase}-gallery`, {
+        keyword: targetKeyword,
+        fallbackAlt: `${targetKeyword || document.title} gallery image ${index + 1}`,
+      })
+    );
   }
   nextValues.gallery = [...ensureArray(document.gallery), ...uploadedGallery];
 }
 
 if (bodyImages.length > 0) {
   const updatedBody = [...ensureArray(document.body)];
+  const sectionImagePlan = ensureArray(document.sectionImagePlan);
   for (let index = 0; index < bodyImages.length; index += 1) {
     const bodyImage = bodyImages[index];
-    const uploadedBodyImage = await uploadImage(client, bodyImage, index, `${fallbackBase}-body`);
-    const insertBeforeHeading = bodyImage.insertBeforeHeading || bodyImage.heading;
-    const headingStyle = bodyImage.headingStyle || "h2";
+    const fallbackPlan = sectionImagePlan[index] || null;
+    const uploadedBodyImage = await uploadImage(client, bodyImage, index, `${fallbackBase}-body`, {
+      keyword: targetKeyword,
+      fallbackAlt:
+        fallbackPlan?.alt ||
+        `${targetKeyword || document.title} ${fallbackPlan?.heading || `body image ${index + 1}`}`,
+    });
+    const insertBeforeHeading = bodyImage.insertBeforeHeading || bodyImage.heading || fallbackPlan?.heading;
+    const headingStyle = bodyImage.headingStyle || fallbackPlan?.headingStyle || "h2";
 
     if (insertBeforeHeading) {
       const headingIndex = findHeadingIndex(updatedBody, insertBeforeHeading, headingStyle);

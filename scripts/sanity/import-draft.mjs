@@ -238,6 +238,97 @@ function extractBlockText(block) {
     .trim();
 }
 
+function getHeadingBlocks(body, style = "h2") {
+  return body.filter((entry) => entry?._type === "block" && (entry.style || "normal") === style);
+}
+
+function normalizeKeyword(value, fallback = "") {
+  const keyword = String(value || fallback || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return keyword;
+}
+
+function ensureKeywordInAltText(alt, keyword, fallback = "") {
+  const safeKeyword = normalizeKeyword(keyword);
+  const safeAlt = String(alt || fallback || "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!safeKeyword) return safeAlt;
+  if (!safeAlt) return safeKeyword;
+  if (safeAlt.toLowerCase().includes(safeKeyword.toLowerCase())) return safeAlt;
+  return `${safeKeyword} - ${safeAlt}`;
+}
+
+function createSectionImagePrompt({ title, summary, heading }) {
+  const baseTitle = String(title || "").trim();
+  const baseSummary = String(summary || "").trim();
+  const baseHeading = String(heading || "").trim();
+  const context = [baseTitle, baseHeading].filter(Boolean).join(" - ");
+  const promptParts = [
+    context || "Swiss travel editorial image",
+    "editorial travel photography",
+    "Switzerland",
+    "landscape orientation",
+    "realistic detail",
+  ];
+
+  if (baseSummary) {
+    promptParts.splice(1, 0, baseSummary);
+  }
+
+  return promptParts.join(", ");
+}
+
+function normalizeSectionImagePlan(items = [], body = [], draft = {}) {
+  const headingBlocks = getHeadingBlocks(body, "h2");
+  const orderedHeadings = headingBlocks.map((block) => extractBlockText(block)).filter(Boolean);
+  const normalized = [];
+  const seenHeadings = new Set();
+  const keyword = normalizeKeyword(draft.targetKeyword, draft.title);
+
+  for (const item of Array.isArray(items) ? items : []) {
+    if (!item || typeof item !== "object") continue;
+
+    const heading = String(item.insertBeforeHeading || item.heading || "").trim();
+    if (!heading) continue;
+
+    const normalizedHeading = normalizeHeadingText(heading);
+    if (!normalizedHeading || seenHeadings.has(normalizedHeading)) continue;
+
+    normalized.push({
+      _key: item._key || createKey("section-image-plan"),
+      heading,
+      headingStyle: item.headingStyle ? String(item.headingStyle).trim().toLowerCase() : "h2",
+      alt: ensureKeywordInAltText(item.alt, keyword, `${draft.title || "SwissWayExplorer"} - ${heading}`),
+      caption: String(item.caption || heading).trim(),
+      prompt: String(
+        item.prompt || createSectionImagePrompt({ title: draft.title, summary: draft.summary, heading })
+      ).trim(),
+    });
+    seenHeadings.add(normalizedHeading);
+  }
+
+  const requiredHeadings = orderedHeadings.slice(0, 5);
+  for (const heading of requiredHeadings) {
+    const normalizedHeading = normalizeHeadingText(heading);
+    if (seenHeadings.has(normalizedHeading)) continue;
+
+    normalized.push({
+      _key: createKey("section-image-plan"),
+      heading,
+      headingStyle: "h2",
+      alt: ensureKeywordInAltText("", keyword, `${draft.title || "SwissWayExplorer"} - ${heading}`),
+      caption: heading,
+      prompt: createSectionImagePrompt({ title: draft.title, summary: draft.summary, heading }),
+    });
+    seenHeadings.add(normalizedHeading);
+  }
+
+  return normalized;
+}
+
 function normalizeQuickVerdict(input, draft, documentType) {
   if (input && typeof input === "object" && input._type === "quickVerdict") {
     return {
@@ -570,6 +661,13 @@ function pickDraftShape(input) {
       proTips: input.sanityMapping.fields.proTips || input.contentPlan?.proTips,
       faq: input.sanityMapping.fields.faq || input.contentPlan?.faq,
       tables: input.sanityMapping.fields.tables || input.contentPlan?.tables,
+      bodyImages: input.sanityMapping.fields.bodyImages || input.contentPlan?.bodyImages,
+      sectionImagePlan: input.sanityMapping.fields.sectionImagePlan || input.contentPlan?.sectionImagePlan,
+      targetKeyword:
+        input.sanityMapping.fields.targetKeyword ||
+        input.contentPlan?.targetKeyword ||
+        input.seo?.targetKeyword ||
+        input.meta?.targetKeyword,
       generatedBy: input.meta?.generatedBy || input.meta?.sourceModel,
     };
   }
@@ -594,6 +692,12 @@ function buildDocument(input, overrides = {}) {
   const mode = overrides.mode || "draft";
   const { blocks: baseBody, faqItems: faqFromBody } = normalizeBody(draft.body || "");
   const faq = normalizeFaq(draft.faq || draft.faqItems, faqFromBody);
+  const targetKeyword = normalizeKeyword(draft.targetKeyword, title);
+  const sectionImagePlan = normalizeSectionImagePlan(
+    draft.sectionImagePlan || draft.bodyImages || draft.inlineImages,
+    baseBody,
+    draft
+  );
   const document = {
     _id: buildDocumentId(documentType, slug, mode, overrides.documentId),
     _type: documentType,
@@ -608,11 +712,16 @@ function buildDocument(input, overrides = {}) {
       overrides.status || draft.workflowStatus || (mode === "publish" ? "published" : "image_pending"),
     generatedBy: overrides.generatedBy || draft.generatedBy || "ai-editorial-pipeline",
     generatedAt: draft.generatedAt || now,
-    imageAltSuggestion: draft.imageAltSuggestion || draft.imageAlt || "",
+    imageAltSuggestion: ensureKeywordInAltText(draft.imageAltSuggestion || draft.imageAlt || "", targetKeyword, title),
+    targetKeyword,
   };
 
   if (faq.length > 0) {
     document.faq = faq;
+  }
+
+  if (sectionImagePlan.length > 0) {
+    document.sectionImagePlan = sectionImagePlan;
   }
 
   if (documentType === "guide") {

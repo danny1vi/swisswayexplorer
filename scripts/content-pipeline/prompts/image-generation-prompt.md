@@ -163,6 +163,7 @@ Save manifest to: {{OUTPUT_DIR}}/images/manifest.json
 - Text in images should be in English
 - Keep images clean — no busy backgrounds
 - Keywords in images should be short (3-5 words max)
+- Every output manifest entry must include alt text that naturally contains the article target keyword or the section-level Google search phrase
 - Hero image MUST be landscape 16:9
 - H2 section images: portrait (4:5) or square (1:1)
 - Social pin: portrait 9:16

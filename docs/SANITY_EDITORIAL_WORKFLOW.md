@@ -23,6 +23,7 @@ Target flow:
 - `npm run sanity:import-draft`
 - `npm run sanity:publish`
 - `npm run sanity:attach-images`
+- `npm run editorial:gate`
 - Studio now has editorial queue lists:
   - `Image Pending`
   - `Review Ready`
@@ -109,6 +110,8 @@ npm run sanity:publish -- --file memory/drafts/guide-swiss-pass.json --generated
 
 Direct publish writes the canonical document id, sets `workflowStatus` to `published`, and removes any matching draft copy for the same slug.
 
+`sanity:publish` now runs a deterministic editorial QA gate first. If the draft fails FAQ, image plan, alt text, keyword, or structure checks, publish is blocked.
+
 ## Image Automation
 
 The content schema now supports:
@@ -116,6 +119,7 @@ The content schema now supports:
 - one hero image in `image`
 - multiple supporting images in `gallery`
 - inline body images inside `body`
+- a `sectionImagePlan` array that stores at least five H2-linked image briefs for writing and generation workflows
 
 Attach images from URLs with:
 
@@ -207,8 +211,10 @@ Ask MiniMax or Codex to return:
 - `summary`
 - `quickVerdict`
 - `highlightBoxes`
+- `bodyImages` with at least five H2-linked image briefs
 - `body`
 - `category` or `region` / `bestSeason`
+- `targetKeyword`
 - `imageAltSuggestion`
 - optional `generatedBy`
 
@@ -220,6 +226,7 @@ Every new SwissWayExplorer article should now include:
 
 - `quickVerdict`: one concise framed summary block near the top
 - `highlightBoxes`: at least two framed emphasis blocks inside the article body
+- `sectionImagePlan`: at least five image briefs mapped to real `h2` headings
 
 Recommended usage:
 
@@ -234,6 +241,7 @@ Recommended usage:
 
 When `insertBeforeHeading` is provided on a `highlightBoxes` item, the importer will place it immediately before that heading.
 If no heading target is provided, the block is appended to the end of the body.
+When `bodyImages` entries are provided during draft creation, the importer stores them in `sectionImagePlan` so later image uploads can snap to the intended H2 heading even if the final upload payload omits the heading text.
 
 - If you want manual review first, import it with `sanity:import-draft`.
 - If you want the article live immediately, run `sanity:publish`.

@@ -150,6 +150,15 @@ export type FaqItem = {
   answer: string;
 };
 
+export type SectionImagePlanItem = {
+  _key?: string;
+  heading: string;
+  headingStyle?: "h2" | "h3";
+  alt: string;
+  caption?: string;
+  prompt: string;
+};
+
 export type BodyBlock = BodyTextBlock | BodyImageBlock | QuickVerdictBlock | HighlightBoxBlock | InfoTableBlock;
 
 export type Destination = {
@@ -163,6 +172,8 @@ export type Destination = {
   image?: ImageAsset;
   gallery?: ImageAsset[];
   faq?: FaqItem[];
+  sectionImagePlan?: SectionImagePlanItem[];
+  targetKeyword?: string;
 };
 
 export type Guide = {
@@ -175,4 +186,6 @@ export type Guide = {
   image?: ImageAsset;
   gallery?: ImageAsset[];
   faq?: FaqItem[];
+  sectionImagePlan?: SectionImagePlanItem[];
+  targetKeyword?: string;
 };
