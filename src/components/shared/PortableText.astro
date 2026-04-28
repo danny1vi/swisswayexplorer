@@ -86,6 +86,32 @@ function renderSpan(span: any, markDefs: any[]): string {
       );
     }
 
+    if (block._type === "infoTable") {
+      return (
+        <section class="info-table-block">
+          {block.eyebrow && <p class="info-table-eyebrow">{block.eyebrow}</p>}
+          {block.title && <h3>{block.title}</h3>}
+          <div class="info-table-scroll">
+            <table class="info-table">
+              <thead>
+                <tr>
+                  {block.columns.map((column) => <th>{column}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {block.rows.map((row) => (
+                  <tr>
+                    {row.cells.map((cell) => <td>{cell}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {block.caption && <p class="info-table-caption">{block.caption}</p>}
+        </section>
+      );
+    }
+
     if (block._type !== "block") return null;
 
     const children = block.children || [];
@@ -207,6 +233,62 @@ function renderSpan(span: any, markDefs: any[]): string {
     margin: 1.35rem 0 0;
   }
 
+  .info-table-block {
+    margin-top: 1.35rem;
+    padding: 1rem 1rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: rgba(248, 244, 235, 0.9);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .info-table-eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  .info-table-scroll {
+    overflow-x: auto;
+    margin-top: 0.7rem;
+  }
+
+  .info-table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+  }
+
+  .info-table th,
+  .info-table td {
+    padding: 0.8rem 0.9rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(26, 60, 52, 0.1);
+  }
+
+  .info-table th {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary-strong);
+    background: rgba(26, 60, 52, 0.05);
+  }
+
+  .info-table td {
+    color: #415045;
+    line-height: 1.6;
+  }
+
+  .info-table-caption {
+    margin-top: 0.7rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
   .quick-verdict,
   .highlight-box {
     margin-top: 1.35rem;
@@ -312,12 +394,38 @@ function renderSpan(span: any, markDefs: any[]): string {
     color: #2a5f3d;
   }
 
+  .highlight-proTip {
+    background: rgba(239, 246, 255, 0.98);
+  }
+
+  .highlight-proTip::before {
+    background: #2b6cb0;
+  }
+
+  .highlight-proTip .highlight-label {
+    background: rgba(43, 108, 176, 0.12);
+    color: #1f4f84;
+  }
+
   .highlight-route {
     background: rgba(242, 246, 251, 0.98);
   }
 
   .highlight-route::before {
     background: #4d658a;
+  }
+
+  .highlight-warning {
+    background: rgba(255, 243, 240, 0.98);
+  }
+
+  .highlight-warning::before {
+    background: #c05621;
+  }
+
+  .highlight-warning .highlight-label {
+    background: rgba(192, 86, 33, 0.12);
+    color: #9c4015;
   }
 
   .highlight-route .highlight-label {

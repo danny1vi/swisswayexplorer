@@ -1,0 +1,100 @@
+---
+import type { FaqItem } from "../../lib/sanity/types";
+
+type Props = {
+  items?: FaqItem[];
+  heading?: string;
+};
+
+const { items = [], heading = "Frequently Asked Questions" } = Astro.props;
+
+if (!items || items.length === 0) {
+  return null;
+}
+---
+
+<div class="faq-section">
+  <h2 class="faq-heading">{heading}</h2>
+  <div class="faq-list">
+    {items.map((item, i) => (
+      <details class="faq-item" name="faq">
+        <summary class="faq-question">
+          <span class="faq-number">{String(i + 1).padStart(2, "0")}</span>
+          {item.question}
+        </summary>
+        <div class="faq-answer">
+          {(item.answer || "").split("\n").filter(Boolean).map((line) => (
+            <p class={line.match(/^\d+\./) ? "list-item" : ""}>{line}</p>
+          ))}
+        </div>
+      </details>
+    ))}
+  </div>
+</div>
+
+<style>
+  .faq-section {
+    margin-top: 2rem;
+  }
+
+  .faq-heading {
+    margin: 0 0 0.9rem;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(251, 247, 238, 0.96);
+    overflow: hidden;
+  }
+
+  .faq-item[open] {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .faq-question {
+    list-style: none;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem 1.05rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question::marker { display: none; }
+
+  .faq-number {
+    flex: 0 0 auto;
+    min-width: 2rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  .faq-answer {
+    padding: 0 1.05rem 1rem 3.8rem;
+  }
+
+  .faq-answer p {
+    margin: 0 0 0.5rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .faq-answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .faq-answer .list-item {
+    margin-bottom: 0.35rem;
+  }
+</style>

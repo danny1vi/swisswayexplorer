@@ -168,6 +168,11 @@ export const DESTINATION_BY_SLUG_QUERY = `
     alt,
     caption,
     "url": asset->url
+  },
+  "faq": faq[]{
+    _key,
+    question,
+    answer
   }
 }
 `;

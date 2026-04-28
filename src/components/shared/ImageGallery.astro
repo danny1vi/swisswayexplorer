@@ -16,8 +16,8 @@ if (validImages.length === 0) {
 
 <section class="gallery" aria-label={title}>
   <div class="gallery-grid">
-    {validImages.map((image, index) => (
-      <figure class="gallery-card" key={image._key || `${image.url}-${index}`}>
+    {validImages.map((image) => (
+      <figure class="gallery-card">
         <img src={image.url} alt={image.alt || title} loading="lazy" />
         {image.caption && <figcaption>{image.caption}</figcaption>}
       </figure>

@@ -27,7 +27,7 @@ import { siteConfig } from "../../config/site";
   const navList = document.querySelector('.site-header .nav-list');
 
   if (toggle instanceof HTMLButtonElement && navList instanceof HTMLElement) {
-    const setMenuState = (open) => {
+    const setMenuState = (open: boolean) => {
       toggle.setAttribute('aria-expanded', String(open));
       navList.classList.toggle('open', open);
     };

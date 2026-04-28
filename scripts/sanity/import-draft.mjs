@@ -39,11 +39,11 @@ function normalizeHeadingText(value) {
     .trim();
 }
 
-function createPortableTextBlock(text, index) {
+function createPortableTextBlock(text, index, style = "normal") {
   return {
     _type: "block",
     _key: createKey(`block${index ? `-${index}` : ""}`),
-    style: "normal",
+    style,
     markDefs: [],
     children: [
       {
@@ -56,19 +56,177 @@ function createPortableTextBlock(text, index) {
   };
 }
 
-function normalizeBody(body) {
-  if (Array.isArray(body) && body.every((block) => block && typeof block === "object" && block._type)) {
-    return body;
+function createInfoTableBlock(input, index) {
+  const columns = Array.isArray(input.columns)
+    ? input.columns.map((item) => String(item || "").trim()).filter(Boolean)
+    : [];
+  const rows = Array.isArray(input.rows)
+    ? input.rows
+        .map((row, rowIndex) => {
+          const cells = Array.isArray(row)
+            ? row
+            : Array.isArray(row?.cells)
+              ? row.cells
+              : [];
+          const normalized = cells.map((item) => String(item || "").trim());
+          if (normalized.length !== columns.length || normalized.every((cell) => !cell)) return null;
+          return {
+            _type: "tableRow",
+            _key: row?._key || createKey(`table-row-${index}-${rowIndex + 1}`),
+            cells: normalized,
+          };
+        })
+        .filter(Boolean)
+    : [];
+
+  if (columns.length < 2 || rows.length === 0) return null;
+
+  return {
+    _type: "infoTable",
+    _key: input._key || createKey(`info-table-${index}`),
+    eyebrow: input.eyebrow ? String(input.eyebrow).trim() : "",
+    title: input.title ? String(input.title).trim() : "",
+    columns,
+    rows,
+    caption: input.caption ? String(input.caption).trim() : "",
+  };
+}
+
+function parseMarkdownTableChunk(chunk, index) {
+  const lines = String(chunk || "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length < 3 || !lines.every((line) => line.includes("|"))) return null;
+
+  const separator = lines[1].replace(/\|/g, "").trim();
+  if (!/^:?-{3,}:?(?:\s+:?-{3,}:?)*$/.test(separator.replace(/\s+/g, " "))) {
+    return null;
   }
 
-  const paragraphs = Array.isArray(body)
-    ? body.map((item) => String(item || "").trim()).filter(Boolean)
-    : String(body || "")
-        .split(/\n\s*\n/g)
-        .map((item) => item.trim())
-        .filter(Boolean);
+  const splitRow = (line) =>
+    line
+      .split("|")
+      .map((cell) => cell.trim())
+      .filter((cell, cellIndex, source) => !(cell === "" && (cellIndex === 0 || cellIndex === source.length - 1)));
 
-  return paragraphs.map((text, index) => createPortableTextBlock(text, index + 1));
+  const columns = splitRow(lines[0]);
+  const rows = lines.slice(2).map((line) => splitRow(line));
+  return createInfoTableBlock({ columns, rows }, index);
+}
+
+function parseFaqSection(sectionText) {
+  const lines = String(sectionText || "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const items = [];
+  let currentQuestion = "";
+  let answerLines = [];
+
+  const flush = () => {
+    const question = currentQuestion.trim();
+    const answer = answerLines.join("\n").trim();
+    if (question && answer) {
+      items.push({
+        _type: "faqItem",
+        _key: createKey("faq"),
+        question,
+        answer,
+      });
+    }
+    currentQuestion = "";
+    answerLines = [];
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/^[-*]\s*/, "").trim();
+    const explicitQuestion = line.match(/^Q[:\-]\s*(.+)$/i);
+    const explicitAnswer = line.match(/^A[:\-]\s*(.+)$/i);
+    const question = explicitQuestion ? explicitQuestion[1].trim() : line;
+
+    if (explicitQuestion || /\?$/.test(question)) {
+      flush();
+      currentQuestion = question;
+      continue;
+    }
+
+    if (explicitAnswer) {
+      answerLines.push(explicitAnswer[1].trim());
+      continue;
+    }
+
+    if (currentQuestion) {
+      answerLines.push(line);
+    }
+  }
+
+  flush();
+  return items;
+}
+
+function extractFaqFromBody(text) {
+  let nextText = String(text || "");
+  const faqItems = [];
+
+  nextText = nextText.replace(/\[\s*\/\/\s*faq\s*\n([\s\S]*?)\n\]/gi, (_, section) => {
+    faqItems.push(...parseFaqSection(section));
+    return "";
+  });
+
+  if (faqItems.length > 0) {
+    return { bodyText: nextText.trim(), faqItems };
+  }
+
+  const headingMatch = nextText.match(
+    /(?:^|\n)(?:##+|#)?\s*(frequently asked questions|faq|sık sorulan sorular)\s*\n([\s\S]*)$/i
+  );
+
+  if (!headingMatch || typeof headingMatch.index !== "number") {
+    return { bodyText: nextText.trim(), faqItems };
+  }
+
+  faqItems.push(...parseFaqSection(headingMatch[2]));
+  return {
+    bodyText: nextText.slice(0, headingMatch.index).trim(),
+    faqItems,
+  };
+}
+
+function normalizeBody(body) {
+  if (Array.isArray(body) && body.every((block) => block && typeof block === "object" && block._type)) {
+    return { blocks: body, faqItems: [] };
+  }
+
+  const rawBody = Array.isArray(body) ? body.map((item) => String(item || "")).join("\n\n") : String(body || "");
+  const { bodyText, faqItems } = extractFaqFromBody(rawBody);
+  const chunks = bodyText
+    .split(/\n\s*\n/g)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const blocks = chunks.map((text, index) => {
+    const h2Match = text.match(/^##\s+(.+)$/);
+    if (h2Match) return createPortableTextBlock(h2Match[1].trim(), index + 1, "h2");
+
+    const h3Match = text.match(/^###\s+(.+)$/);
+    if (h3Match) return createPortableTextBlock(h3Match[1].trim(), index + 1, "h3");
+
+    const quoteMatch = text.match(/^>\s+([\s\S]+)$/);
+    if (quoteMatch) return createPortableTextBlock(quoteMatch[1].replace(/\n>\s*/g, "\n").trim(), index + 1, "blockquote");
+
+    const tableBlock = parseMarkdownTableChunk(text, index + 1);
+    if (tableBlock) return tableBlock;
+
+    return createPortableTextBlock(text, index + 1);
+  });
+
+  return {
+    blocks: blocks.filter(Boolean),
+    faqItems,
+  };
 }
 
 function extractBlockText(block) {
@@ -127,10 +285,33 @@ function normalizeQuickVerdict(input, draft, documentType) {
   };
 }
 
-function normalizeHighlightBoxes(items = []) {
-  if (!Array.isArray(items)) return [];
+function normalizeHighlightTone(value) {
+  const normalized = String(value || "tip")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
 
-  return items
+  if (["protip", "expertip"].includes(normalized)) return "proTip";
+  if (["important", "warning", "caution"].includes(normalized)) return normalized === "important" ? "important" : "warning";
+  if (["budget", "route", "tip"].includes(normalized)) return normalized;
+  return "tip";
+}
+
+function normalizeHighlightBoxes(items = [], proTips = []) {
+  const combinedItems = [
+    ...(Array.isArray(items) ? items : []),
+    ...(Array.isArray(proTips)
+      ? proTips.map((item) =>
+          typeof item === "string"
+            ? { tone: "proTip", body: item }
+            : { ...item, tone: item?.tone || "proTip" }
+        )
+      : []),
+  ];
+
+  if (combinedItems.length === 0) return [];
+
+  return combinedItems
     .map((item) => {
       if (!item || typeof item !== "object") return null;
 
@@ -140,9 +321,62 @@ function normalizeHighlightBoxes(items = []) {
       return {
         _type: "highlightBox",
         _key: item._key || createKey("highlight-box"),
-        tone: item.tone || "tip",
+        tone: normalizeHighlightTone(item.tone),
         title: item.title ? String(item.title).trim() : "",
         body,
+        insertBeforeHeading: item.insertBeforeHeading ? String(item.insertBeforeHeading).trim() : "",
+        headingStyle: item.headingStyle ? String(item.headingStyle).trim().toLowerCase() : "h2",
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeFaq(input, fallbackFaq = []) {
+  const source = Array.isArray(input) ? input : Array.isArray(fallbackFaq) ? fallbackFaq : [];
+
+  return source
+    .map((item) => {
+      if (!item) return null;
+
+      if (typeof item === "string") {
+        const [questionPart, ...answerParts] = item.split(/\?\s+/);
+        const question = questionPart?.trim();
+        const answer = answerParts.join("? ").trim();
+        if (!question || !answer) return null;
+        return {
+          _type: "faqItem",
+          _key: createKey("faq"),
+          question: `${question}?`,
+          answer,
+        };
+      }
+
+      if (typeof item !== "object") return null;
+
+      const question = String(item.question || "").trim();
+      const answer = String(item.answer || "").trim();
+      if (!question || !answer) return null;
+
+      return {
+        _type: "faqItem",
+        _key: item._key || createKey("faq"),
+        question,
+        answer,
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeInfoTables(items = []) {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null;
+      const table = createInfoTableBlock(item, index + 1);
+      if (!table) return null;
+      return {
+        ...table,
         insertBeforeHeading: item.insertBeforeHeading ? String(item.insertBeforeHeading).trim() : "",
         headingStyle: item.headingStyle ? String(item.headingStyle).trim().toLowerCase() : "h2",
       };
@@ -241,9 +475,49 @@ function insertHighlightBoxes(body, items) {
   return next;
 }
 
+function insertInfoTables(body, items) {
+  const next = [...body];
+
+  for (const item of items) {
+    const block = {
+      _type: "infoTable",
+      _key: item._key || createKey("info-table"),
+      eyebrow: item.eyebrow || "",
+      title: item.title || "",
+      columns: item.columns || [],
+      rows: item.rows || [],
+      caption: item.caption || "",
+    };
+
+    if (!item.insertBeforeHeading) {
+      next.push(block);
+      continue;
+    }
+
+    const targetHeading = normalizeHeadingText(item.insertBeforeHeading);
+    const headingStyle = item.headingStyle || "h2";
+    const targetIndex = next.findIndex(
+      (entry) =>
+        entry?._type === "block" &&
+        (entry.style || "normal") === headingStyle &&
+        normalizeHeadingText(extractBlockText(entry)) === targetHeading
+    );
+
+    if (targetIndex === -1) {
+      next.push(block);
+      continue;
+    }
+
+    next.splice(targetIndex, 0, block);
+  }
+
+  return next;
+}
+
 function enhanceBody({ body, draft, documentType }) {
   const quickVerdict = normalizeQuickVerdict(draft.quickVerdict, draft, documentType);
-  const highlightBoxes = normalizeHighlightBoxes(draft.highlightBoxes);
+  const highlightBoxes = normalizeHighlightBoxes(draft.highlightBoxes, draft.proTips);
+  const infoTables = normalizeInfoTables(draft.tables || draft.infoTables);
   const ensuredHighlightBoxes =
     highlightBoxes.length >= 2
       ? highlightBoxes
@@ -251,6 +525,7 @@ function enhanceBody({ body, draft, documentType }) {
 
   let next = insertQuickVerdict(body, quickVerdict);
   next = insertHighlightBoxes(next, ensuredHighlightBoxes);
+  next = insertInfoTables(next, infoTables);
   return next;
 }
 
@@ -292,6 +567,9 @@ function pickDraftShape(input) {
       imageAltSuggestion: input.sanityMapping.fields.imageAlt || input.contentPlan?.imageBrief,
       quickVerdict: input.sanityMapping.fields.quickVerdict || input.contentPlan?.quickVerdict,
       highlightBoxes: input.sanityMapping.fields.highlightBoxes || input.contentPlan?.highlightBoxes,
+      proTips: input.sanityMapping.fields.proTips || input.contentPlan?.proTips,
+      faq: input.sanityMapping.fields.faq || input.contentPlan?.faq,
+      tables: input.sanityMapping.fields.tables || input.contentPlan?.tables,
       generatedBy: input.meta?.generatedBy || input.meta?.sourceModel,
     };
   }
@@ -314,7 +592,8 @@ function buildDocument(input, overrides = {}) {
 
   const now = new Date().toISOString();
   const mode = overrides.mode || "draft";
-  const baseBody = normalizeBody(draft.body || "");
+  const { blocks: baseBody, faqItems: faqFromBody } = normalizeBody(draft.body || "");
+  const faq = normalizeFaq(draft.faq || draft.faqItems, faqFromBody);
   const document = {
     _id: buildDocumentId(documentType, slug, mode, overrides.documentId),
     _type: documentType,
@@ -331,6 +610,10 @@ function buildDocument(input, overrides = {}) {
     generatedAt: draft.generatedAt || now,
     imageAltSuggestion: draft.imageAltSuggestion || draft.imageAlt || "",
   };
+
+  if (faq.length > 0) {
+    document.faq = faq;
+  }
 
   if (documentType === "guide") {
     document.category = draft.category || "";

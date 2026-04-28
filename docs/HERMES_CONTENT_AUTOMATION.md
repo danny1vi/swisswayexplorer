@@ -49,6 +49,30 @@ Hermes should normalize the article into this JSON shape before calling the Sani
       "headingStyle": "h2"
     }
   ],
+  "faq": [
+    {
+      "question": "Is Lucerne or Interlaken better for a first Switzerland trip?",
+      "answer": "Lucerne is usually easier for a first trip because it mixes town, lake, and simpler transfers. Interlaken is stronger when the trip is centered on Jungfrau-region mountain days."
+    },
+    {
+      "question": "Should I stay in both places?",
+      "answer": "Only if the route length justifies it. Many first-time travelers are better served by using one as a base and keeping the rest of the itinerary lighter."
+    }
+  ],
+  "tables": [
+    {
+      "eyebrow": "Quick comparison",
+      "title": "Lucerne vs Interlaken at a glance",
+      "columns": ["Factor", "Lucerne", "Interlaken"],
+      "rows": [
+        ["First-time ease", "Higher", "Moderate"],
+        ["Mountain-day intensity", "Moderate", "Higher"]
+      ],
+      "caption": "Use this table to compare the trip style fit before reading the full article.",
+      "insertBeforeHeading": "Which is better for first-time visitors",
+      "headingStyle": "h2"
+    }
+  ],
   "body": "Paragraph one.\n\nParagraph two.",
   "category": "itinerary",
   "imageAltSuggestion": "Lake Lucerne and Interlaken mountain scenery split comparison",
@@ -67,7 +91,10 @@ For every SwissWayExplorer article Hermes generates:
 
 - include exactly one `quickVerdict`
 - include at least two `highlightBoxes`
+- include a separate `faq` array with question/answer objects
+- use `tables` for comparison or decision grids instead of flattening them into plain paragraphs
 - prefer `important`, `route`, or `budget` tones when they genuinely help the reader decide
+- use `proTip` when the block is an expert shortcut rather than a generic tip
 - attach each `highlightBox` to a real heading with `insertBeforeHeading` when possible
 
 If the operator does not mention these blocks explicitly, Hermes should still include them as part of the internal JSON.
@@ -140,7 +167,9 @@ The writing flow should be:
 1. understand whether the user wants `guide` or `destination`
 2. understand whether the operator intent is `draft` or `publish`
 3. generate the article content
-4. generate one `quickVerdict` and at least two `highlightBoxes`
-5. normalize everything into the Sanity JSON contract
-6. call the correct Sanity write command
-7. return the resulting slug and live URL
+4. generate one `quickVerdict`, at least two `highlightBoxes`, and a structured `faq` array
+5. convert comparisons into structured `tables` when a table is clearer than prose
+6. keep body images separate from text by using the image payload contract
+7. normalize everything into the Sanity JSON contract
+8. call the correct Sanity write command
+9. return the resulting slug and live URL

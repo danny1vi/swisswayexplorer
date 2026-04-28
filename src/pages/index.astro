@@ -134,11 +134,13 @@ const fallbackFeaturedItems = siteConfig.featured.map((item) => {
 const featuredItems = sanityHome?.featuredStories && sanityHome.featuredStories.length > 0
   ? sanityHome.featuredStories.map((item) => {
       const image = resolveHomepageLinkImage(item.href, item.image);
+      const fallbackTitle = item.href.split("/").filter(Boolean).pop()?.replace(/-/g, " ") || "Featured story";
       return {
         ...item,
+        title: item.title || fallbackTitle,
         summary: item.summary || "",
         imageUrl: image?.url,
-        imageAlt: image?.alt || item.title,
+        imageAlt: image?.alt || item.title || fallbackTitle,
       };
     })
   : sanityDestinations.length > 0

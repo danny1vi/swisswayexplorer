@@ -39,6 +39,9 @@ export type StoryRailItem = {
 
 export type HomepageLinkedPhoto = {
   href: string;
+  eyebrow?: string;
+  title?: string;
+  summary?: string;
   image?: ImageAsset;
 };
 
@@ -119,12 +122,35 @@ export type QuickVerdictBlock = {
 export type HighlightBoxBlock = {
   _type: "highlightBox";
   _key?: string;
-  tone?: "tip" | "important" | "budget" | "route";
+  tone?: "tip" | "proTip" | "important" | "budget" | "route" | "warning";
   title?: string;
   body: string;
 };
 
-export type BodyBlock = BodyTextBlock | BodyImageBlock | QuickVerdictBlock | HighlightBoxBlock;
+export type InfoTableRow = {
+  _type: "tableRow";
+  _key?: string;
+  cells: string[];
+};
+
+export type InfoTableBlock = {
+  _type: "infoTable";
+  _key?: string;
+  eyebrow?: string;
+  title?: string;
+  columns: string[];
+  rows: InfoTableRow[];
+  caption?: string;
+};
+
+export type FaqItem = {
+  _type?: "faqItem";
+  _key?: string;
+  question: string;
+  answer: string;
+};
+
+export type BodyBlock = BodyTextBlock | BodyImageBlock | QuickVerdictBlock | HighlightBoxBlock | InfoTableBlock;
 
 export type Destination = {
   _id?: string;
@@ -136,6 +162,7 @@ export type Destination = {
   bestSeason?: string;
   image?: ImageAsset;
   gallery?: ImageAsset[];
+  faq?: FaqItem[];
 };
 
 export type Guide = {
@@ -147,4 +174,5 @@ export type Guide = {
   category?: "transport" | "budget" | "itinerary" | "seasonal";
   image?: ImageAsset;
   gallery?: ImageAsset[];
+  faq?: FaqItem[];
 };

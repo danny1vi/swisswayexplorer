@@ -69,9 +69,11 @@ const guide = {
               options: {
                 list: [
                   { title: "Tip", value: "tip" },
+                  { title: "Pro Tip", value: "proTip" },
                   { title: "Important", value: "important" },
                   { title: "Budget Note", value: "budget" },
                   { title: "Route Note", value: "route" },
+                  { title: "Warning", value: "warning" },
                 ],
                 layout: "radio",
               },
@@ -89,6 +91,57 @@ const guide = {
               return {
                 title: title || "Highlight Box",
                 subtitle: subtitle || body,
+              };
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "infoTable",
+          title: "Info Table",
+          fields: [
+            { name: "eyebrow", type: "string", title: "Eyebrow" },
+            { name: "title", type: "string", title: "Title" },
+            {
+              name: "columns",
+              type: "array",
+              title: "Columns",
+              of: [{ type: "string" }],
+              validation: (Rule) => Rule.required().min(2),
+            },
+            {
+              name: "rows",
+              type: "array",
+              title: "Rows",
+              of: [
+                {
+                  type: "object",
+                  name: "tableRow",
+                  title: "Table Row",
+                  fields: [
+                    {
+                      name: "cells",
+                      type: "array",
+                      title: "Cells",
+                      of: [{ type: "string" }],
+                      validation: (Rule) => Rule.required().min(2),
+                    },
+                  ],
+                },
+              ],
+              validation: (Rule) => Rule.required().min(1),
+            },
+            { name: "caption", type: "string", title: "Caption" },
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "caption",
+            },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Info Table",
+                subtitle: subtitle || "Structured comparison table",
               };
             },
           },
