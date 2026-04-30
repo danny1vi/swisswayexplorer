@@ -6,31 +6,52 @@ import { getGuides } from "../../lib/sanity/content";
 import { resolveGuideImage } from "../../lib/contentImages";
 import GuidesSidebar from "../../components/sections/GuidesSidebar.astro";
 
-const guides = (await getGuides()).map((item) => ({
+const allGuides = (await getGuides()).map((item) => ({
   ...item,
   image: resolveGuideImage(item),
 }));
 
-// Build category summary for sidebar
+// Read topic filter from URL
+const url = new URL(Astro.request.url);
+const topicFilter = url.searchParams.get("topic")?.toLowerCase() || null;
+
+// Filter guides by topic if filter is active
+const guides = topicFilter
+  ? allGuides.filter((g) => (g.category || "").toLowerCase() === topicFilter)
+  : allGuides;
+
+// Build category summary for sidebar (always from all guides)
 const categoryMap: Record<string, number> = {};
-for (const g of guides) {
+for (const g of allGuides) {
   const cat = (g.category || "other").toLowerCase();
   categoryMap[cat] = (categoryMap[cat] || 0) + 1;
 }
 const categories = Object.entries(categoryMap).map(([name, count]) => ({ name, count }));
+
+const pageTitle = topicFilter
+  ? `${topicFilter.charAt(0).toUpperCase() + topicFilter.slice(1)} Guides | SwissWayExplorer`
+  : "Guides | SwissWayExplorer";
+const pageDesc = topicFilter
+  ? `Practical planning guides for Swiss ${topicFilter} — routes, transport, and timing.`
+  : "Practical planning guides for Swiss routes, transport, and timing.";
 ---
 
-<BaseLayout title="Guides | SwissWayExplorer" description="Practical planning guides for Swiss routes, transport, and timing.">
+<BaseLayout title={pageTitle} description={pageDesc}>
   <section class="section">
     <div class="container">
       <div class="page-layout">
         <!-- Main content: guide grid -->
         <div class="main-content">
-          <h1>Guides</h1>
-          <p class="intro">
-            These guides are written for decision-making, not inspiration scrolling. Use them to lock your route logic,
-            ticket strategy, and seasonal expectations before booking.
-          </p>
+          <h1>{topicFilter ? `${topicFilter.charAt(0).toUpperCase() + topicFilter.slice(1)} Guides` : "Guides"}</h1>
+          {topicFilter && (
+            <a href="/guides/" class="clear-filter">← All guides</a>
+          )}
+          {!topicFilter && (
+            <p class="intro">
+              These guides are written for decision-making, not inspiration scrolling. Use them to lock your route logic,
+              ticket strategy, and seasonal expectations before booking.
+            </p>
+          )}
           {
             guides.length === 0 ? (
               <article class="card empty">
@@ -63,7 +84,7 @@ const categories = Object.entries(categoryMap).map(([name, count]) => ({ name, c
         </div>
 
         <!-- Sidebar -->
-        <GuidesSidebar guideCount={guides.length} categories={categories} />
+        <GuidesSidebar guideCount={guides.length} categories={categories} topicFilter={topicFilter} />
       </div>
     </div>
   </section>
@@ -72,6 +93,20 @@ const categories = Object.entries(categoryMap).map(([name, count]) => ({ name, c
 <style>
   h1 {
     margin: 0;
+  }
+
+  .clear-filter {
+    display: inline-block;
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .clear-filter:hover {
+    color: var(--primary);
   }
 
   .intro {

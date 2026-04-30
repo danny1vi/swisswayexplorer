@@ -4,9 +4,10 @@ import { siteConfig } from "../../config/site";
 type Props = {
   guideCount: number;
   categories: Array<{ name: string; count: number }>;
+  topicFilter?: string | null;
 };
 
-const { guideCount, categories } = Astro.props;
+const { guideCount, categories, topicFilter } = Astro.props;
 
 const destinations = siteConfig.featured;
 
@@ -35,11 +36,14 @@ const lastUpdated = "April 2026";
   <!-- Browse by Category -->
   <div class="sidebar-widget">
     <p class="widget-label">Browse by Topic</p>
+    {topicFilter && (
+      <a href="/guides/" class="clear-filter-link">← Clear filter</a>
+    )}
     <ul class="category-list">
       {categories.map((cat) => (
         <li>
           <a
-            href={`/guides/`}
+            href={`/guides/?topic=${cat.name.toLowerCase()}`}
             class="category-link"
             style={`--cat-color: ${categoryColors[cat.name.toLowerCase()] || "var(--primary)"}`}
           >
@@ -166,6 +170,20 @@ const lastUpdated = "April 2026";
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+  }
+
+  .clear-filter-link {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    transition: color 0.15s ease;
+  }
+
+  .clear-filter-link:hover {
+    color: var(--primary);
   }
 
   .category-link {
