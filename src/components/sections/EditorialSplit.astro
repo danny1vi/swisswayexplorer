@@ -37,7 +37,15 @@ const paragraphs = (body || "")
     <article class:list={["editorial-split", imageSide === "right" && "is-reversed"]}>
       <div class="editorial-media">
         {image?.url ? (
-          <img src={image.url} alt={image.alt || title} loading="lazy" />
+          <img
+            src={image.url}
+            alt={image.alt || title}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            width="1280"
+            height="720"
+          />
         ) : (
           <div class="editorial-placeholder" aria-hidden="true"></div>
         )}
@@ -100,6 +108,7 @@ const paragraphs = (body || "")
 
   .editorial-media {
     aspect-ratio: 16 / 9;
+    min-height: clamp(220px, 32vw, 420px);
     overflow: hidden;
     border-radius: calc(var(--radius) + 2px);
     border: 1px solid rgba(26, 60, 52, 0.12);
